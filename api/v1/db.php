@@ -1,8 +1,8 @@
 <?php
 class DB {
     private $host = 'localhost';
-    private $username = 'root';
-    private $password = '';
+    private $username = 'weuser';
+    private $password = 'weilbaum';
     private $database = 'filmsapp';
     private $conn;
 
