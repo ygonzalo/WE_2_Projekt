@@ -1,0 +1,9 @@
+Datenbank:
+	Nutzer: 
+		Name: "weuser"
+		PW: "weilbaum"
+
+FTP:
+	"mywatchlist.ixdee.de"
+	User: "zug"
+	PW: "weilbaum"
