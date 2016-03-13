@@ -2,7 +2,7 @@
 class DB {
     private $host = 'localhost';
     private $username = 'root';
-    private $password = '22021996';
+    private $password = '';
     private $database = 'filmsapp';
     private $conn;
 
