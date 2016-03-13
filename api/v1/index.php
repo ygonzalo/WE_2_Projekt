@@ -1,12 +1,12 @@
 <?php
-require_once 'db.php';
+require_once 'DB.php';
 require '.././libs/Slim/Slim.php';
 
 \Slim\Slim::registerAutoloader();
 
 $app = new \Slim\Slim();
 
-require_once 'auth.php';
+require_once 'authentication.php';
 
 /*
 Encodes response to JSON
