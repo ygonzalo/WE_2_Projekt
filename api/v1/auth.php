@@ -1,12 +1,5 @@
 <?php
 
-$app->post('/test', function() use ($app) {
-    $req = json_decode($app->request->getBody());
-    $text = $req->text;
-    $response = array();
-    $response['message'] = $text;
-    echoResponse(200, $response);
-});
 //GET Session
 $app->get('/session', function() {
     $db = new DB();
@@ -14,7 +7,7 @@ $app->get('/session', function() {
     $response['userId'] = $session['userId'];
     $response['email'] = $session['email'];
     $response['password'] = $session['password'];
-    echoResponse(200, $session);
+    echoResponse(200, $response);
 });
 
 //POST Login

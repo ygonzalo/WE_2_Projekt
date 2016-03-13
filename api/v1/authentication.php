@@ -5,7 +5,7 @@ $app->get('/session', function() {
     $session = $db->getSession();
     $response['userId'] = $session['userId'];
     $response['email'] = $session['email'];
-    $response['password'] = $session['password'];
+    $response['name'] = $session['name'];
     echoResponse(200, $session);
 });
 
