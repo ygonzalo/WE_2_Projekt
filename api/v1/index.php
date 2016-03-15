@@ -7,6 +7,7 @@ require '.././libs/Slim/Slim.php';
 $app = new \Slim\Slim();
 
 require_once 'authentication.php';
+require_once 'data.php';
 
 /*
 Encodes response to JSON
