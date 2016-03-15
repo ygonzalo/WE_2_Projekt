@@ -13,6 +13,7 @@ class DB {
 
     public function getSingleRecord($query) {
        $result = mysqli_query($this->conn, $query.' LIMIT 1');
+
 	   //when no record was found
 		if($result=="false" || is_bool($result)){
 			return "false";
