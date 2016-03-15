@@ -1,3 +1,4 @@
+DROP SCHEMA IF EXISTS watchedthatmovie;
 CREATE DATABASE IF NOT EXISTS watchedthatmovie;
 CREATE SCHEMA IF NOT EXISTS watchedthatmovie DEFAULT CHARACTER SET UTF8;
 USE watchedthatmovie;
@@ -10,18 +11,18 @@ DROP TABLE IF EXISTS movie;
 
 CREATE TABLE IF NOT EXISTS user (
   `userID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(50) NOT NULL,
-  `email` VARCHAR(50) NOT NULL,
-  `password` VARCHAR(200) NOT NULL,
+  `name` VARCHAR(128) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `email` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `password` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `points` INT UNSIGNED DEFAULT 0,
   PRIMARY KEY (`userID`))
-  ENGINE=INNODB;
+  ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS friends (
   `userID` INT UNSIGNED NOT NULL,
   `friendID` INT UNSIGNED NOT NULL,
-  `since` TIMESTAMP,
-  `status` ENUM('requested','accepted','denied') NOT NULL,
+  `since` DATE,
+  `status` ENUM('requested','accepted','denied') COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`userID`,`friendID`),
   CONSTRAINT fk_userID
       FOREIGN KEY (`userID`)
@@ -33,18 +34,18 @@ CREATE TABLE IF NOT EXISTS friends (
       REFERENCES user(`userID`)
       ON DELETE CASCADE
       ON UPDATE CASCADE)
-  ENGINE=INNODB;
+  ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS movie (
-  `imdbID` VARCHAR(16) NOT NULL,
+  `imdbID` VARCHAR(16) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `watchers` INT UNSIGNED NOT NULL,
   `ratings` INT UNSIGNED NOT NULL,
   `ratingPoints` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`imdbID`))
-  ENGINE=INNODB;
+  ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS movieList (
-  `imdbID` VARCHAR(16) NOT NULL,
+  `imdbID` VARCHAR(16) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `userID` INT UNSIGNED NOT NULL,
   `rating` INT UNSIGNED NOT NULL,
   `status` ENUM('watched','watchlist') NOT NULL,
@@ -60,18 +61,18 @@ CREATE TABLE IF NOT EXISTS movieList (
       REFERENCES user(`userID`)
       ON DELETE CASCADE
       ON UPDATE CASCADE)
-  ENGINE=INNODB;
+  ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS movieInfo (
-  `imdbID` VARCHAR(16) NOT NULL,
-  `language` VARCHAR(5) NOT NULL,
-  `plot` VARCHAR(500),
-  `title` VARCHAR(50) NOT NULL,
-  `release` DATE,
+  `imdbID` VARCHAR(16) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `language` VARCHAR(8) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `plot` VARCHAR(4096) CHARACTER SET utf8 COLLATE utf8_unicode_ci,
+  `title` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `released` DATE,
   PRIMARY KEY (imdbID,language),
   CONSTRAINT fk_imdbID_mi
       FOREIGN KEY (`imdbID`)
       REFERENCES movie(`imdbID`)
       ON DELETE CASCADE
       ON UPDATE CASCADE)
-  ENGINE=INNODB;
+  ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
