@@ -3,7 +3,7 @@ class DB {
     private $host = 'localhost';
     private $username = 'weuser';
     private $password = 'weilbaum';
-    private $database = 'filmsapp';
+    private $database = 'watchedthatmovie';
     private $conn;
 
     function __construct() {
@@ -42,15 +42,15 @@ class DB {
             session_start();
         }
         $sess = array();
-        if(isset($_SESSION['userId']))
+        if(isset($_SESSION['userID']))
         {
-            $sess["userId"] = $_SESSION['userId'];
+            $sess["userID"] = $_SESSION['userID'];
             $sess["name"] = $_SESSION['name'];
             $sess["email"] = $_SESSION['email'];
         }
         else
         {
-            $sess["userId"] = '';
+            $sess["userID"] = '';
             $sess["name"] = 'Guest';
             $sess["email"] = '';
         }
@@ -61,9 +61,9 @@ class DB {
         if (!isset($_SESSION)) {
             session_start();
         }
-        if(isset($_SESSION['userId']))
+        if(isset($_SESSION['userID']))
         {
-            unset($_SESSION['userId']);
+            unset($_SESSION['userID']);
             unset($_SESSION['name']);
             unset($_SESSION['email']);
             $msg="Logged Out Successfully...";

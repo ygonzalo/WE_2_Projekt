@@ -3,4 +3,8 @@
 
 //POST Watched flag
 
-//POST 
+//POST Watchlist flag
+
+//POST Rating
+
+//POST Add friend

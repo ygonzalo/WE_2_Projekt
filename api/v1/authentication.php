@@ -3,7 +3,7 @@
 $app->get('/session', function() {
     $db = new DB();
     $session = $db->getSession();
-    $response['userId'] = $session['userId'];
+    $response['userID'] = $session['userID'];
     $response['email'] = $session['email'];
     $response['name'] = $session['name'];
     echoResponse(200, $session);
@@ -17,18 +17,18 @@ $app->post('/login', function() use ($app) {
 
     $password = $req->user->password;
     $email = $req->user->email;
-    $user = $db->getSingleRecord("SELECT userId,name,password,email from users_auth where email='".$email."'");
+    $user = $db->getSingleRecord("SELECT userID,name,password,email from user where email='".$email."'");
     if($user) {
         if(password_verify($password,$user['password'])){
             $response['status'] = "success";
             $response['message'] = 'Logged in successfully.';
             $response['name'] = $user['name'];
-            $response['userId'] = $user['userId'];
+            $response['userID'] = $user['userID'];
             $response['email'] = $user['email'];
             if(!isset($_SESSION)){
                 session_start();
             }
-            $_SESSION['userId'] = $user['userId'];
+            $_SESSION['userID'] = $user['userID'];
             $_SESSION['email'] = $email;
             $_SESSION['name'] = $user['name'];
         } else {
@@ -51,20 +51,20 @@ $app->post('/signUp', function() use ($app) {
     $name = $req->user->name;
     $email = $req->user->email;
     $password = $req->user->password;
-    $dbUser = $db->getSingleRecord("SELECT 1 FROM users_auth where email='".$email."'");
+    $dbUser = $db->getSingleRecord("SELECT 1 FROM user where email='".$email."'");
     if(!$dbUser) {
         $req->user->password = password_hash($password, PASSWORD_DEFAULT);
-        $table_name = 'users_auth';
+        $table_name = 'user';
         $column_names = array('name', 'email', 'password');
         $result = $db->insertIntoTable($req->user, $column_names, $table_name);
         if($result != NULL) {
             $response["status"] = "success";
             $response["message"] = "User account created successfully";
-            $response["userId"] = $result;
+            $response["userID"] = $result;
             if (!isset($_SESSION)) {
                 session_start();
             }
-            $_SESSION['userId'] = $response["userId"];
+            $_SESSION['userID'] = $response["userID"];
             $_SESSION['name'] = $name;
             $_SESSION['email'] = $email;
             echoResponse(200, $response);

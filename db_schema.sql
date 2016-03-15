@@ -1,0 +1,77 @@
+CREATE DATABASE IF NOT EXISTS watchedthatmovie;
+CREATE SCHEMA IF NOT EXISTS watchedthatmovie DEFAULT CHARACTER SET UTF8;
+USE watchedthatmovie;
+
+DROP TABLE IF EXISTS movieInfo;
+DROP TABLE IF EXISTS movieList;
+DROP TABLE IF EXISTS friends;
+DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS movie;
+
+CREATE TABLE IF NOT EXISTS user (
+  `userID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(50) NOT NULL,
+  `email` VARCHAR(50) NOT NULL,
+  `password` VARCHAR(200) NOT NULL,
+  `points` INT UNSIGNED DEFAULT 0,
+  PRIMARY KEY (`userID`))
+  ENGINE=INNODB;
+
+CREATE TABLE IF NOT EXISTS friends (
+  `userID` INT UNSIGNED NOT NULL,
+  `friendID` INT UNSIGNED NOT NULL,
+  `since` TIMESTAMP,
+  `status` ENUM('requested','accepted','denied') NOT NULL,
+  PRIMARY KEY (`userID`,`friendID`),
+  CONSTRAINT fk_userID
+      FOREIGN KEY (`userID`)
+      REFERENCES user(`userID`)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE,
+  CONSTRAINT fk_friendID
+      FOREIGN KEY (`friendID`)
+      REFERENCES user(`userID`)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE)
+  ENGINE=INNODB;
+
+CREATE TABLE IF NOT EXISTS movie (
+  `imdbID` VARCHAR(16) NOT NULL,
+  `watchers` INT UNSIGNED NOT NULL,
+  `ratings` INT UNSIGNED NOT NULL,
+  `ratingPoints` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`imdbID`))
+  ENGINE=INNODB;
+
+CREATE TABLE IF NOT EXISTS movieList (
+  `imdbID` VARCHAR(16) NOT NULL,
+  `userID` INT UNSIGNED NOT NULL,
+  `rating` INT UNSIGNED NOT NULL,
+  `status` ENUM('watched','watchlist') NOT NULL,
+  `date` DATE NOT NULL,
+  PRIMARY KEY (`imdbID`,`userID`),
+  CONSTRAINT fk_imdbID_ml
+      FOREIGN KEY (`imdbID`)
+      REFERENCES movie(`imdbID`)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE,
+  CONSTRAINT fk_userID_ml
+      FOREIGN KEY (`userID`)
+      REFERENCES user(`userID`)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE)
+  ENGINE=INNODB;
+
+CREATE TABLE IF NOT EXISTS movieInfo (
+  `imdbID` VARCHAR(16) NOT NULL,
+  `language` VARCHAR(5) NOT NULL,
+  `plot` VARCHAR(500),
+  `title` VARCHAR(50) NOT NULL,
+  `release` DATE,
+  PRIMARY KEY (imdbID,language),
+  CONSTRAINT fk_imdbID_mi
+      FOREIGN KEY (`imdbID`)
+      REFERENCES movie(`imdbID`)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE)
+  ENGINE=INNODB;
