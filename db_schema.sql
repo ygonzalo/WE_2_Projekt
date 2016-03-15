@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS movieList (
   `imdbID` VARCHAR(16) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `userID` INT UNSIGNED NOT NULL,
   `rating` INT UNSIGNED NOT NULL,
-  `status` ENUM('watched','watchlist') NOT NULL,
+  `status` ENUM('watched','watchlist', 'deleted') NOT NULL,
   `date` DATE NOT NULL,
   PRIMARY KEY (`imdbID`,`userID`),
   CONSTRAINT fk_imdbID_ml
