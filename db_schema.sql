@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS watchedthatmovie;
+DROP SCHEMA IF EXISTS watchedthatmovie;
 CREATE SCHEMA IF NOT EXISTS watchedthatmovie DEFAULT CHARACTER SET UTF8;
 USE watchedthatmovie;
 
