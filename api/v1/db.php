@@ -11,12 +11,21 @@ class DB {
 		mysqli_set_charset($this->conn, "utf8");
     }
 
+    public function escapeString($str) {
+        return mysqli_real_escape_string($this->conn,$str);
+    }
+
+    public function getRecords($query) {
+        $result = mysqli_query($this->conn, $query);
+        return mysqli_fetch_all($result,MYSQLI_ASSOC);
+    }
+
     public function getSingleRecord($query) {
        $result = mysqli_query($this->conn, $query.' LIMIT 1');
 
 	   //when no record was found
 		if($result=="false" || is_bool($result)){
-			return "false";
+			return false;
 		}else{
 			return mysqli_fetch_assoc($result);
 		}
@@ -38,6 +47,11 @@ class DB {
             $columns = $columns.$key.',';
             $values = $values."'".$$key."',";
         }
+
+        $query = "INSERT INTO ".$table_name."(".trim($columns,',').") VALUES(".trim($values,',').")";
+        $response = array();
+        $response['message'] = $query;
+        echoResponse(200,$response);
         mysqli_query($this->conn,"INSERT INTO ".$table_name."(".trim($columns,',').") VALUES(".trim($values,',').")");
 
         return mysqli_insert_id($this->conn);

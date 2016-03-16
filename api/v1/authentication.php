@@ -74,7 +74,7 @@ $app->post('/signUp', function() use ($app) {
             echoResponse(201, $response);
         }
     }else{
-        $response["status"] = "error";  $response['message'] = $req->password;
+        $response["status"] = "error";
         $response["message"] = "An user with the provided email exists!";
         echoResponse(201, $response);
     }

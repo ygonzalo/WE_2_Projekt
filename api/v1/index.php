@@ -15,7 +15,7 @@ Encodes response to JSON
 function echoResponse($status_code, $response) {
 	$app = \Slim\Slim::getInstance();
 	$app->status($status_code);
-	$app->contentType('application/json');
+	$app->contentType('application/json; charset=utf-8');
 
 	echo json_encode($response);
 }
