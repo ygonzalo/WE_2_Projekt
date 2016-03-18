@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS movie (
   `movieID` VARCHAR(16) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `watchers` INT UNSIGNED NOT NULL DEFAULT 0,
   `ratings` INT UNSIGNED NOT NULL DEFAULT 0,
-  `ratingPoints` INT UNSIGNED NOT NULL DEFAULT 0,
+  `rating_points` INT UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (`movieID`))
   ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -68,7 +68,8 @@ CREATE TABLE IF NOT EXISTS movieInfo (
   `language` VARCHAR(8) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `plot` VARCHAR(4096) CHARACTER SET utf8 COLLATE utf8_unicode_ci,
   `title` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `released` DATE,
+  `release_date` DATE,
+  `poster` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (movieID,language),
   CONSTRAINT fk_movieID_mi
       FOREIGN KEY (`movieID`)

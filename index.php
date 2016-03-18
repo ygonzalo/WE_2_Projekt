@@ -3,6 +3,7 @@
 
   <head>
     <meta charset="utf-8">
+    <link rel="shortcut icon" href="">
     <title>Films App</title>
   </head>
 

@@ -16,8 +16,7 @@ class DB {
     }
 
     public function getRecords($query) {
-        $result = mysqli_query($this->conn, $query);
-        return mysqli_fetch_all($result,MYSQLI_ASSOC);
+        return mysqli_query($this->conn, $query);
     }
 
     public function getSingleRecord($query) {
@@ -49,10 +48,7 @@ class DB {
         }
 
         $query = "INSERT INTO ".$table_name."(".trim($columns,',').") VALUES(".trim($values,',').")";
-        $response = array();
-        $response['message'] = $query;
-        echoResponse(200,$response);
-        mysqli_query($this->conn,"INSERT INTO ".$table_name."(".trim($columns,',').") VALUES(".trim($values,',').")");
+        mysqli_query($this->conn,$query);
 
         return mysqli_insert_id($this->conn);
     }
