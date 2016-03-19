@@ -23,12 +23,12 @@ class DB {
        $result = mysqli_query($this->conn, $query.' LIMIT 1');
 
 	   //when no record was found
-		if($result=="false" || is_bool($result)){
-			return false;
-		}else{
-			return mysqli_fetch_assoc($result);
-		}
-    }
+	   if(is_resource($result)){
+		   return mysqli_fetch_assoc($result);
+	   }else{
+		   return false;
+	   }
+	}
 
     public function insertIntoTable($object, $column_names, $table_name) {
         $arr = (array) $object;
