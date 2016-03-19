@@ -69,36 +69,41 @@ $app->post('/watched', function() use ($app) {
     $req = json_decode($app->request->getBody());
     $response = array();
 	$db = new DB();
-    $table_name = 'movieList';
+    $table_name = 'movielist';
 	
+	if($session['userID'] != '') {
+		 
 	//get session to use userID
-	$session = $db->getSession();
-	$userID = $session['userID'];
-	
-	//get data from (JSON-)array
-	$status = $req->watchedmovie->status;
-	$movieID = $req->watchedmovie->movieID;
-	
-	//TODO - date aktuell vom Server nehmen, nicht über den POST
-	$date	= "2000-01-01";
-	$watchedmovie = $db->getSingleRecord("SELECT * FROM ".$table_name." WHERE `movieID` LIKE `".$movieID."` AND `userID` = `".$userID."`");
-	
-	
-	//movie already in db, just change watched
-	if(!$watchedmovie){
+		$session = $db->getSession();
+		$userID = $session['userID'];
+		
+		//get data from (JSON-)array
+		$status = $req->watchedmovie->status;
+		$movieID = $req->watchedmovie->movieID;
+		
+		//TODO - date aktuell vom Server nehmen, nicht über den POST
+		$date	= date("Y-m-d H:i:s");
+		$watchedmovie = $db->getSingleRecord("SELECT * FROM ".$table_name." WHERE `movieID` LIKE `".$movieID."` AND `userID` = `".$userID."`");
 		
 		
-		
-	//movie not in db, add relationship
-	}else{
+		//movie already in db, just change watched
+		if(!$watchedmovie){
+			
+			
+			
+		//movie not in db, add relationship
+		}else{
 
-		//TODO - object must be a object!!!!
-		$object = array($movieID, $userID, $status, $date);
-        $column_names = array('movieID', 'userID' , 'status', 'date');
-		$db->insertIntoTable($object,$column_names,$table_name);
-		
+			//TODO - object must be a object!!!!
+			$object = array($movieID, $userID, $status, $date);
+			$column_names = array('movieID', 'userID' , 'status', 'date');
+			$db->insertIntoTable($object,$column_names,$table_name);
+		}
+	}else{
+		$response['status'] = "error";
+        $response['message'] = "Not logged in";
+        echoResponse(201, $response);
 	}
-	
 
 });
 //POST Watchlist flag
