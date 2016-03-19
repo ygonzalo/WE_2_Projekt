@@ -70,34 +70,47 @@ $app->post('/watched', function() use ($app) {
     $response = array();
 	$db = new DB();
     $table_name = 'movielist';
+	$session = $db->getSession();
 	
+	//is User logged in?
 	if($session['userID'] != '') {
 		 
-	//get session to use userID
-		$session = $db->getSession();
-		$userID = $session['userID'];
+		//get userID
+		$userID = intval($session['userID']);
 		
-		//get data from (JSON-)array
-		$status = $req->watchedmovie->status;
-		$movieID = $req->watchedmovie->movieID;
+		//get data from JSON
+		$status = $req->status;
+		$movieID = $req->movieID;
+		$date	= date("Y-m-d");
+
+		//get movie if already used
+		$watchedmovie = $db->getSingleRecord("SELECT * FROM `".$table_name."` WHERE `userID`= ".$userID." AND `movieID`= \"".$movieID."\"" );
 		
-		//TODO - date aktuell vom Server nehmen, nicht über den POST
-		$date	= date("Y-m-d H:i:s");
-		$watchedmovie = $db->getSingleRecord("SELECT * FROM ".$table_name." WHERE `movieID` LIKE `".$movieID."` AND `userID` = `".$userID."`");
+				
+		//debug
+		echo "UserID: ".$userID."<br>";
+		echo "Status: ".$status."<br>";
+		echo "MovieID: ".$movieID."<br>";
+		echo "Table_name: ".$table_name."<br>";
+		echo "Movie Daten: ";
+		print_r($watchedmovie);
+		echo "<br>";
 		
-		
-		//movie already in db, just change watched
-		if(!$watchedmovie){
+		//movie already in db, just change status
+		if($watchedmovie!=''){
 			
+			echo "movie already used";
 			
 			
 		//movie not in db, add relationship
 		}else{
+			echo "new movie";
 
-			//TODO - object must be a object!!!!
-			$object = array($movieID, $userID, $status, $date);
+			$object = (object) array($movieID, $userID, $status, $date);
 			$column_names = array('movieID', 'userID' , 'status', 'date');
 			$db->insertIntoTable($object,$column_names,$table_name);
+		
+			
 		}
 	}else{
 		$response['status'] = "error";
