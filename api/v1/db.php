@@ -21,13 +21,7 @@ class DB {
 
     public function getSingleRecord($query) {
        $result = mysqli_query($this->conn, $query.' LIMIT 1');
-
-	   //when no record was found
-		if($result=="false" || is_bool($result)){
-			return false;
-		}else{
-			return mysqli_fetch_assoc($result);
-		}
+	   return mysqli_fetch_assoc($result);
     }
 
     public function insertIntoTable($object, $column_names, $table_name) {
