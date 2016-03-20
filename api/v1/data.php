@@ -1,6 +1,7 @@
 <?php
 //POST Film by name
 $app->post('/movie', function() use ($app) {
+    //parse JSON body of request
     $req = json_decode($app->request->getBody());
     $req_title = $req->title;
     $db = new DB();
@@ -8,14 +9,17 @@ $app->post('/movie', function() use ($app) {
     $response = array();
     $response['matches'] = array();
 
+    //check if user is authenticated
     if($session['userID'] != '') {
 
         $movie = array();
+        //search for requested movie in database
         $title_escaped = $db->escapeString($req_title);
         $db_search = $db->getRecords("SELECT m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, mi.poster FROM movie AS m JOIN movieInfo AS mi ON m.movieID = mi.movieID AND mi.language='de' WHERE mi.title  LIKE '%".$title_escaped."%'");
 
         if(mysqli_num_rows($db_search)>0) {
 
+            //if there are matches in the database, add them to an in the response
             while($row = $db_search->fetch_assoc()) {
 
                 $movie['title'] = $row['title'];
@@ -29,27 +33,30 @@ $app->post('/movie', function() use ($app) {
             echoResponse(200, $response);
 
         } else {
+
+            //if there are no matches found, send request to TMDB API
             $title_url = str_replace(' ','+',$req_title);
             $search_response = file_get_contents('https://api.themoviedb.org/3/search/movie?api_key=fc6230097457cdf6f547373206e12a5d&language=de&query='.$title_url);
             $response_decoded = json_decode($search_response, true);
 
+            //get tmdb configuration needed to build poster path
             $config_response = file_get_contents('http://api.themoviedb.org/3/configuration?api_key=fc6230097457cdf6f547373206e12a5d');
             $config = json_decode($config_response);
 
             $matches = $response_decoded['results'];
 
+            //add each movie to array in response
+            foreach ($matches as $item){
 
-                foreach ($matches as $item){
+                $poster = $config->images->base_url.$config->images->poster_sizes[2]. $item['poster_path'];
 
-                    $poster = $config->images->base_url.$config->images->poster_sizes[2]. $item['poster_path'];
+                $movie['title'] = $item['title'];
+                $movie['plot'] = $item['overview'];
+                $movie['release_date'] = $item['release_date'];
+                $movie['poster'] = $poster;
 
-                    $movie['title'] = $item['title'];
-                    $movie['plot'] = $item['overview'];
-                    $movie['release_date'] = $item['release_date'];
-                    $movie['poster'] = $poster;
-
-                    array_push($response['matches'], $movie);
-                }
+                array_push($response['matches'], $movie);
+            }
 
             $response['status'] = "success";
             echoResponse(200, $response);
