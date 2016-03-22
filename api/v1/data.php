@@ -74,7 +74,10 @@ $app->post('/watched', function() use ($app) {
 	
 	//get JSON body and parse to array
     $req = json_decode($app->request->getBody());
+	//REST-Service Response
     $response = array();
+	//Movie from session
+	$movie = array();
 	$db = new DB();
     $table_name = 'movielist';
 	$session = $db->getSession();
@@ -82,42 +85,57 @@ $app->post('/watched', function() use ($app) {
 	//is User logged in?
 	if($session['userID'] != '') {
 		 
-		//get userID
-		$userID = intval($session['userID']);
-		
-		//get data from JSON
-		$status = $req->status;
-		$movieID = $req->movieID;
-		$date	= date("Y-m-d");
+		//is movie data in session?
+		if ($session['movie']!=''){
+			
+			
+			$movie=$session['movie'];
+			$title=$movie['title'];
+			$plot=$movie['plot'];
+			$release_date=$movie['release_date'];
+			$poster=$movie['poster'];
+			
+			//get userID
+			$userID = intval($session['userID']);
+			
+			//get data from JSON
+			$status = $req->status;
+			$movieID = $req->movieID;
+			$date	= date("Y-m-d");
 
-		//get movie if already used
-		$watchedmovie = $db->getSingleRecord("SELECT * FROM `".$table_name."` WHERE `userID`= ".$userID." AND `movieID`= \"".$movieID."\"" );
-		
+			//get movie if already used
+			$watchedmovie = $db->getSingleRecord("SELECT * FROM `".$table_name."` WHERE `userID`= ".$userID." AND `movieID`= \"".$movieID."\"" );
+			
+					
+			//debug
+			echo "UserID: ".$userID."<br>";
+			echo "Status: ".$status."<br>";
+			echo "MovieID: ".$movieID."<br>";
+			echo "Table_name: ".$table_name."<br>";
+			echo "Movie Daten: ";
+			print_r($watchedmovie);
+			echo "<br>";
+			
+			//movie already in db, just change status
+			if($watchedmovie!=''){
 				
-		//debug
-		echo "UserID: ".$userID."<br>";
-		echo "Status: ".$status."<br>";
-		echo "MovieID: ".$movieID."<br>";
-		echo "Table_name: ".$table_name."<br>";
-		echo "Movie Daten: ";
-		print_r($watchedmovie);
-		echo "<br>";
-		
-		//movie already in db, just change status
-		if($watchedmovie!=''){
-			
-			echo "movie already used";
-			
-			
-		//movie not in db, add relationship
-		}else{
-			echo "new movie";
+				echo "movie already used";
+				
+				
+			//movie not in db, add relationship
+			}else{
+				echo "new movie";
 
-			$object = (object) array($movieID, $userID, $status, $date);
-			$column_names = array('movieID', 'userID' , 'status', 'date');
-			$db->insertIntoTable($object,$column_names,$table_name);
-		
+				$object = (object) array($movieID, $userID, $status, $date);
+				$column_names = array('movieID', 'userID' , 'status', 'date');
+				$db->insertIntoTable($object,$column_names,$table_name);
 			
+				
+			}
+		}else{
+			$response['status'] = "error";
+			$response['message'] = "No movie data";
+			echoResponse(201, $response);
 		}
 	}else{
 		$response['status'] = "error";
