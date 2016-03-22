@@ -6,7 +6,7 @@ app.controller('movieCtrl',function ($scope, $rootScope, $routeParams, $location
 			title: title
 		}).then(function (results) {
 			if(results.status == "success") {
-				$rootScope.results = results;
+				$rootScope.searchResults = results;
 				$location.path('/results');
 			}
 		});
@@ -26,7 +26,7 @@ app.controller('movieCtrl',function ($scope, $rootScope, $routeParams, $location
 	$scope.getWatchlist = function () {
 		Data.get('watchlist').then(function (results) {
 			if(results.status == "success") {
-				$scope.results = results;
+				$rootScope.results = results;
 			}
 		})
 	}

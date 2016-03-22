@@ -38,7 +38,7 @@ $app->post('/movie', function() use ($app) {
 			$movie['poster'] = $poster;
 
 			//search the users movie list
-			$db_movie_list = $db->getSingleRecord("SELECT `status`,`rating`,`date` FROM `movieList` WHERE `movieID` = ".$movie['id']);
+			$db_movie_list = $db->getSingleRecord("SELECT `status`,`user_rating`,`watched_date` FROM `movieList` WHERE `movieID` = ".$movie['id']);
 
 			$movie['status'] = null;
 			$movie['rating'] = null;
@@ -145,6 +145,7 @@ $app->post('/status', function() use ($app) {
 //GET Watchlist
 
 //GET Watched
+
 
 //POST Watchlist flag
 
