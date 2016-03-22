@@ -6,7 +6,7 @@ app.controller('movieCtrl',function ($scope, $rootScope, $routeParams, $location
 			title: title
 		}).then(function (results) {
 			if(results.status == "success") {
-				$scope.results = results;
+				$rootScope.results = results;
 				$location.path('/results');
 			}
 		});
