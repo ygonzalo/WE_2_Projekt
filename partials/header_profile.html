@@ -1,3 +1,3 @@
-<div class="profile">
-	<b>{{name}}</b> | <a href="#/logout">Abmelden</a>
+<div class="profile" ng-controller="authCtrl">
+	<b>{{name}}</b> | <a ng-click="logout();">Abmelden</a>
 </div>
