@@ -11,7 +11,14 @@
 
   <body>
     <div class="header">
-      
+		<table class="coloredline" >
+			<tr>
+				<td id="t1"></td>
+				<td id="t2"></td>
+				<td id="t3"></td>
+				<td id="t4"></td>
+			</tr>
+		</table>
     </div>
     <div data-ng-view="" id="ng-view"></div>
   </body>

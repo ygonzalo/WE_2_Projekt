@@ -1,7 +1,55 @@
 body {
     margin: 0;
     font-family: "Open Sans", "sans-serif";
-    font-size: 12pt;
+    font-size: 11pt;
+}
+
+a {
+	text-decoration:none;
+}
+a:hover
+{
+	text-decoration:underline;
+}
+
+/* Default Layout for boxes, like Signup and Login*/
+.box{
+    text-align: center;
+}
+
+.box h1 {
+	font-size:16pt;
+	text-align:center;
+	color:white;
+	letter-spacing:0.1em;
+	font-weight:normal;
+}
+
+.box input, button {
+	margin:0.5em;
+	padding:0.5em;
+	width:18em;
+	border:none;
+	background-color:white;
+	-moz-box-sizing: border-box;
+	box-sizing:border-box;
+	border-radius:2px;
+	font-size:11pt;
+}
+
+.box input:disabled, button:disabled{
+	background-color:rgb(211,211,211);
+}
+
+.box a {
+	color:white;
+	font-size:11pt;
+	line-height:2em;
+}
+
+#ng-view
+{
+	
 }
 
 .header {
@@ -10,8 +58,51 @@ body {
     background-color: rgb(61,61,61);
 }
 
-/* Login and sign up pages */
-.login, .signup {
-    text-align: center;
-    padding: 1em;
+.default_container
+{
+	max-width:1280px;
+	
+}
+
+.animated_background
+{
+	width:100%;
+	height:100%;
+	position:fixed;
+	margin:0;
+	padding:0;
+	top:0;
+	left:0;
+	overflow:auto;
+	background-color:rgb(61,61,61);
+	display:flex;
+	display:-webkit-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#t1{
+	background-color:rgb(132,231,77);
+}
+#t2{
+	background-color:rgb(222,241,27);
+}
+#t3{
+	background-color:rgb(242,61,137);
+}
+#t4{
+	background-color:rgb(122,111,247);
+}
+
+.coloredline {
+	width:100%; 
+	height:0.7em; 
+	table-layout:fixed; 
+	position:relative; 
+	left:0; 
+	top:0; 
+	z-index:100;
+    border-spacing:0px;
+    border-collapse:collapse;
+	border:none;
 }
