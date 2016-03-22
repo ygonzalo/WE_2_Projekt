@@ -21,5 +21,6 @@
   <script src="app/app.js"></script>
   <script src="app/data.js"></script>
   <script src="app/authCtrl.js"></script>
+  <script src="app/movieCtrl.js"></script>
 </html>
 
