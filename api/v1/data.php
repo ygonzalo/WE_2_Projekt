@@ -84,9 +84,9 @@ $app->post('/status', function() use ($app) {
 
 		//is movie data in session?
         if (!empty($session['matches'])){
-
-
-			$matches=$session['matches'];
+	
+			$sess=array();
+			$sess["matches"]=$session['matches'];
 			$title=$movie['title'];
 			$plot=$movie['plot'];
 			$release_date=$movie['release_date'];
@@ -158,7 +158,7 @@ $app->post('/watchlist', function() use ($app) {
 			$movieIDS = $db->getRecords("SELECT m.ratings, m.ratingPoints, m.watchers, mi.title, mi.plot, mi.release, ml. FROM movie AS m JOIN movieInfo As mi ON `movieID` JOIN movieList AS ml ON `movieID` WHERE `userID`=$userID AND `status`= \"watched\"");
 
 			
-			SELECT m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, ml.watched_date  FROM movie AS m JOIN movieInfo As mi ON `movieID` JOIN movieList AS ml ON `movieID` WHERE `userID`=1 AND `status`= "watched"
+			/*SELECT m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, ml.watched_date  FROM movie AS m JOIN movieInfo As mi ON `movieID` JOIN movieList AS ml ON `movieID` WHERE `userID`=1 AND `status`= "watched"
  
 			SELECT m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, ml.watched_date
 			FROM movieList  WHERE `userID`=1 AND `status`= "watched" AS ml 
@@ -169,7 +169,7 @@ $app->post('/watchlist', function() use ($app) {
 			SELECT m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, ml.watched_date
 			FROM movieList AS ml  
 			LEFT JOIN movieinfo AS mi ON mi.movieID = ml.movieID
-			LEFT JOIN movie AS m ON m.movieID = ml.movieID
+			LEFT JOIN movie AS m ON m.movieID = ml.movieID*/
 	}
 }
 //GET Watched
