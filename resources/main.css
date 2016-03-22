@@ -96,7 +96,7 @@ a:hover
 
 .coloredline {
 	width:100%;
-	height:0.7em;
+	height:0.8em;
 	table-layout:fixed;
 	position:relative;
 	left:0;
@@ -126,4 +126,11 @@ a:hover
 	width: auto;
 	text-align: right;
 	color: white;
+}
+
+#logo
+{
+	height:3em;
+	float:left;
+	padding:0.6em;
 }

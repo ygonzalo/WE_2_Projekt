@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     <link rel="shortcut icon" href="">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="resources/main.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
     <title>Watched That Movie</title>
   </head>
@@ -19,6 +19,7 @@
 				<td id="t4"></td>
 			</tr>
 		</table>
+		<a href="#/home"><img src="resources/images/wtm_logo.png" id="logo"></a>
         <div ng-include="includeProfile()"></div>
     </div>
     <div ng-include="includeSearch()"></div>
