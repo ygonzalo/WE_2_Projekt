@@ -7,6 +7,7 @@ body {
 a {
 	text-decoration:none;
 }
+
 a:hover
 {
 	text-decoration:underline;
@@ -65,11 +66,6 @@ a:hover
 	line-height:2em;
 }
 
-.header {
-    height: 5em;
-    width: 100%;
-    background-color: rgb(61,61,61);
-}
 
 .default_container
 {
@@ -90,6 +86,27 @@ a:hover
 	background-color:rgb(61,61,61);
 }
 
+/*----->>> HEADER <<<-------------------------------*/
+
+.header {
+	height: 5em;
+	width: 100%;
+	background-color: rgb(61,61,61);
+}
+
+.coloredline {
+	width:100%;
+	height:0.7em;
+	table-layout:fixed;
+	position:relative;
+	left:0;
+	top:0;
+	z-index:100;
+	border-spacing:0;
+	border-collapse:collapse;
+	border:none;
+}
+
 #t1{
 	background-color:rgb(132,231,77);
 }
@@ -103,15 +120,10 @@ a:hover
 	background-color:rgb(122,111,247);
 }
 
-.coloredline {
-	width:100%; 
-	height:0.7em; 
-	table-layout:fixed; 
-	position:relative; 
-	left:0; 
-	top:0; 
-	z-index:100;
-    border-spacing:0px;
-    border-collapse:collapse;
-	border:none;
+.profile {
+	float: right;
+	padding: 1.5em;
+	width: auto;
+	text-align: right;
+	color: white;
 }

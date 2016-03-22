@@ -1,0 +1,9 @@
+<div>
+    <form name="searchForm" role="form">
+        <input type="text" placeholder="Titel" name="title" ng-model="title"/>
+        <button type="submit" ng-click="searchMovie(title)">Suchen</button>
+    </form>
+    <div ng-repeat="m in results.matches">
+        {{m.title}}<br>
+    </div>
+</div>
