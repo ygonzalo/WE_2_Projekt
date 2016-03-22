@@ -80,7 +80,7 @@ $app->post('/status', function() use ($app) {
 	$session = $db->getSession();
 
 	//is User logged in?
-    if(!empty($session['userID'])) {
+    if($session['userID']!= '') {
 
 		//is movie data in session?
         if (!empty($session['matches'])){
