@@ -1,13 +1,18 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="filmsApp">
+<html lang="en" ng-app="wtmApp">
 
   <head>
     <meta charset="utf-8">
     <link rel="shortcut icon" href="">
-    <title>Films App</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
+    <title>Watched That Movie</title>
   </head>
 
   <body>
+    <div class="header">
+      
+    </div>
     <div data-ng-view="" id="ng-view"></div>
   </body>
   <script src="js/angular.min.js"></script>

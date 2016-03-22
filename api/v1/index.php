@@ -20,8 +20,6 @@ function echoResponse($status_code, $response) {
 	echo json_encode($response);
 }
 
-
-
 $app->run();
 
 ?>

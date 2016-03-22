@@ -57,6 +57,9 @@ class DB {
             $sess["userID"] = $_SESSION['userID'];
             $sess["name"] = $_SESSION['name'];
             $sess["email"] = $_SESSION['email'];
+            if(isset($_SESSION['matches'])){
+                $sess["matches"] = $_SESSION['matches'];
+            }
         }
         else
         {

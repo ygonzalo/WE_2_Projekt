@@ -1,4 +1,4 @@
-var app = angular.module('filmsApp', ['ngRoute', 'ngAnimate']);
+var app = angular.module('wtmApp', ['ngRoute', 'ngAnimate']);
 
 app.config(['$routeProvider',
   function ($routeProvider) {
