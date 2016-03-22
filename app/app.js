@@ -23,6 +23,12 @@ app.config(['$routeProvider',
                 templateUrl: 'partials/home.html',
                 controller: 'authCtrl'
             })
+            .when('/results', {
+                title: 'Search',
+                templateUrl: 'partials/results.html',
+                controller: 'movieCtrl',
+                role: '0'
+            })
             .when('/', {
                 title: 'Login',
                 templateUrl: 'partials/login.html',
