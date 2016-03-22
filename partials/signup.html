@@ -1,13 +1,10 @@
 <div class="signup">
     SignUp
     <form name="signupForm" >
-        <label>Email</label>
         <input type="email" placeholder="Email" name="email" ng-model="signup.email" required focus/>
         <br>
-        <label>Password</label>
         <input type="password" placeholder="Password" name="password" ng-model="signup.password" required focus/>
         <br>
-        <label>Name</label>
         <input type="text" placeholder="Name" name="name" ng-model="signup.name" required focus/>
         <br>
         <button type="submit" ng-click="signUp(signup)" data-ng-disabled="signupForm.$invalid">Submit</button>

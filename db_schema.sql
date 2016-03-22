@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS friends (
 
 CREATE TABLE IF NOT EXISTS movie (
   `movieID` INT UNSIGNED NOT NULL,
+  `original_title` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `watchers` INT UNSIGNED NOT NULL DEFAULT 0,
   `ratings` INT UNSIGNED NOT NULL DEFAULT 0,
   `rating_points` INT UNSIGNED NOT NULL DEFAULT 0,
@@ -47,9 +48,9 @@ CREATE TABLE IF NOT EXISTS movie (
 CREATE TABLE IF NOT EXISTS movieList (
   `movieID` INT UNSIGNED NOT NULL,
   `userID` INT UNSIGNED NOT NULL,
-  `rating` INT UNSIGNED NOT NULL,
+  `user_rating` INT UNSIGNED NOT NULL,
   `status` ENUM('watched','watchlist', 'deleted') NOT NULL,
-  `date` DATE NOT NULL,
+  `watched_date` DATE NOT NULL,
   PRIMARY KEY (`movieID`,`userID`),
   CONSTRAINT fk_movieID_ml
       FOREIGN KEY (`movieID`)

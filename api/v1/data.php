@@ -15,7 +15,7 @@ $app->post('/movie', function() use ($app) {
         $movie = array();
         $_SESSION['matches'] = array();
 
-        //if there are no matches found, send request to TMDB API
+        //send request to TMDB API
         $title_url = str_replace(' ','+',$req_title);
         $search_response = file_get_contents('https://api.themoviedb.org/3/search/movie?api_key=fc6230097457cdf6f547373206e12a5d&language=de&query='.$title_url);
         $response_decoded = json_decode($search_response, true);
@@ -66,8 +66,8 @@ $app->post('/movie', function() use ($app) {
     }
 });
 
-//POST Watched flag
-$app->post('/watched', function() use ($app) {
+//POST Status flag
+$app->post('/status', function() use ($app) {
 
     //get JSON body and parse to array
     $req = json_decode($app->request->getBody());
@@ -101,7 +101,7 @@ $app->post('/watched', function() use ($app) {
             $date	= date("Y-m-d");
 
             //get movie if already used
-            $watchedmovie = $db->getSingleRecord("SELECT * FROM `".$table_name."` WHERE `userID`= ".$userID." AND `movieID`= \"".$movieID."\"" );
+            $watchedmovie = $db->getSingleRecord("SELECT * FROM `".$table_name."` WHERE `userID`= ".$userID." AND `movieID`= ".$movieID );
 
 
             //debug
@@ -141,10 +141,18 @@ $app->post('/watched', function() use ($app) {
     }
 
 });
+
+//GET Watchlist
+
+//GET Watched
+
 //POST Watchlist flag
 
 //POST Rating
 
 //POST Add friend
+
+//GET Friends
+
 
 ?>

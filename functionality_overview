@@ -1,0 +1,20 @@
+Required functionalities:
+- search movies (titles in multiple languages)
+- flag a film as watched
+- add film to watchlist
+- rate a film
+- add a friend
+- see a friend's last watched and watchlist
+- show upcoming movies
+
+Optional functionalities:
+- TV series
+- user points (badges?)
+- recommend movie
+- color themes
+- i18n support (eng, de, esp)
+- https
+- MUCH animation
+- dynamic search
+- export watchlist
+- responsive

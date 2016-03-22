@@ -1,13 +1,11 @@
 <div class="login">
     Login
     <form name="loginForm" role="form">
-      <label> Email</label>
       <input type="email" placeholder="Email" name="email" ng-model="login.email" required focus/>
         <br>
-      <label> Password </label>
       <input type="password" class="form-control" placeholder="Password" ng-model="login.password" required/>
         <br>
-      <button type="submit" ng-click="doLogin(login)" data-ng-disabled="loginForm.$invalid">Login</button>
+      <button type="submit" class="btn btn-default" ng-click="doLogin(login)" data-ng-disabled="loginForm.$invalid">Login</button>
         <br>
         <a href="#/signup">Signup</a>
     </form>
