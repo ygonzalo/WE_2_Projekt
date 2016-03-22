@@ -6,28 +6,36 @@ app.controller('movieCtrl',function ($scope, $rootScope, $routeParams, $location
 			title: title
 		}).then(function (results) {
 			if(results.status == "success") {
+				var matches = results.matches;
+				angular.forEach(matches, function(match, index){
+					//Just add the index to your item
+					match.index = index;
+				});
 				$rootScope.searchResults = results;
 				$location.path('/results');
 			}
 		});
 	};
 
-	$scope.status = "";
-	$scope.changeStatus = function (status) {
+	$scope.status = "watched";
+	$scope.changeStatus = function (status, index) {
+
 		Data.post('status', {
-			status: status
+			status: status,
+			index: index
 		}).then(function (results){
 			if(results.status == "success") {
-
+				console.log("hi");
 			}
-		})
+		});
 	};
 
 	$scope.getWatchlist = function () {
 		Data.get('watchlist').then(function (results) {
 			if(results.status == "success") {
-				$rootScope.results = results;
+				$rootScope.watchList = results;
 			}
 		})
-	}
+	};
+
 });

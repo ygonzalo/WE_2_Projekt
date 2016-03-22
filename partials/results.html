@@ -1,5 +1,6 @@
 <div>
 	<div ng-repeat="m in searchResults.matches">
-		{{m.title}}<br>
+		{{m.title}} {{m.index}} <button ng-click='changeStatus("watched", m.index)'>bah</button><br>
 	</div>
+	{{test}}
 </div>

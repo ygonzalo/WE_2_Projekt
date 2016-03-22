@@ -38,12 +38,32 @@ class DB {
 				$$key = $arr[$key];
 			}
 			$columns = $columns.$key.',';
-			$values = $values."'".$$key."',";
+			$values = $values.'"'.$$key.'",';
 		}
 
 		$query = "INSERT INTO ".$table_name."(".trim($columns,',').") VALUES(".trim($values,',').")";
 		mysqli_query($this->conn,$query);
+		return mysqli_insert_id($this->conn);
+	}
 
+	public function updateRecord($object, $column_names, $table_name, $condition) {
+		$arr = (array) $object;
+		$keys = array_keys($arr);
+		$values = '';
+
+		//Fills columns and their respective values strings for the db query
+		foreach($column_names as $key) {
+			if(!in_array($key, $keys)) {
+				$$key = '';
+			} else{
+				$$key = $arr[$key];
+			}
+			$values = $values.$key.'="'.$$key.'",';
+		}
+
+		$query = "UPDATE ".$table_name." SET ".trim($values,',')." WHERE ".$condition;
+		mysqli_query($this->conn,$query);
+	echo $query;
 		return mysqli_insert_id($this->conn);
 	}
 

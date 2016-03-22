@@ -32,23 +32,23 @@ $app->post('/movie', function() use ($app) {
 
 				$poster = $config->images->base_url.$config->images->poster_sizes[2]. $item['poster_path'];
 
-				$movie['id'] = $item['id'];
+				$movie['movieID'] = $item['id'];
 				$movie['title'] = $item['title'];
 				$movie['plot'] = $item['overview'];
 				$movie['release_date'] = $item['release_date'];
 				$movie['poster'] = $poster;
 
 				//search the users movie list
-				$db_movie_list = $db->getSingleRecord("SELECT `status`,`user_rating`,`watched_date` FROM `movieList` WHERE `movieID` = ".$movie['id']);
+				$db_movie_list = $db->getSingleRecord("SELECT `status`,`user_rating`,`watched_date` FROM `movieList` WHERE `movieID` = ".$movie['movieID']);
 
 				$movie['status'] = null;
-				$movie['rating'] = null;
-				$movie['date'] = null;
+				$movie['user_rating'] = null;
+				$movie['watched_date'] = null;
 
 				if(!empty($db_movie_list)){
 					$movie['status'] = $db_movie_list['status'];
-					$movie['rating'] = $db_movie_list['rating'];
-					$movie['date'] = $db_movie_list['date'];
+					$movie['user_rating'] = $db_movie_list['user_rating'];
+					$movie['watched_date'] = $db_movie_list['watched_date'];
 				}
 
 				array_push($response['matches'], $movie);
@@ -72,64 +72,76 @@ $app->post('/status', function() use ($app) {
 
 	//get JSON body and parse to array
 	$req = json_decode($app->request->getBody());
+	$index = $req->index;
+
 	//REST-Service Response
 	$response = array();
 	//Movie from session
 	$movie = array();
 	$db = new DB();
-	$table_name = 'movieList';
 	$session = $db->getSession();
 
+	$matches = array();
+
 	//is User logged in?
-    if($session['userID']!= '') {
+	if($session['userID']!= '') {
 
 		//is movie data in session?
-        if (!empty($session['matches'])){
+		if (!empty($session['matches'])){
 
+			$movie = $session['matches'][$index];
+			
+			$movieID = $movie['movieID'];
 
-			$matches=$session['matches'];
-			$title=$movie['title'];
-			$plot=$movie['plot'];
-			$release_date=$movie['release_date'];
-			$poster=$movie['poster'];
-
+			$movie['watched_date'] = "2016-02-22";
+			$movie['status'] = $req->status;
+			$movie['userID'] = $session['userID'];
+			$movie['language'] = "de";
 			//get userID
 			$userID = intval($session['userID']);
-
-			//get data from JSON
-			$status = $req->status;
-			$movieID = $req->movieID;
-			$date	= date("Y-m-d");
+			
+		//	$date	= date("Y-m-d");
 
 			//get movie if already used
-			$watchedmovie = $db->getSingleRecord("SELECT * FROM `".$table_name."` WHERE `userID`= ".$userID." AND `movieID`= ".$movieID );
-
-
-			//debug
-			echo "UserID: ".$userID."<br>";
-			echo "Status: ".$status."<br>";
-			echo "MovieID: ".$movieID."<br>";
-			echo "Table_name: ".$table_name."<br>";
-			echo "Movie Daten: ";
-			print_r($watchedmovie);
-			echo "<br>";
+			$watched_movie = $db->getSingleRecord("SELECT * FROM `movieList` WHERE `userID`= ".$userID." AND `movieID`= ".$movieID );
 
 			//movie already in db, just change status
-			if($watchedmovie!=''){
+			if(empty($watched_movie)){
+				if($movie['status'] == "watched") {
+					$movie_table_cols = array('movieID','watchers');
+					$movie['watchers'] = "watchers + 1";
+					$condition = "movieID=".$movieID;
+					$db->updateRecord($movie,$movie_table_cols,'movie', $condition);
+				} else {
+					$movie_table_cols = array('movieID');
+					$db->insertIntoTable($movie,$movie_table_cols,'movie');
+				}
 
-				echo "movie already used";
+				$movie_list_table_cols = array('movieID','language','plot','title',"release_date", "poster");
+				$db->insertIntoTable($movie,$movie_list_table_cols,'movieInfo');
+
+				$movie_list_table_cols = array('movieID','userID','status','watched_date');
+				$db->insertIntoTable($movie,$movie_list_table_cols,'movieList');
+
+				$response['status'] = "success";
+				echoResponse(200, $response);
+			}else {
+
+				$movie_list_table_cols = array('status','watched_date');
+				$condition = "movieID=".$movieID;
+				$db->updateRecord($movie,$movie_list_table_cols,'movieList', $condition);
+
+				if($movie['status'] == "watched") {
+					$movie_table_cols = array('watchers');
+					$movie['watchers'] = "watchers + 1";
+					$db->updateRecord($movie,$movie_table_cols,'movie', $condition);
+				}
 
 
-				//movie not in db, add relationship
-			}else{
-				echo "new movie";
-
-				$object = (object) array($movieID, $userID, $status, $date);
-				$column_names = array('movieID', 'userID' , 'status', 'date');
-				$db->insertIntoTable($object,$column_names,$table_name);
-
-
+				$response['status'] = "success";
+				echoResponse(200, $response);
 			}
+
 		}else{
 			$response['status'] = "error";
 			$response['message'] = "No movie data";
@@ -145,33 +157,33 @@ $app->post('/status', function() use ($app) {
 
 //GET Watchlist
 $app->post('/watchlist', function() use ($app) {
-	
-	//get JSON body and parse to array
-    $req = json_decode($app->request->getBody());
-    //REST-Service Response
-    $response = array();
-    $db = new DB();
-    $session = $db->getSession();
-	
-    //is User logged in?
-    if(!empty($session['userID'])) {
-		$userID = $session['userID'];
-	
-			$movieIDS = $db->getRecords("SELECT m.ratings, m.ratingPoints, m.watchers, mi.title, mi.plot, mi.release, ml. FROM movie AS m JOIN movieInfo As mi ON `movieID` JOIN movieList AS ml ON `movieID` WHERE `userID`=$userID AND `status`= \"watched\"");
 
-			
-			/*SELECT m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, ml.watched_date  FROM movie AS m JOIN movieInfo As mi ON `movieID` JOIN movieList AS ml ON `movieID` WHERE `userID`=1 AND `status`= "watched"
- 
-			SELECT m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, ml.watched_date
-			FROM movieList  WHERE `userID`=1 AND `status`= "watched" AS ml 
-			LEFT JOIN movieinfo AS mi ON mi.movieID 
-			LEFT JOIN movie AS m ON m.movieID
-			
-			
-			SELECT m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, ml.watched_date
-			FROM movieList AS ml  
-			LEFT JOIN movieinfo AS mi ON mi.movieID = ml.movieID
-			LEFT JOIN movie AS m ON m.movieID = ml.movieID*/
+	//get JSON body and parse to array
+	$req = json_decode($app->request->getBody());
+	//REST-Service Response
+	$response = array();
+	$db = new DB();
+	$session = $db->getSession();
+
+	//is User logged in?
+	if(!empty($session['userID'])) {
+		$userID = $session['userID'];
+
+		$movieIDS = $db->getRecords("SELECT m.ratings, m.ratingPoints, m.watchers, mi.title, mi.plot, mi.release, ml. FROM movie AS m JOIN movieInfo As mi ON `movieID` JOIN movieList AS ml ON `movieID` WHERE `userID`=$userID AND `status`= \"watched\"");
+
+
+		/*SELECT m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, ml.watched_date  FROM movie AS m JOIN movieInfo As mi ON `movieID` JOIN movieList AS ml ON `movieID` WHERE `userID`=1 AND `status`= "watched"
+
+		SELECT m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, ml.watched_date
+		FROM movieList  WHERE `userID`=1 AND `status`= "watched" AS ml
+		LEFT JOIN movieinfo AS mi ON mi.movieID
+		LEFT JOIN movie AS m ON m.movieID
+
+
+		SELECT m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, ml.watched_date
+		FROM movieList AS ml
+		LEFT JOIN movieinfo AS mi ON mi.movieID = ml.movieID
+		LEFT JOIN movie AS m ON m.movieID = ml.movieID*/
 	}
 });
 //GET Watched
