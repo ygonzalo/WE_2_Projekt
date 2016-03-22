@@ -1,144 +1,144 @@
 <?php
 //POST Film by name
 $app->post('/movie', function() use ($app) {
-    //parse JSON body of request
-    $req = json_decode($app->request->getBody());
-    $req_title = $req->title;
-    $db = new DB();
-    $session = $db->getSession();
-    $response = array();
-    $response['matches'] = array();
+	//parse JSON body of request
+	$req = json_decode($app->request->getBody());
+	$req_title = $req->title;
+	$db = new DB();
+	$session = $db->getSession();
+	$response = array();
+	$response['matches'] = array();
 
-    //check if user is authenticated
-    if($session['userID'] != '') {
+	//check if user is authenticated
+	if($session['userID'] != '') {
 
-        $movie = array();
-        $_SESSION['matches'] = array();
+		$movie = array();
+		$_SESSION['matches'] = array();
 
-        //send request to TMDB API
-        $title_url = str_replace(' ','+',$req_title);
-        $search_response = file_get_contents('https://api.themoviedb.org/3/search/movie?api_key=fc6230097457cdf6f547373206e12a5d&language=de&query='.$title_url);
-        $response_decoded = json_decode($search_response, true);
+		//send request to TMDB API
+		$title_url = str_replace(' ','+',$req_title);
+		$search_response = file_get_contents('https://api.themoviedb.org/3/search/movie?api_key=fc6230097457cdf6f547373206e12a5d&language=de&query='.$title_url);
+		$response_decoded = json_decode($search_response, true);
 
-        //get tmdb configuration needed to build poster path
-        $config_response = file_get_contents('http://api.themoviedb.org/3/configuration?api_key=fc6230097457cdf6f547373206e12a5d');
-        $config = json_decode($config_response);
+		//get tmdb configuration needed to build poster path
+		$config_response = file_get_contents('http://api.themoviedb.org/3/configuration?api_key=fc6230097457cdf6f547373206e12a5d');
+		$config = json_decode($config_response);
 
-        $matches = $response_decoded['results'];
+		$matches = $response_decoded['results'];
 
-        //add each movie to array in response
-        foreach ($matches as $item){
+		//add each movie to array in response
+		foreach ($matches as $item){
 
-            $poster = $config->images->base_url.$config->images->poster_sizes[2]. $item['poster_path'];
+			$poster = $config->images->base_url.$config->images->poster_sizes[2]. $item['poster_path'];
 
-            $movie['id'] = $item['id'];
-            $movie['title'] = $item['title'];
-            $movie['plot'] = $item['overview'];
-            $movie['release_date'] = $item['release_date'];
-            $movie['poster'] = $poster;
+			$movie['id'] = $item['id'];
+			$movie['title'] = $item['title'];
+			$movie['plot'] = $item['overview'];
+			$movie['release_date'] = $item['release_date'];
+			$movie['poster'] = $poster;
 
-            //search the users movie list
-            $db_movie_list = $db->getSingleRecord("SELECT `status`,`rating`,`date` FROM `movieList` WHERE `movieID` = ".$movie['id']);
+			//search the users movie list
+			$db_movie_list = $db->getSingleRecord("SELECT `status`,`rating`,`date` FROM `movieList` WHERE `movieID` = ".$movie['id']);
 
-            $movie['status'] = null;
-            $movie['rating'] = null;
-            $movie['date'] = null;
+			$movie['status'] = null;
+			$movie['rating'] = null;
+			$movie['date'] = null;
 
-            if(!empty($db_movie_list)){
-                $movie['status'] = $db_movie_list['status'];
-                $movie['rating'] = $db_movie_list['rating'];
-                $movie['date'] = $db_movie_list['date'];
-            }
+			if(!empty($db_movie_list)){
+				$movie['status'] = $db_movie_list['status'];
+				$movie['rating'] = $db_movie_list['rating'];
+				$movie['date'] = $db_movie_list['date'];
+			}
 
-            array_push($response['matches'], $movie);
-        }
+			array_push($response['matches'], $movie);
+		}
 
-        //copy matches array into session
-        $_SESSION['matches'] = $response['matches'];
+		//copy matches array into session
+		$_SESSION['matches'] = $response['matches'];
 
-        $response['status'] = "success";
-        echoResponse(200, $response);
+		$response['status'] = "success";
+		echoResponse(200, $response);
 
-    } else {
-        $response['status'] = "error";
-        $response['message'] = "Not logged in";
-        echoResponse(201, $response);
-    }
+	} else {
+		$response['status'] = "error";
+		$response['message'] = "Not logged in";
+		echoResponse(201, $response);
+	}
 });
 
 //POST Status flag
 $app->post('/status', function() use ($app) {
 
-    //get JSON body and parse to array
-    $req = json_decode($app->request->getBody());
-    //REST-Service Response
-    $response = array();
-    //Movie from session
-    $movie = array();
-    $db = new DB();
-    $table_name = 'movieList';
-    $session = $db->getSession();
+	//get JSON body and parse to array
+	$req = json_decode($app->request->getBody());
+	//REST-Service Response
+	$response = array();
+	//Movie from session
+	$movie = array();
+	$db = new DB();
+	$table_name = 'movieList';
+	$session = $db->getSession();
 
-    //is User logged in?
-    if($session['userID'] != '') {
+	//is User logged in?
+	if($session['userID'] != '') {
 
-        //is movie data in session?
-        if ($session['movie']!=''){
-
-
-            $movie=$session['movie'];
-            $title=$movie['title'];
-            $plot=$movie['plot'];
-            $release_date=$movie['release_date'];
-            $poster=$movie['poster'];
-
-            //get userID
-            $userID = intval($session['userID']);
-
-            //get data from JSON
-            $status = $req->status;
-            $movieID = $req->movieID;
-            $date	= date("Y-m-d");
-
-            //get movie if already used
-            $watchedmovie = $db->getSingleRecord("SELECT * FROM `".$table_name."` WHERE `userID`= ".$userID." AND `movieID`= ".$movieID );
+		//is movie data in session?
+		if ($session['movie']!=''){
 
 
-            //debug
-            echo "UserID: ".$userID."<br>";
-            echo "Status: ".$status."<br>";
-            echo "MovieID: ".$movieID."<br>";
-            echo "Table_name: ".$table_name."<br>";
-            echo "Movie Daten: ";
-            print_r($watchedmovie);
-            echo "<br>";
+			$movie=$session['movie'];
+			$title=$movie['title'];
+			$plot=$movie['plot'];
+			$release_date=$movie['release_date'];
+			$poster=$movie['poster'];
 
-            //movie already in db, just change status
-            if($watchedmovie!=''){
+			//get userID
+			$userID = intval($session['userID']);
 
-                echo "movie already used";
+			//get data from JSON
+			$status = $req->status;
+			$movieID = $req->movieID;
+			$date	= date("Y-m-d");
 
-
-                //movie not in db, add relationship
-            }else{
-                echo "new movie";
-
-                $object = (object) array($movieID, $userID, $status, $date);
-                $column_names = array('movieID', 'userID' , 'status', 'date');
-                $db->insertIntoTable($object,$column_names,$table_name);
+			//get movie if already used
+			$watchedmovie = $db->getSingleRecord("SELECT * FROM `".$table_name."` WHERE `userID`= ".$userID." AND `movieID`= ".$movieID );
 
 
-            }
-        }else{
-            $response['status'] = "error";
-            $response['message'] = "No movie data";
-            echoResponse(201, $response);
-        }
-    }else{
-        $response['status'] = "error";
-        $response['message'] = "Not logged in";
-        echoResponse(201, $response);
-    }
+			//debug
+			echo "UserID: ".$userID."<br>";
+			echo "Status: ".$status."<br>";
+			echo "MovieID: ".$movieID."<br>";
+			echo "Table_name: ".$table_name."<br>";
+			echo "Movie Daten: ";
+			print_r($watchedmovie);
+			echo "<br>";
+
+			//movie already in db, just change status
+			if($watchedmovie!=''){
+
+				echo "movie already used";
+
+
+				//movie not in db, add relationship
+			}else{
+				echo "new movie";
+
+				$object = (object) array($movieID, $userID, $status, $date);
+				$column_names = array('movieID', 'userID' , 'status', 'date');
+				$db->insertIntoTable($object,$column_names,$table_name);
+
+
+			}
+		}else{
+			$response['status'] = "error";
+			$response['message'] = "No movie data";
+			echoResponse(201, $response);
+		}
+	}else{
+		$response['status'] = "error";
+		$response['message'] = "Not logged in";
+		echoResponse(201, $response);
+	}
 
 });
 
