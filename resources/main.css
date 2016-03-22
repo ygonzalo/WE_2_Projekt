@@ -49,7 +49,7 @@ a:hover
 	font-weight:normal;
 }
 
-.box input, button {
+.box input, .box button {
 	margin:0.5em;
 	padding:0.5em;
 	width:18em;
@@ -65,7 +65,7 @@ a:hover
 	width:12px;
 }
 
-.box input:disabled, button:disabled{
+.box input:disabled, .box button:disabled{
 	background-color:rgb(211,211,211);
 }
 
@@ -168,7 +168,7 @@ a:hover
 {
 	font-weight:lighter;
 	text-transform: uppercase;
-	font-family:Segoe UI Light;
+	font-family:Segoe UI Light, Lucida Grande, Helvetica;
 } 
 #logo_text h1 b
 {
@@ -184,11 +184,54 @@ a:hover
 	display:-webkit-flex;
 	align-items:center;
 	-webkit-align-items:center;
-	justify-content:space-between;
+	justify-content:space-around;
 	-webkit-justify-content:space-around;	
 }
 
 .header_left, .header_right
 {
 	flex:1;
+}
+
+#search
+{	
+	display:flex;
+	display:-webkit-flex;
+	align-items:center;
+	-webkit-align-items:center;
+	justify-content:space-around;
+	-webkit-justify-content:space-around;	
+	margin:1em;
+}
+
+#search input
+{
+	margin:0.5em;
+	padding:0.5em;
+	width:32em;
+	border:2px solid rgb(61,61,61);
+	background-color:white;
+	-moz-box-sizing: border-box;
+	box-sizing:border-box;
+	border-radius:4px;
+	font-size:11pt;
+}
+
+#search button
+{
+	margin:0.5em;
+	padding:0.5em;
+	border:2px solid rgb(61,61,61);
+	background-color:rgb(61,61,61);
+	-moz-box-sizing: border-box;
+	box-sizing:border-box;
+	border-radius:4px;
+	font-size:11pt;
+	color:white;
+}
+
+#search button:hover
+{
+	background-color:rgb(111,111,111);
+	border:2px solid rgb(111,111,111);
 }
