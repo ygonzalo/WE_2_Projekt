@@ -19,8 +19,24 @@
 				<td id="t4"></td>
 			</tr>
 		</table>
-		<a href="#/home"><img src="resources/images/wtm_logo.png" id="logo"></a>
-        <div ng-include="includeProfile()"></div>
+		<div id="header_content">
+			<div class="header_left"></div>
+			<div class="header_center">
+				<a href="#/home">
+					<div id="logo_container">
+						<img src="resources/images/wtm_logo.png" id="logo" />
+						<div id="logo_text">
+							<h1>
+							Watched that<br /><b>Movie</b>
+							</h1>
+						</div>
+					</div>
+				</a>
+			</div>
+			<div class="header_right">
+				<div ng-include="includeProfile()"></div>
+			</div>
+		</div>
     </div>
     <div ng-include="includeSearch()"></div>
     <div data-ng-view="" id="ng-view"></div>

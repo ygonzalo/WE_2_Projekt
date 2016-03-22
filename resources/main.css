@@ -1,5 +1,8 @@
 body {
-    margin: 0;
+    margin:0;
+	padding:0;
+	position:absolute;
+	height:100%;
     font-family: Open Sans, Segoe UI, sans-serif;
     font-size: 11pt;
 }
@@ -11,6 +14,13 @@ a {
 a:hover
 {
 	text-decoration:underline;
+	cursor:pointer;
+}
+
+#ng-view
+{
+	position:relative;
+	height:auto;
 }
 
 /* Default Layout for boxes, like Signup and Login*/
@@ -18,9 +28,8 @@ a:hover
 	background-color:rgb(61,61,61);
     text-align: center;
 	color:white;
-	position:absolute;
-	top:0;
-	left:0;
+	position:fixed;
+	top:0px;
 	height:100%;
 	width:100%;
 	display:flex;
@@ -32,7 +41,7 @@ a:hover
 	
 }
 
-.box h1 {
+.box h2 {
 	font-size:16pt;
 	text-align:center;
 	color:white;
@@ -89,9 +98,11 @@ a:hover
 /*----->>> HEADER <<<-------------------------------*/
 
 .header {
+	position:relative;
 	height: 5em;
 	width: 100%;
 	background-color: rgb(61,61,61);
+	z-index:100;
 }
 
 .coloredline {
@@ -101,7 +112,6 @@ a:hover
 	position:relative;
 	left:0;
 	top:0;
-	z-index:100;
 	border-spacing:0;
 	border-collapse:collapse;
 	border:none;
@@ -128,9 +138,50 @@ a:hover
 	color: white;
 }
 
+#logo_container
+{
+	position:relative;
+	float:left;
+	display:flex;
+	display:-webkit-flex;
+}
+
 #logo
 {
 	height:3em;
 	float:left;
 	padding:0.6em;
+	flex:1;
+	-webkit-flex:1;
+}
+
+#logo_text
+{
+	flex:2;
+	-webkit-flex:2;
+	color:white;
+	font-size:0.5em;
+}
+
+#logo_text h1
+{
+	font-weight:lighter;
+}
+
+#header_content
+{
+	position:relative;
+	width:100%;
+	height:auto;
+	display:flex;
+	display:-webkit-flex;
+	align-items:center;
+	-webkit-align-items:center;
+	justify-content:space-between;
+	-webkit-justify-content:space-around;	
+}
+
+.header_left, .header_right
+{
+	flex:1;
 }
