@@ -1,14 +1,18 @@
-<div class="signup">
-    SignUp
-    <form name="signupForm" >
-        <input type="email" placeholder="Email" name="email" ng-model="signup.email" required focus/>
-        <br>
-        <input type="password" placeholder="Password" name="password" ng-model="signup.password" required focus/>
-        <br>
-        <input type="text" placeholder="Name" name="name" ng-model="signup.name" required focus/>
-        <br>
-        <button type="submit" ng-click="signUp(signup)" data-ng-disabled="signupForm.$invalid">Submit</button>
-        <br>
-        <a href="#/login">SignIn</a>
-    </form>
+<div class="box" id="box_signup">
+	<div>
+		<h1>SignUp</h1>
+		<form name="signupForm" >
+			<input type="email" placeholder="Email" name="email" ng-model="signup.email" required focus/>
+			<br />
+			<input type="password" placeholder="Password" name="password" ng-model="signup.password" required focus/>
+			<br />
+			<input type="text" placeholder="Name" name="name" ng-model="signup.name" required focus/>
+			<br />
+			<input type="checkbox" value="robotcheck" placeholder="asf">Ich bin kein Roboter</input>
+			<br />
+			<button type="submit" ng-click="signUp(signup)" data-ng-disabled="signupForm.$invalid">Registrieren</button>
+			<br />
+			Schon registriert? <a href="#/login">Login</a>!
+		</form>
+	</div>
 </div>

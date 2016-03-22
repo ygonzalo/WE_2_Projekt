@@ -1,14 +1,14 @@
-<div class="animated_background">
-	<div class="box" id="box_login">
+<div class="box" id="box_login">
+	<div>
 		<h1>Login</h1>
 		<form name="loginForm" role="form">
 		  <input type="email" placeholder="Email" name="email" ng-model="login.email" required focus/>
-			<br>
+			<br />
 		  <input type="password" class="form-control" placeholder="Password" ng-model="login.password" required/>
-			<br>
+			<br />
 		  <button type="submit" class="btn btn-default" ng-click="doLogin(login)" data-ng-disabled="loginForm.$invalid">Login</button>
-			<br>
-			<a href="#/signup">Signup</a>
+			<br />
+			Noch kein Account? <a href="#/signup">Registrieren!</a>
 		</form>
 	</div>
 </div>

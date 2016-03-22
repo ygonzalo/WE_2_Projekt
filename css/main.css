@@ -1,6 +1,6 @@
 body {
     margin: 0;
-    font-family: "Open Sans", "sans-serif";
+    font-family: Open Sans, Segoe UI, sans-serif;
     font-size: 11pt;
 }
 
@@ -14,7 +14,21 @@ a:hover
 
 /* Default Layout for boxes, like Signup and Login*/
 .box{
+	background-color:rgb(61,61,61);
     text-align: center;
+	color:white;
+	position:absolute;
+	top:0;
+	left:0;
+	height:100%;
+	width:100%;
+	display:flex;
+	display:-webkit-flex;
+	align-items: center;
+	-webkit-align-items: center;
+	justify-content: center;
+	-webkit-justify-content: center;
+	
 }
 
 .box h1 {
@@ -37,6 +51,10 @@ a:hover
 	font-size:11pt;
 }
 
+.box input[type=checkbox]{
+	width:12px;
+}
+
 .box input:disabled, button:disabled{
 	background-color:rgb(211,211,211);
 }
@@ -45,11 +63,6 @@ a:hover
 	color:white;
 	font-size:11pt;
 	line-height:2em;
-}
-
-#ng-view
-{
-	
 }
 
 .header {
@@ -75,10 +88,6 @@ a:hover
 	left:0;
 	overflow:auto;
 	background-color:rgb(61,61,61);
-	display:flex;
-	display:-webkit-flex;
-	align-items: center;
-	justify-content: center;
 }
 
 #t1{
