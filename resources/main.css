@@ -132,10 +132,10 @@ a:hover
 
 .profile {
 	float: right;
-	padding: 1.5em;
 	width: auto;
 	text-align: right;
 	color: white;
+	margin:0 1em;
 }
 
 #logo_container
@@ -160,12 +160,19 @@ a:hover
 	flex:2;
 	-webkit-flex:2;
 	color:white;
-	font-size:0.5em;
+	font-size:0.4em;
+	text-align:center;
 }
 
 #logo_text h1
 {
 	font-weight:lighter;
+	text-transform: uppercase;
+	font-family:Segoe UI Light;
+} 
+#logo_text h1 b
+{
+	font-size:1.5em;
 }
 
 #header_content
