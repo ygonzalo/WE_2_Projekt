@@ -14,6 +14,13 @@ body {
 	}
 }
 
+@media screen and (orientation: portrait)  {
+
+	body {
+	font-size:24pt;
+	}
+}
+
 a {
 	text-decoration:none;
 }
@@ -28,6 +35,8 @@ a:hover
 {
 	position:relative;
 	height:auto;
+	margin:1em;
+	padding:0;
 }
 
 /* Default Layout for boxes, like Signup and Login*/
@@ -37,6 +46,7 @@ a:hover
 	color:white;
 	position:fixed;
 	top:0px;
+	left:0px;
 	height:100%;
 	width:100%;
 	display:flex;
@@ -78,7 +88,7 @@ a:hover
 
 .box a {
 	color:white;
-	font-size:11pt;
+	font-size:1em;
 	line-height:2em;
 }
 
@@ -90,6 +100,9 @@ a:hover
 	margin:auto;
 	padding:1em;
 	border:1px solid gray;
+	
+	-moz-box-sizing: border-box;
+	box-sizing:border-box;
 }
 
 .animated_background
@@ -180,7 +193,7 @@ a:hover
 {
 	font-weight:lighter;
 	text-transform: uppercase;
-	font-family:Segoe UI Light, Lucida Grande, Helvetica;
+	font-family:Segoe UI Light, Segoe UI, Open Sans, Helvetica, Arial;
 } 
 #logo_text h1 b
 {
@@ -213,47 +226,25 @@ a:hover
 	position:relative;
 	z-index:101;
 	background-color:white;
-	padding:1em;
+	overflow:hidden;
+	margin:1em;
 }
 
 #search
 {	
-	display:flex;
-	display:-webkit-flex;
-	align-items:center;
-	-webkit-align-items:center;
-	justify-content:space-around;
-	-webkit-justify-content:space-around;	
+	position:relative;
+	max-width:36em;
+	margin:auto;
 }
 
 #search input
 {
-	margin:0.5em;
 	padding:0.5em;
-	width:32em;
 	border:2px solid rgb(61,61,61);
 	background-color:white;
+	border-radius:4px;
+	font-size:1em;
+	width:100%;
 	-moz-box-sizing: border-box;
 	box-sizing:border-box;
-	border-radius:4px;
-	font-size:11pt;
-}
-
-#search button
-{
-	margin:0.5em;
-	padding:0.5em;
-	border:2px solid rgb(61,61,61);
-	background-color:rgb(61,61,61);
-	-moz-box-sizing: border-box;
-	box-sizing:border-box;
-	border-radius:4px;
-	font-size:11pt;
-	color:white;
-}
-
-#search button:hover
-{
-	background-color:rgb(111,111,111);
-	border:2px solid rgb(111,111,111);
 }
