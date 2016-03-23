@@ -1,0 +1,15 @@
+/* special overrides for different screen sizes */
+
+@media screen and (min-width: 1920px) {
+
+	body {
+	font-size:14pt;
+	}
+}
+
+@media screen and (orientation: portrait)  {
+
+	body {
+	font-size:24pt;
+	}
+}

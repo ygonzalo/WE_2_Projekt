@@ -1,0 +1,14 @@
+/* partial related styles */
+
+.default_container
+{
+	position:relative;
+	max-width:1280px;
+	margin:auto;
+	padding:1em;
+	border:1px solid gray;
+	
+	-moz-box-sizing: border-box;
+	box-sizing:border-box;
+}
+

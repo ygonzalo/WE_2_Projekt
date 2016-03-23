@@ -1,0 +1,81 @@
+/* global styles */
+body {
+    margin:0;
+	padding:0;
+	position:absolute;
+	height:100%;
+    font-family: Open Sans, Segoe UI, sans-serif;
+    font-size: 11pt;
+}
+
+a {
+	text-decoration:none;
+}
+
+a:hover
+{
+	text-decoration:underline;
+	cursor:pointer;
+}
+
+/* basic style of content */
+#ng-view
+{
+	position:relative;
+	height:auto;
+	margin:1em;
+	padding:0;
+}
+
+/* .box class: this container overrides all other visible content, excpet for the header. used for signup and login*/
+.box{
+	background-color:rgb(61,61,61);
+    text-align: center;
+	color:white;
+	position:fixed;
+	top:0px;
+	left:0px;
+	height:100%;
+	width:100%;
+	display:flex;
+	display:-webkit-flex;
+	align-items: center;
+	-webkit-align-items: center;
+	justify-content: center;
+	-webkit-justify-content: center;
+	
+}
+
+.box h2 {
+	font-size:1.5em;
+	text-align:center;
+	color:white;
+	letter-spacing:0.1em;
+	font-weight:normal;
+}
+
+.box input, .box button {
+	margin:0.5em;
+	padding:0.5em;
+	width:18em;
+	border:none;
+	background-color:white;
+	-moz-box-sizing: border-box;
+	box-sizing:border-box;
+	border-radius:2px;
+	font-size:1em;
+}
+
+.box input[type=checkbox]{
+	width:12px;
+}
+
+.box input:disabled, .box button:disabled{
+	background-color:rgb(211,211,211);
+}
+
+.box a {
+	color:white;
+	font-size:1em;
+	line-height:2em;
+}

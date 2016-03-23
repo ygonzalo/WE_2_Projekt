@@ -3,8 +3,13 @@
 
   <head>
     <meta charset="utf-8">
-    <link rel="shortcut icon" href="">
-    <link rel="stylesheet" href="resources/main.css">
+	<meta name="viewport" content="width=1024, initial-scale:1.0, maximum-scale=1.0, user-scalable=no" />
+    
+	<link rel="shortcut icon" href="">
+    <link rel="stylesheet" href="resources/search.css">
+    <link rel="stylesheet" href="resources/index.css">
+    <link rel="stylesheet" href="resources/overrides.css">
+    <link rel="stylesheet" href="resources/header.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
     <title>Watched That Movie</title>
   </head>

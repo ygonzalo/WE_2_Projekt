@@ -1,0 +1,29 @@
+/* search related styles */
+
+#search_box
+{
+	position:relative;
+	z-index:101;
+	background-color:white;
+	overflow:hidden;
+	margin:1em;
+}
+
+#search
+{	
+	position:relative;
+	max-width:36em;
+	margin:auto;
+}
+
+#search input
+{
+	padding:0.5em;
+	border:2px solid rgb(61,61,61);
+	background-color:white;
+	border-radius:4px;
+	font-size:1em;
+	width:100%;
+	-moz-box-sizing: border-box;
+	box-sizing:border-box;
+}
