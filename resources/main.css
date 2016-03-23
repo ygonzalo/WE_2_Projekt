@@ -78,8 +78,11 @@ a:hover
 
 .default_container
 {
+	position:relative;
 	max-width:1280px;
-	
+	margin:auto;
+	padding:1em;
+	border:1px solid gray;
 }
 
 .animated_background
@@ -99,7 +102,7 @@ a:hover
 
 .header {
 	position:relative;
-	height: 5em;
+	height: 6em;
 	width: 100%;
 	background-color: rgb(61,61,61);
 	z-index:100;
@@ -107,7 +110,7 @@ a:hover
 
 .coloredline {
 	width:100%;
-	height:0.8em;
+	height:10%;
 	table-layout:fixed;
 	position:relative;
 	left:0;
@@ -144,6 +147,8 @@ a:hover
 	float:left;
 	display:flex;
 	display:-webkit-flex;
+	align-items:center;
+	-webkit-align-items:center;
 }
 
 #logo
@@ -179,18 +184,29 @@ a:hover
 {
 	position:relative;
 	width:100%;
-	height:auto;
+	height:90%;
 	display:flex;
 	display:-webkit-flex;
 	align-items:center;
 	-webkit-align-items:center;
-	justify-content:space-around;
-	-webkit-justify-content:space-around;	
 }
 
 .header_left, .header_right
 {
 	flex:1;
+}
+
+.header a
+{
+	color:white;
+}
+
+#search_box
+{
+	position:relative;
+	z-index:101;
+	background-color:white;
+	padding:1em;
 }
 
 #search
@@ -201,7 +217,6 @@ a:hover
 	-webkit-align-items:center;
 	justify-content:space-around;
 	-webkit-justify-content:space-around;	
-	margin:1em;
 }
 
 #search input

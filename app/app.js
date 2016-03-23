@@ -3,11 +3,11 @@ var app = angular.module('wtmApp', ['ngRoute', 'ngAnimate']);
 app.config(['$routeProvider',
   function ($routeProvider) {
         $routeProvider.
-        when('/login', {
-            title: 'Login',
-            templateUrl: 'partials/login.html',
-            controller: 'authCtrl'
-        })
+			when('/login', {
+				title: 'Login',
+				templateUrl: 'partials/login.html',
+				controller: 'authCtrl'
+			})
             .when('/logout', {
                 title: 'Logout',
                 templateUrl: 'partials/login.html',
@@ -29,14 +29,26 @@ app.config(['$routeProvider',
                 controller: 'movieCtrl',
                 role: '0'
             })
+            .when('/profile', {
+                title: 'Profil',
+                templateUrl: 'partials/profile.html',
+                controller: 'authCtrl',
+                role: '0'
+            })
             .when('/', {
                 title: 'Login',
                 templateUrl: 'partials/login.html',
                 controller: 'authCtrl',
                 role: '0'
             })
+            .when('/error', {
+                title: 'Error 404',
+                templateUrl: 'partials/error.html',
+                controller: 'authCtrl',
+                role: '0'
+            })
             .otherwise({
-                redirectTo: '/login'
+                redirectTo: '/error'
             });
   }])
     .run(function ($rootScope, $location, Data) {

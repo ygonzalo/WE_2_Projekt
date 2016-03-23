@@ -38,7 +38,7 @@
 			</div>
 		</div>
     </div>
-    <div ng-include="includeSearch()"></div>
+    <div ng-include="includeSearch()" id="search_box"></div>
     <div data-ng-view="" id="ng-view"></div>
   </body>
   <script src="js/angular.min.js"></script>
