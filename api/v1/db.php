@@ -7,7 +7,7 @@ class DB {
 	private $conn;
 
 	function __construct() {
-		$this->conn = mysqli_connect($this->host, $this->username, $this->password, $this->database) or die;
+		$this->conn = mysqli_connect($this->host, $this->username, $this->password, $this->database) or die();
 		mysqli_set_charset($this->conn, "utf8");
 	}
 

@@ -17,7 +17,7 @@ $app->post('/login', function() use ($app) {
 
 	$password = $req->user->password;
 	$email = $req->user->email;
-	$user = $db->getSingleRecord("SELECT userID,name,password,email from user where email='".$email."'");
+	$user = $db->getSingleRecord("SELECT `userID`,`name`,`password`,`email` FROM `user` WHERE `email`='".$email."'");
 	if($user) {
 		if(password_verify($password,$user['password'])){
 			$response['status'] = "success";
