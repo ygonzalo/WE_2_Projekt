@@ -5,8 +5,10 @@
 }
 
 @media screen and (orientation: portrait)  {
-
-
+	
+	body{
+		font-size:120%;
+	}
 	.poster{
 		width:432px;
 	}

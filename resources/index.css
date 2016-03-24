@@ -3,8 +3,8 @@ body {
     margin:0;
 	padding:0;
 	position:absolute;
-	overflow:auto;
-	height:100%;
+	max-width:100%;
+	min-height:100%;
     font-family: Open Sans, Segoe UI, sans-serif;
     font-size: 100%;
 }
