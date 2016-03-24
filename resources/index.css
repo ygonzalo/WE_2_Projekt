@@ -2,7 +2,8 @@
 body {
     margin:0;
 	padding:0;
-	position:absolute;
+	position:fixed;
+	overflow:auto;
 	height:100%;
     font-family: Open Sans, Segoe UI, sans-serif;
     font-size: 100%;
@@ -16,6 +17,10 @@ a:hover
 {
 	text-decoration:underline;
 	cursor:pointer;
+}
+
+input:focus{
+	outline:none;
 }
 
 /* basic style of content */

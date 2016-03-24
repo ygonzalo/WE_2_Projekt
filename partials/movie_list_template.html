@@ -1,0 +1,11 @@
+<div class="poster_box">
+	<div ng-repeat="m in searchResults.matches" class="poster">
+		<div>
+			<div class="poster_imgbox"><img src="{{m.poster}}" class="poster_img" /></div>
+			<div class="poster_content">
+				{{m.title}}
+			</div>
+		</div>
+		<!-- {{m.index}} <button ng-click='changeStatus("watched", m.index)'>bah</button><br>-->
+	</div>
+<div>	

@@ -37,5 +37,12 @@ app.controller('movieCtrl',function ($scope, $rootScope, $routeParams, $location
 			}
 		})
 	};
+	
+	$scope.includeFilmTemplate = function() {
+		if($rootScope.authenticated){
+				return "partials/movie_list_template.html";
+			}
+			return "";
+	}
 
 });

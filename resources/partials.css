@@ -2,13 +2,46 @@
 
 .default_container
 {
-	position:relative;
+	/*position:relative;
 	max-width:1280px;
 	margin:auto;
 	padding:1em;
 	border:1px solid gray;
 	
 	-moz-box-sizing: border-box;
-	box-sizing:border-box;
+	box-sizing:border-box;*/
 }
 
+.poster_box {
+	position:relative;
+	width:100%;
+	display:-webkit-flex;
+	display:flex;
+	align-items: center;
+	-webkit-align-items: center;
+	justify-content: center;
+	-webkit-justify-content: center;
+}
+
+.poster{
+	position:relative;
+	width:24em;
+	height:12em;
+	outline:2px solid red;
+	-webkit-flex:1;
+	flex:1;
+	
+}
+
+.poster_imgbox {
+	background-color:blue;
+}
+
+.poster_img {
+	max-height:12em;
+}
+
+.poster_content {
+	flex:1;
+	-webkit-flex:1;
+}
