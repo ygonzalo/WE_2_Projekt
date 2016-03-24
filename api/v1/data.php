@@ -1,9 +1,8 @@
 <?php
-//POST Film by name
-$app->post('/movie', function() use ($app) {
+//GET Film by name
+$app->get('/movie', function() use ($app) {
 	//parse JSON body of request
-	$req = json_decode($app->request->getBody());
-	$req_title = $req->title;
+	$req_title = $app->request->params('title');
 	$db = new DB();
 	$session = $db->getSession();
 	$response = array();

@@ -1,18 +1,27 @@
-app.controller('movieCtrl',function ($scope, $rootScope, $routeParams, $location, $http, Data){
+app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$location', '$http', 'Data', function ($scope, $rootScope, $routeParams, $location, $http, Data){
 
 	$scope.title = "";
+
+	$scope.test = "bla";
 	$scope.searchMovie = function (title) {
-		Data.post('movie', {
-			title: title
-		}).then(function (results) {
+
+		if($location.path == '/results'){
+			$location.search('title', title.replace(/ /g, '+'));
+		} else {
+			$location.path('/results').search('title', title.replace(/ /g, '+'));
+
+		}
+
+		Data.get('movie?title='+$location.search().title).then(function (results) {
+
 			if(results.status == "success") {
-				var matches = results.matches;
-				angular.forEach(matches, function(match, index){
-					//Just add the index to your item
+				angular.forEach(results.matches, function(match, index){
 					match.index = index;
 				});
-				$rootScope.searchResults = results;
-				$location.path('/results');
+				$scope.searchResults = results;
+			}
+			else {
+				console.log("failed");
 			}
 		});
 	};
@@ -25,7 +34,6 @@ app.controller('movieCtrl',function ($scope, $rootScope, $routeParams, $location
 			index: index
 		}).then(function (results){
 			if(results.status == "success") {
-				console.log("hi");
 			}
 		});
 	};
@@ -33,7 +41,7 @@ app.controller('movieCtrl',function ($scope, $rootScope, $routeParams, $location
 	$scope.getWatchlist = function () {
 		Data.get('watchlist').then(function (results) {
 			if(results.status == "success") {
-				$rootScope.watchList = results;
+				$scope.watchList = results;
 			}
 		})
 	};
@@ -43,6 +51,16 @@ app.controller('movieCtrl',function ($scope, $rootScope, $routeParams, $location
 				return "partials/movie_list_template.html";
 			}
 			return "";
-	}
+	};
 
-});
+	$scope.init = function () {
+
+		var title = $location.search().title;
+
+		if(title) {
+			$scope.searchMovie(title);
+		}
+
+	};
+
+}]);

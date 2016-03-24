@@ -48,7 +48,7 @@ app.config(['$routeProvider',
                 role: '0'
             })
             .otherwise({
-                redirectTo: '/error'
+                //redirectTo: '/error'
             });
   }])
     .run(function ($rootScope, $location, Data) {

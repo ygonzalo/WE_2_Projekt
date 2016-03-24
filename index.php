@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="wtmApp">
+<html lang="en" data-ng-app="wtmApp">
 
   <head>
     <meta charset="utf-8">
@@ -15,7 +15,7 @@
     <title>Watched That Movie</title>
   </head>
 
-  <body ng-controller="mainCtrl">
+  <body data-ng-controller="mainCtrl">
     <div class="header">
 		<table class="coloredline" >
 			<tr>
@@ -40,11 +40,11 @@
 				</a>
 			</div>
 			<div class="header_right">
-				<div ng-include="includeProfile()"></div>
+				<div data-ng-include="includeProfile()"></div>
 			</div>
 		</div>
     </div>
-    <div ng-include="includeSearch()" id="search_box"></div>
+    <div data-ng-include="includeSearch()" id="search_box"></div>
     <div data-ng-view="" id="ng-view"></div>
   </body>
   <script src="js/angular.min.js"></script>
