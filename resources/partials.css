@@ -2,14 +2,9 @@
 
 .default_container
 {
-	/*position:relative;
-	max-width:1280px;
-	margin:auto;
-	padding:1em;
-	border:1px solid gray;
-	
-	-moz-box-sizing: border-box;
-	box-sizing:border-box;*/
+	position:relative;
+	width:100%;
+	height:100%;
 }
 
 .poster_box {
@@ -17,31 +12,35 @@
 	width:100%;
 	display:-webkit-flex;
 	display:flex;
-	align-items: center;
-	-webkit-align-items: center;
-	justify-content: center;
-	-webkit-justify-content: center;
+	align-items: left;
+	-webkit-align-items: left;
+	-webkit-flex-wrap:wrap;
+	flex-wrap:wrap;
+	-webkit-align-items:center;
+	-webkit-justify-content:center;
+	align-items:center;
+	max-width:100%;
 }
 
 .poster{
 	position:relative;
+	margin:0.5em;
+	border:1px solid rgb(61,61,61);
 	width:24em;
-	height:12em;
-	outline:2px solid red;
-	-webkit-flex:1;
-	flex:1;
-	
+	height:12em;	
+	background-color:rgba(61,61,61,0.1);
 }
 
 .poster_imgbox {
-	background-color:blue;
 }
 
 .poster_img {
-	max-height:12em;
+	height:12em;
+	position:relative;
 }
 
 .poster_content {
-	flex:1;
 	-webkit-flex:1;
+	flex:1;
+	padding:1em;
 }

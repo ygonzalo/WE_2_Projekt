@@ -2,7 +2,6 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$location'
 
 	$scope.title = "";
 
-	$scope.test = "bla";
 	$scope.searchMovie = function (title) {
 
 		if($location.path == '/results'){
@@ -52,6 +51,14 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$location'
 			}
 			return "";
 	};
+	
+	$scope.checkPoster = function(poster) {
+		if(poster.endsWith(".jpg"))
+		{
+			return poster;
+		}
+		return "resources/images/default_poster.jpg";
+	}
 
 	$scope.init = function () {
 
