@@ -1,7 +1,7 @@
 <div data-ng-controller="movieCtrl" class="poster_box">
 	<div data-ng-repeat="m in searchResults.matches" class="poster">
 		<div style="display:flex;">
-			<div class="poster_imgbox"><img src="{{checkPoster(m.poster);}}" class="poster_img" /></div>
+			<div class="poster_imgbox"><img data-ng-src="{{checkPoster(m.poster)}}" class="poster_img"/></div>
 			<div class="poster_content">
 				<b>{{m.title}}</b>
 				<br />
