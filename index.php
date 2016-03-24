@@ -3,14 +3,15 @@
 
   <head>
     <meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<!--meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /-->
+	<meta name="viewport" content="width=480;height=800;user-scalable=no" />
     
 	<link rel="shortcut icon" href="">
     <link rel="stylesheet" href="resources/search.css">
     <link rel="stylesheet" href="resources/index.css">
-    <link rel="stylesheet" href="resources/overrides.css">
     <link rel="stylesheet" href="resources/header.css">
     <link rel="stylesheet" href="resources/partials.css">
+    <link rel="stylesheet" href="resources/overrides.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
     <title>Watched That Movie</title>
   </head>
