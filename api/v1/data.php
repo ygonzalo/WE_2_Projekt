@@ -167,8 +167,8 @@ $app->post('/status', function() use ($app) {
 							$db->updateRecord('movielist', $update_values, $update_condition);
 
 							//Add 1 watcher to movie
-							$update_values = 'status="'.$movie['status'].'",watched_date="'.$movie['watched_date'].'"';
-							$db->updateRecord('movie', $update_values, $update_condition);
+							$update_values = 'watchers=watchers+1';
+							$db->updateRecord('movie', $update_values, "movieID=".$movieID);
 						} else {
 
 							//Update movie status
