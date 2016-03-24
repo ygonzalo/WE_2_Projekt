@@ -45,12 +45,12 @@ CREATE TABLE IF NOT EXISTS movie (
   PRIMARY KEY (`movieID`))
   ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS movieList (
+CREATE TABLE IF NOT EXISTS movielist (
   `movieID` INT UNSIGNED NOT NULL,
   `userID` INT UNSIGNED NOT NULL,
   `user_rating` INT UNSIGNED NOT NULL DEFAULT 0,
   `status` ENUM('watched','watchlist', 'deleted') NOT NULL,
-  `watched_date` DATE NOT NULL,
+  `watched_date` DATE DEFAULT NULL,
   PRIMARY KEY (`movieID`,`userID`),
   CONSTRAINT fk_movieID_ml
       FOREIGN KEY (`movieID`)
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS movieList (
       ON UPDATE CASCADE)
   ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS movieInfo (
+CREATE TABLE IF NOT EXISTS movieinfo (
   `movieID` INT UNSIGNED NOT NULL,
   `language` VARCHAR(8) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `plot` VARCHAR(4096) CHARACTER SET utf8 COLLATE utf8_unicode_ci,

@@ -25,7 +25,7 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$location'
 		});
 	};
 
-	$scope.status = "watched";
+	$scope.status = "";
 	$scope.changeStatus = function (status, index) {
 
 		Data.post('status', {

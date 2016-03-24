@@ -35,10 +35,12 @@ $app->get('/movie', function() use ($app) {
 				$movie['title'] = $item['title'];
 				$movie['plot'] = $item['overview'];
 				$movie['release_date'] = $item['release_date'];
+				$movie['original_title'] = $item['original_title'];
+
 				$movie['poster'] = $poster;
 
 				//search the users movie list
-				$db_movie_list = $db->getSingleRecord("SELECT `status`,`user_rating`,`watched_date` FROM `movieList` WHERE `movieID` = ".$movie['movieID']);
+				$db_movie_list = $db->getSingleRecord("SELECT `status`,`user_rating`,`watched_date` FROM `movielist` WHERE `movieID` = ".$movie['movieID']);
 
 				$movie['status'] = null;
 				$movie['user_rating'] = null;
@@ -72,86 +74,130 @@ $app->post('/status', function() use ($app) {
 	//get JSON body and parse to array
 	$req = json_decode($app->request->getBody());
 	$index = $req->index;
-
+	$status = $req->status;
+	
 	//REST-Service Response
 	$response = array();
 	//Movie from session
-	$movie = array();
 	$db = new DB();
 	$session = $db->getSession();
 
-	$matches = array();
-
-	//is User logged in?
+	//is user logged in?
 	if($session['userID']!= '') {
 
-		//is movie data in session?
-		if (!empty($session['matches'])){
+		if($status == "watched" || $status == "watchlist" || $status == "deleted" )
+		{
+			//is movie data in session?
+			if (!empty($session['matches'])){
 
-			$movie = $session['matches'][$index];
-			
-			$movieID = $movie['movieID'];
+				$movie = $session['matches'][$index];
 
-			$movie['watched_date'] = "2016-02-22";
-			$movie['status'] = $req->status;
-			$movie['userID'] = $session['userID'];
-			$movie['language'] = "de";
-			//get userID
-			$userID = intval($session['userID']);
-			
-		//	$date	= date("Y-m-d");
+				$movieID = $movie['movieID'];
 
-			//get movie if already used
-			$watched_movie = $db->getSingleRecord("SELECT * FROM `movieList` WHERE `userID`= ".$userID." AND `movieID`= ".$movieID );
+				$movie['watched_date'] = null;
+				$movie['status'] = $req->status;
+				$movie['userID'] = $session['userID'];
+				$movie['language'] = "de";
 
-			//movie already in db, just change status
-			if(empty($watched_movie)){
-				if($movie['status'] == "watched") {
-					$movie_table_cols = array('movieID','watchers');
-					$movie['watchers'] = "watchers + 1";
-					$condition = "movieID=".$movieID;
-					$db->updateRecord($movie,$movie_table_cols,'movie', $condition);
+				//get userID
+				$userID = intval($session['userID']);
+
+				date_default_timezone_set('UTC');
+
+				//get movie if already used
+				$movie_user_list = $db->getSingleRecord("SELECT * FROM `movielist` WHERE `userID`= ".$userID." AND `movieID`= ".$movieID );
+				$movie_saved = $db->getSingleRecord("SELECT * FROM `movie` WHERE  `movieID`= ".$movieID );
+
+				//check if movie is already in db, if not, add it to db with info
+				if($movie_saved == null) {
+					if($status == "watched") {
+						$movie['watched_date'] = date("Y-m-d");
+
+						//Insert new movie (with new watcher)
+						$db->dbQuery('INSERT INTO movie(movieID, original_title, watchers) VALUES ('.$movieID.',"'.$movie['original_title'].'",watchers+1)');
+						echo 'INSERT INTO movie(movieID, original_title, watchers) VALUES ('.$movieID.',"'.$movie['original_title'].'"watchers+1)';
+
+						//Insert watched movie
+						$movie_list_table_cols = array('movieID','userID','status','watched_date');
+						$db->insertIntoTable($movie,$movie_list_table_cols,'movielist');
+					} else {
+						//Insert new movie
+						$movie_table_cols = array('movieID','original_title');
+						$db->insertIntoTable($movie,$movie_table_cols,'movie');
+
+						//Insert movie to user's list
+						$movie_list_table_cols = array('movieID','userID','status');
+						$db->insertIntoTable($movie,$movie_list_table_cols,'movielist');
+					}
+
+					//Insert movie information
+					$movie_list_table_cols = array('movieID','language','plot','title',"release_date", "poster");
+					$db->insertIntoTable($movie,$movie_list_table_cols,'movieinfo');
+
+					$response['status'] = "success";
+					echoResponse(200, $response);
 				} else {
-					$movie_table_cols = array('movieID');
-					$db->insertIntoTable($movie,$movie_table_cols,'movie');
+					//check if movie is in user's list. If it is, just change status, if not, add to db
+					if($movie_user_list == null){
+						if($status == "watched") {
+							$movie['watched_date'] = date("Y-m-d");
+
+							//Add 1 watcher to movie
+							$update_values = 'watchers=watchers+1';
+							$db->updateRecord('movie', $update_values, "movieID=".$movieID);
+
+							//Insert watched movie
+							$movie_list_table_cols = array('movieID','userID','status','watched_date');
+							$db->insertIntoTable($movie,$movie_list_table_cols,'movielist');
+						} else {
+
+							//Insert movie to user's list
+							$movie_list_table_cols = array('movieID','userID','status');
+							$db->insertIntoTable($movie,$movie_list_table_cols,'movielist');
+						}
+					}else {
+
+						$update_condition = "movieID=".$movieID;
+
+						if($status == "watched") {
+							$movie['watched_date'] = date("Y-m-d");
+
+							//Update movie status with watched date
+							$update_values = 'status="'.$movie['status'].'",watched_date="'.$movie['watched_date'].'"';
+							$db->updateRecord('movielist', $update_values, $update_condition);
+
+							//Add 1 watcher to movie
+							$update_values = 'status="'.$movie['status'].'",watched_date="'.$movie['watched_date'].'"';
+							$db->updateRecord('movie', $update_values, $update_condition);
+						} else {
+
+							//Update movie status
+							$update_values = 'status="'.$movie['status'].'"';
+							$db->updateRecord('movielist', $update_values, $update_condition);
+						}
+
+						$response['status'] = "success";
+						echoResponse(200, $response);
+					}
 				}
 
-				$movie_list_table_cols = array('movieID','language','plot','title',"release_date", "poster");
-				$db->insertIntoTable($movie,$movie_list_table_cols,'movieInfo');
 
-				$movie_list_table_cols = array('movieID','userID','status','watched_date');
-				$db->insertIntoTable($movie,$movie_list_table_cols,'movieList');
-
-				$response['status'] = "success";
-				echoResponse(200, $response);
-			}else {
-
-				$movie_list_table_cols = array('status','watched_date');
-				$condition = "movieID=".$movieID;
-				$db->updateRecord($movie,$movie_list_table_cols,'movieList', $condition);
-
-				if($movie['status'] == "watched") {
-					$movie_table_cols = array('watchers');
-					$movie['watchers'] = "watchers + 1";
-					$db->updateRecord($movie,$movie_table_cols,'movie', $condition);
-				}
-
-
-				$response['status'] = "success";
-				echoResponse(200, $response);
+			}else{
+				$response['status'] = "error";
+				$response['message'] = "No movie data";
+				echoResponse(201, $response);
 			}
-
-		}else{
+		} else {
 			$response['status'] = "error";
-			$response['message'] = "No movie data";
+			$response['message'] = "Wrong status";
 			echoResponse(201, $response);
 		}
+
 	}else{
 		$response['status'] = "error";
 		$response['message'] = "Not logged in";
 		echoResponse(201, $response);
 	}
-
 });
 
 //GET Watchlist
