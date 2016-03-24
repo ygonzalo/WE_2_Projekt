@@ -30,7 +30,6 @@ input:focus{
 	height:auto;
 	margin:1em;
 	padding:0;
-	overflow:auto;
 }
 
 /* .box class: this container overrides all other visible content, excpet for the header. used for signup and login*/

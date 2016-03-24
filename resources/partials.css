@@ -7,6 +7,13 @@
 	height:100%;
 }
 
+.default_container h1
+{
+	font-weight:lighter;
+	color:rgb(61,61,61);
+	
+}
+
 .poster_box {
 	position:relative;
 	width:100%;
@@ -17,7 +24,6 @@
 	-webkit-flex-wrap:wrap;
 	flex-wrap:wrap;
 	-webkit-align-items:center;
-	-webkit-justify-content:center;
 	align-items:center;
 	max-width:100%;
 }
@@ -43,4 +49,35 @@
 	-webkit-flex:1;
 	flex:1;
 	padding:1em;
+}
+
+.poster_menu {
+	width:3em;
+	height:12em;	
+}
+
+.poster_menu button {
+	position:relative;
+	margin:0px;
+	padding:0px;
+	width:100%;
+	height:33.3%;
+	border:none;
+	outline:none;
+	background-color:rgba(61,61,61,1);
+}
+
+.poster_menu button:hover, .poster_menu button:active {
+	background-color:rgba(61,61,61,0.6);
+	border:none;
+	outline:none;
+}
+
+.poster_menu button img{
+	max-height:100%;
+	max-width:100%;
+	width:100%;
+	margin:0;
+	padding:0;
+	border:none;
 }

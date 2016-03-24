@@ -3,9 +3,16 @@
 		<div style="display:flex;">
 			<div class="poster_imgbox"><img src="{{checkPoster(m.poster);}}" class="poster_img" /></div>
 			<div class="poster_content">
-				{{m.title}}
+				<b>{{m.title}}</b>
+				<br />
+				{{m.release_date}}
+				<br />
+			</div>
+			<div class="poster_menu">
+				<button><img src="resources/images/star.png" /></button>
+				<button><img src="resources/images/ok.png" /></button>
+				<button><img src="resources/images/share.png" /></button>	
 			</div>
 		</div>
-		<!-- {{m.index}} <button ng-click='changeStatus("watched", m.index)'>bah</button><br>-->
 	</div>
 </div>
