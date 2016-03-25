@@ -29,6 +29,7 @@ $app->get('/movie', function() use ($app) {
 			//add each movie to array in response
 			foreach ($matches as $item){
 
+				//build poster path with size configuration
 				$poster = $config->images->base_url.$config->images->poster_sizes[2]. $item['poster_path'];
 
 				$movie['movieID'] = $item['id'];
@@ -36,20 +37,42 @@ $app->get('/movie', function() use ($app) {
 				$movie['plot'] = $item['overview'];
 				$movie['release_date'] = $item['release_date'];
 				$movie['original_title'] = $item['original_title'];
-
 				$movie['poster'] = $poster;
-
-				//search the users movie list
-				$db_movie_list = $db->getSingleRecord("SELECT `status`,`user_rating`,`watched_date` FROM `movielist` WHERE `movieID` = ".$movie['movieID']);
-
 				$movie['status'] = null;
 				$movie['user_rating'] = null;
 				$movie['watched_date'] = null;
+				$movie['watchers'] = 0;
+				$movie['rating_points'] = 0;
 
-				if(!empty($db_movie_list)){
-					$movie['status'] = $db_movie_list['status'];
-					$movie['user_rating'] = $db_movie_list['user_rating'];
-					$movie['watched_date'] = $db_movie_list['watched_date'];
+				//prepare sql statements and bind parameters
+				$sel_movielist = $db->preparedStmt("SELECT status,user_rating,watched_date FROM movielist WHERE movieID = ? AND userID = ?");
+				$sel_movielist->bind_param('ii', $movie['movieID'], $session['userID']);
+
+				$sel_movie = $db->preparedStmt("SELECT watchers,rating_points FROM movie WHERE movieID = ?");
+				$sel_movie->bind_param('i', $movie['movieID']);
+
+				//execute query
+				$sel_movielist->execute();
+				$ml_result = $sel_movielist->get_result();
+				$sel_movielist->close();
+
+				if ($ml_result->num_rows >0) {
+					$record = $ml_result->fetch_assoc();
+
+					$movie['status'] = $record['status'];
+					$movie['user_rating'] = $record['user_rating'];
+					$movie['watched_date'] = $record['watched_date'];
+				}
+
+				$sel_movie->execute();
+				$m_result = $sel_movie->get_result();
+				$sel_movie->close();
+
+				if ($m_result->num_rows >0) {
+					$record = $m_result->fetch_assoc();
+
+					$movie['watchers'] = $record['watchers'];
+					$movie['rating_points'] = $record['rating_points'];
 				}
 
 				array_push($response['matches'], $movie);
@@ -78,6 +101,7 @@ $app->post('/status', function() use ($app) {
 	
 	//REST-Service Response
 	$response = array();
+
 	//Movie from session
 	$db = new DB();
 	$session = $db->getSession();
@@ -95,90 +119,132 @@ $app->post('/status', function() use ($app) {
 				$movieID = $movie['movieID'];
 
 				$movie['watched_date'] = null;
-				$movie['status'] = $req->status;
-				$movie['userID'] = $session['userID'];
 				$movie['language'] = "de";
 
-				//get userID
-				$userID = intval($session['userID']);
+				$watchers = $movie['watchers'] +1;
 
 				date_default_timezone_set('UTC');
+				$watched_date = date("Y-m-d");
 
-				//get movie if already used
-				$movie_user_list = $db->getSingleRecord("SELECT * FROM `movielist` WHERE `userID`= ".$userID." AND `movieID`= ".$movieID );
-				$movie_saved = $db->getSingleRecord("SELECT * FROM `movie` WHERE  `movieID`= ".$movieID );
+				//get userID
+				$userID = $session['userID'];
+
+
+				//prepare sql statement and bind parameters
+				$movie_stmt = $db->preparedStmt("SELECT 1 FROM movie WHERE movieID = ?");
+				$movielist_stmt = $db->preparedStmt("SELECT 1 FROM movielist WHERE movieID = ? AND userID = ?");
+				$movie_stmt->bind_param('i', $movieID);
+				$movielist_stmt->bind_param('ii', $movieID, $userID );
+
+
+
+				//execute queries
+				$movie_stmt->execute();
+				$movie_res = $movie_stmt->get_result();
+
+				$movielist_stmt->execute();
+
+				$movielist_res = $movielist_stmt->get_result();
+
 
 				//check if movie is already in db, if not, add it to db with info
-				if($movie_saved == null) {
+				if($movie_res->num_rows != 1) {
 					if($status == "watched") {
-						$movie['watched_date'] = date("Y-m-d");
 
-						//Insert new movie (with new watcher)
-						$db->dbQuery('INSERT INTO movie(movieID, original_title, watchers) VALUES ('.$movieID.',"'.$movie['original_title'].'",watchers+1)');
-						echo 'INSERT INTO movie(movieID, original_title, watchers) VALUES ('.$movieID.',"'.$movie['original_title'].'"watchers+1)';
 
-						//Insert watched movie
-						$movie_list_table_cols = array('movieID','userID','status','watched_date');
-						$db->insertIntoTable($movie,$movie_list_table_cols,'movielist');
+						$insert_watched_movie = $db->preparedStmt("INSERT INTO movie(movieID, original_title, watchers) VALUES (?,?,?)");
+						$insert_watched_movie->bind_param("iss", $movieID, $movie['original_title'], $watchers);
+
+						$insert_watched_movie->execute();
+						$insert_watched_movie->close();
+
+						$insert_movielist = $db->preparedStmt("INSERT INTO movielist(movieID,userID,status,watched_date) VALUES (?,?,?,?)");
+						$insert_movielist->bind_param("iiss", $movieID, $userID, $status, $watched_date);
+
+						$insert_movielist->execute();
+						$insert_movielist->close();
+
+
 					} else {
-						//Insert new movie
-						$movie_table_cols = array('movieID','original_title');
-						$db->insertIntoTable($movie,$movie_table_cols,'movie');
+						$insert_movie = $db->preparedStmt("INSERT INTO movie(movieID, original_title) VALUES (?,?)");
+						$insert_movie->bind_param("is", $movieID, $movie['original_title']);
 
-						//Insert movie to user's list
-						$movie_list_table_cols = array('movieID','userID','status');
-						$db->insertIntoTable($movie,$movie_list_table_cols,'movielist');
+						$insert_movie->execute();
+						$insert_movie->close();
+
+						$insert_movielist = $db->preparedStmt("INSERT INTO movielist(movieID,userID,status) VALUES (?,?,?)");
+						$insert_movielist->bind_param("iis", $movieID, $userID, $status);
+
+						$insert_movielist->execute();
+						$insert_movielist->close();
+
 					}
 
-					//Insert movie information
-					$movie_list_table_cols = array('movieID','language','plot','title',"release_date", "poster");
-					$db->insertIntoTable($movie,$movie_list_table_cols,'movieinfo');
+					$insert_movieinfo = $db->preparedStmt("INSERT INTO movieinfo(movieID,language,plot,title,release_date,poster) VALUES (?,?,?,?,?,?)");
+					$insert_movieinfo->bind_param("isssss", $movieID,$movie['language'],$movie['plot'],$movie['title'],$movie['release_date'],$movie['poster']);
+
+					$insert_movieinfo->execute();
+					$insert_movieinfo->close();
 
 					$response['status'] = "success";
 					echoResponse(200, $response);
 				} else {
 					//check if movie is in user's list. If it is, just change status, if not, add to db
-					if($movie_user_list == null){
+					if($movielist_res->num_rows != 1){
 						if($status == "watched") {
-							$movie['watched_date'] = date("Y-m-d");
+							$update_watched_movie = $db->preparedStmt("UPDATE movie SET watchers = ? WHERE movieID = ?");
+							$update_watched_movie->bind_param("ii", $watchers, $movieID);
 
-							//Add 1 watcher to movie
-							$update_values = 'watchers=watchers+1';
-							$db->updateRecord('movie', $update_values, "movieID=".$movieID);
+							$update_watched_movie->execute();
+							$update_watched_movie->close();
 
-							//Insert watched movie
-							$movie_list_table_cols = array('movieID','userID','status','watched_date');
-							$db->insertIntoTable($movie,$movie_list_table_cols,'movielist');
+							$insert_movielist = $db->preparedStmt("INSERT INTO movielist(movieID,userID,status,watched_date) VALUES (?,?,?,?)");
+							$insert_movielist->bind_param("iiss", $movieID, $userID, $status, $watched_date);
+
+							$insert_movielist->execute();
+							$insert_movielist->close();
+
 						} else {
 
-							//Insert movie to user's list
-							$movie_list_table_cols = array('movieID','userID','status');
-							$db->insertIntoTable($movie,$movie_list_table_cols,'movielist');
+							$insert_movielist = $db->preparedStmt("INSERT INTO movielist(movieID,userID,status) VALUES (?,?,?)");
+							$insert_movielist->bind_param("iis", $movieID, $userID, $status);
+
+							$insert_movielist->execute();
+
+							$insert_movielist->close();
 						}
 					}else {
 
 						if($status == "watched") {
-							$movie['watched_date'] = date("Y-m-d");
 
 							//Update movie status with watched date
-							$update_values = 'status="'.$movie['status'].'",watched_date="'.$movie['watched_date'].'"';
-							$db->updateRecord('movielist', $update_values, "movieID=$movieID AND userID=$userID");
+							$update_watchlist = $db->preparedStmt("UPDATE movielist SET status=?,watched_date=? WHERE movieID=? AND userID=?");
+							$update_watchlist->bind_param("ssii", $status,$watched_date, $movieID, $userID);
+
+							$update_watchlist->execute();
+							$update_watchlist->close();
 
 							//Add 1 watcher to movie
-							$update_values = 'watchers=watchers+1';
-							$db->updateRecord('movie', $update_values, "movieID=".$movieID);
+							$update_watched_movie = $db->preparedStmt("UPDATE movie SET watchers = ? WHERE movieID = ?");
+							$update_watched_movie->bind_param("ii", $watchers, $movieID);
+
+							$update_watched_movie->execute();
+							$update_watched_movie->close();
 						} else {
 
-							//Update movie status
-							$update_values = 'status="'.$movie['status'].'"';
-							$db->updateRecord('movielist', $update_values, "movieID=$movieID AND userID=$userID");
+							//Update movie status with watched date
+							$update_watchlist = $db->preparedStmt("UPDATE movielist SET status=? WHERE movieID=? AND userID=?");
+							$update_watchlist->bind_param("sii", $status, $movieID, $userID);
+
+							$update_watchlist->execute();
+							$update_watchlist->close();
 						}
 
-						$response['status'] = "success";
-						echoResponse(200, $response);
 					}
-				}
 
+					$response['status'] = "success";
+					echoResponse(200, $response);
+				}
 
 			}else{
 				$response['status'] = "error";
@@ -210,7 +276,9 @@ $app->get('/watchlist', function() use ($app) {
 	if(!empty($session['userID'])) {
 		$userID = $session['userID'];
 
-		$watchlist = $db->getRecords("SELECT m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, ml.status FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID=$userID AND status= \"watchlist\"");
+		$watchlist = $db->getRecords("SELECT m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, ml.status 
+FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID 
+JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID=$userID AND status= \"watchlist\"");
 
 		if(mysqli_num_rows($watchlist)>0){
 
@@ -220,6 +288,10 @@ $app->get('/watchlist', function() use ($app) {
 			}
 			$response['status'] = "success";
 			echoResponse(200, $response);
+		} else {
+			$response['status'] = "error";
+			$response['message'] = "No movies in watchlist";
+			echoResponse(201, $response);
 		}
 	}
 });
@@ -236,21 +308,52 @@ $app->get('/watched', function() use ($app) {
 	if(!empty($session['userID'])) {
 		$userID = $session['userID'];
 
-		$watchlist = $db->getRecords("SELECT m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, ml.status, ml.watched_date FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID=$userID AND status= \"watched\"");
+		$watched = $db->getRecords("SELECT m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, ml.status, ml.watched_date 
+FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID 
+JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID=$userID AND status= \"watched\"");
 
-		if(mysqli_num_rows($watchlist)>0){
+		if(mysqli_num_rows($watched)>0){
 
 			$response['matches'] = array();
-			while ($movie = $watchlist->fetch_assoc()) {
+			while ($movie = $watched->fetch_assoc()) {
 				array_push($response['matches'], $movie);
 			}
 			$response['status'] = "success";
 			echoResponse(200, $response);
+		} else {
+			$response['status'] = "error";
+			$response['message'] = "No movies marked as watched";
+			echoResponse(201, $response);
 		}
 	}
 });
 
 //POST Rating
+$app->post('/rating', function() use ($app) {
+
+	//get JSON body and parse to array
+	$req = json_decode($app->request->getBody());
+	$rating = $req->rating;
+
+	//REST-Service Response
+	$response = array();
+
+	//get session
+	$db = new DB();
+	$session = $db->getSession();
+
+	$stm = $db->handler()->prepare("SELE");
+
+	//check if user is authenticated
+	if($session['userID'] != '') {
+
+	} else {
+		$response['status'] = "error";
+		$response['message'] = "Not logged in";
+		echoResponse(201, $response);
+	}
+
+});
 
 //POST Add friend
 

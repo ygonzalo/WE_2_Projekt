@@ -14,6 +14,23 @@ class DB {
 	public function escapeString($str) {
 		return mysqli_real_escape_string($this->conn,$str);
 	}
+	
+	public function preparedStmt($query) {
+		$stmt = $this->conn->prepare($query);
+		return $stmt;
+	}
+
+	public function allowTransactions() {
+		$this->conn->autocommit(false);
+	}
+	
+	public function commit(){
+		$this->conn->commit();
+	}
+
+	public function rollback(){
+		$this->conn->rollback();
+	}
 
 	public function getRecords($query) {
 		return mysqli_query($this->conn, $query);
