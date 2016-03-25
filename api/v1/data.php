@@ -157,14 +157,12 @@ $app->post('/status', function() use ($app) {
 						}
 					}else {
 
-						$update_condition = "movieID=".$movieID;
-
 						if($status == "watched") {
 							$movie['watched_date'] = date("Y-m-d");
 
 							//Update movie status with watched date
 							$update_values = 'status="'.$movie['status'].'",watched_date="'.$movie['watched_date'].'"';
-							$db->updateRecord('movielist', $update_values, $update_condition);
+							$db->updateRecord('movielist', $update_values, "movieID=$movieID AND userID=$userID");
 
 							//Add 1 watcher to movie
 							$update_values = 'watchers=watchers+1';
@@ -173,7 +171,7 @@ $app->post('/status', function() use ($app) {
 
 							//Update movie status
 							$update_values = 'status="'.$movie['status'].'"';
-							$db->updateRecord('movielist', $update_values, $update_condition);
+							$db->updateRecord('movielist', $update_values, "movieID=$movieID AND userID=$userID");
 						}
 
 						$response['status'] = "success";
@@ -201,10 +199,8 @@ $app->post('/status', function() use ($app) {
 });
 
 //GET Watchlist
-$app->post('/watchlist', function() use ($app) {
+$app->get('/watchlist', function() use ($app) {
 
-	//get JSON body and parse to array
-	$req = json_decode($app->request->getBody());
 	//REST-Service Response
 	$response = array();
 	$db = new DB();
@@ -214,27 +210,21 @@ $app->post('/watchlist', function() use ($app) {
 	if(!empty($session['userID'])) {
 		$userID = $session['userID'];
 
-		$movieIDS = $db->getRecords("SELECT m.ratings, m.ratingPoints, m.watchers, mi.title, mi.plot, mi.release, ml. FROM movie AS m JOIN movieInfo As mi ON `movieID` JOIN movieList AS ml ON `movieID` WHERE `userID`=$userID AND `status`= \"watched\"");
+		$watchlist = $db->getRecords("SELECT m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, ml.status FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID=$userID AND status= \"watchlist\"");
 
+		if(mysqli_num_rows($watchlist)>0){
 
-		/*SELECT m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, ml.watched_date  FROM movie AS m JOIN movieInfo As mi ON `movieID` JOIN movieList AS ml ON `movieID` WHERE `userID`=1 AND `status`= "watched"
-
-		SELECT m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, ml.watched_date
-		FROM movieList  WHERE `userID`=1 AND `status`= "watched" AS ml
-		LEFT JOIN movieinfo AS mi ON mi.movieID
-		LEFT JOIN movie AS m ON m.movieID
-
-
-		SELECT m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, ml.watched_date
-		FROM movieList AS ml
-		LEFT JOIN movieinfo AS mi ON mi.movieID = ml.movieID
-		LEFT JOIN movie AS m ON m.movieID = ml.movieID*/
+			$response['matches'] = array();
+			while ($movie = $watchlist->fetch_assoc()) {
+				array_push($response['matches'], $movie);
+			}
+			$response['status'] = "success";
+			echoResponse(200, $response);
+		}
 	}
 });
+
 //GET Watched
-
-
-//POST Watchlist flag
 
 //POST Rating
 

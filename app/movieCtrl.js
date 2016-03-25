@@ -17,7 +17,7 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$location'
 				angular.forEach(results.matches, function(match, index){
 					match.index = index;
 				});
-				$scope.searchResults = results;
+				$scope.results = results;
 			}
 			else {
 				console.log("failed");
@@ -40,7 +40,7 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$location'
 	$scope.getWatchlist = function () {
 		Data.get('watchlist').then(function (results) {
 			if(results.status == "success") {
-				$scope.watchList = results;
+				$scope.result = results;
 			}
 		})
 	};
