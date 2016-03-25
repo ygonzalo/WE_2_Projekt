@@ -225,6 +225,30 @@ $app->get('/watchlist', function() use ($app) {
 });
 
 //GET Watched
+$app->get('/watched', function() use ($app) {
+
+	//REST-Service Response
+	$response = array();
+	$db = new DB();
+	$session = $db->getSession();
+
+	//is User logged in?
+	if(!empty($session['userID'])) {
+		$userID = $session['userID'];
+
+		$watchlist = $db->getRecords("SELECT m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, ml.status, ml.watched_date FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID=$userID AND status= \"watched\"");
+
+		if(mysqli_num_rows($watchlist)>0){
+
+			$response['matches'] = array();
+			while ($movie = $watchlist->fetch_assoc()) {
+				array_push($response['matches'], $movie);
+			}
+			$response['status'] = "success";
+			echoResponse(200, $response);
+		}
+	}
+});
 
 //POST Rating
 
