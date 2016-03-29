@@ -36,8 +36,8 @@ app.config(['$routeProvider',
                 role: '0'
             })
             .when('/', {
-                title: 'Login',
-                templateUrl: 'partials/login.html',
+                title: 'Home',
+                templateUrl: 'partials/home.html',
                 controller: 'authCtrl',
                 role: '0'
             })
