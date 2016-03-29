@@ -403,6 +403,9 @@ $app->post('/friend', function() use ($app) {
 });
 //GET Friends
 
+//POST Passwort (Passwort ändern)
+
+//POST Email (Email ändern)
 
 
 ?>
