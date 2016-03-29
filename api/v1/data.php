@@ -458,10 +458,98 @@ $app->post('/friend', function() use ($app) {
 	
 });
 //GET Friends
-
+$app->get('/friendlist', function() use ($app) {
+	//REST-Service Response
+	$response = array();
+	$db = new DB();
+	$session = $db->getSession();
+	
+	//is User logged in?
+	if(!empty($session['userID'])) {
+	
+		
+		$userID=$session['userID'];
+		$accepted="accepted";
+		
+		$sel_friendlist = $db->preparedStmt("SELECT f.friendID,f.since,u.name FROM friend AS f JOIN user AS u ON f.friendID = u.userID WHERE u.userID = ? AND f.status = ?");
+		//TODO kann nicht preparen - query oder objekte falsch
+		$sel_friendlist->bind_param('is', $userID, $accepted);
+		$sel_friendlist->execute();			
+					
+		$rel_result = $sel_friendlist->get_result();
+		$sel_friendlist->close();
+	
+		if(mysqli_num_rows($rel_result)>0){
+			$response['user'] = $rel_result->fetch_assoc();
+			while ($user = $rel_result->fetch_assoc()) {
+				array_push($response['user'], $user);
+			}
+			$response['status'] = "success";
+			echoResponse(200, $response);
+		} else {
+			$response['status'] = "error";
+			$response['message'] = "No friends found";
+			echoResponse(201, $response);
+		}
+	
+	} else {
+		$response['status'] = "error";
+		$response['message'] = "Not logged in";
+		echoResponse(201, $response);
+	}
+		
+	
+		
+	});
 //POST Passwort (Passwort ändern)
+$app->post('/changePassword', function() use ($app) {
 
+	//REST-Service Response
+	$response = array();
+	$db = new DB();
+	$session = $db->getSession();
+	$req = json_decode($app->request->getBody());
+	
+		
+	//is User logged in?
+	if(!empty($session['userID'])) {
+	
+	
+	//TODO UPDATE Passwort
+	
+	} else {
+		$response['status'] = "error";
+		$response['message'] = "Not logged in";
+		echoResponse(201, $response);
+	}
+		
+	
+	
+});
 //POST Email (Email ändern)
+$app->post('/changeEmail', function() use ($app) {
 
+	//REST-Service Response
+	$response = array();
+	$db = new DB();
+	$session = $db->getSession();
+	$req = json_decode($app->request->getBody());
+	
+		
+	//is User logged in?
+	if(!empty($session['userID'])) {
+	
+	
+	//TODO UPDATE Email
+	
+	} else {
+		$response['status'] = "error";
+		$response['message'] = "Not logged in";
+		echoResponse(201, $response);
+	}
+		
+	
+	
+});
 
 ?>
