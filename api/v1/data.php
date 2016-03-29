@@ -421,11 +421,16 @@ $app->post('/friend', function() use ($app) {
 				
 			}else if($rel_result['status']=="accepted"){
 				//status change to accepted
-				
-				
+					//TODO		
 				$response['status'] = "success";
 				$response['message'] = "Status changed to accepted";
 				echoResponse(200, $response);
+			}else if($rel_result['status']=="requested"){
+				
+					//TODO
+				
+				
+				
 			}else if($rel_result['status']=="denied"){
 				//status denied
 				$response['status'] = "success";
