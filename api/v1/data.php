@@ -388,8 +388,59 @@ $app->post('/friend', function() use ($app) {
 	//is User logged in?
 	if(!empty($session['userID'])) {
 		
+		$relation=array();
+		$relation['userID']=$session['userID'];
+		$relation['friendID']=$req->friendID;
+		$relation['status']=$req->status;
 		
+		//is friendId valid
+		$sel_exi_friend = $db->preparedStmt("SELECT userID FROM friend WHERE userID LIKE ?");
+		$sel_exi_friend->bind_param('i', $relation['friendID']);
+		$sel_exi_friend->execute();
 		
+		$friend_result = $sel_exi_friend->get_result();
+		$sel_exi_friend->close();
+		
+		if(!empty($friend_result)){
+			
+			
+			//get data from friend db
+			$sel_friend = $db->preparedStmt("SELECT userID,friendID,status,since FROM friend WHERE userID = ?  AND friendID = ?");
+			$sel_friend->bind_param('ii', $userInput['input'], $userInput['input']);
+			$sel_friend->execute();			
+					
+			$rel_result = $sel_friend->get_result();
+			$sel_friend->close();
+			
+			
+			if($rel_result['status']==$relation['status']){
+				//status already set
+				$response['status'] = "success";
+				$response['message'] = "Status already set";
+				echoResponse(200, $response);
+				
+			}else if($rel_result['status']=="accepted"){
+				//status change to accepted
+				
+				
+				$response['status'] = "success";
+				$response['message'] = "Status changed to accepted";
+				echoResponse(200, $response);
+			}else if($rel_result['status']=="denied"){
+				//status denied
+				$response['status'] = "success";
+				$response['message'] = "friend request denied";
+				echoResponse(201, $response);
+			}
+			
+			
+		}else{
+			$response['status'] = "error";
+			$response['message'] = "Friend not found";
+			echoResponse(201, $response);
+		}
+		
+			
 		
 		
 		
