@@ -14,6 +14,14 @@
 	
 }
 
+.default_container h2
+{
+	font-weight:lighter;
+	color:rgb(61,61,61);
+	font-size:1.4em;
+	line-height:0.5em;
+}
+
 .poster_box {
 	position:relative;
 	width:100%;
@@ -80,4 +88,51 @@
 	margin:0;
 	padding:0;
 	border:none;
+}
+
+.profile_box {
+	padding:1em;
+	margin:1em;
+	display:-webkit-flex;
+	display:flex;
+}
+
+.profile_box div {
+	margin:1em;
+}
+
+#profile_img_box {
+	width:160px;
+	height:180px;
+	background-color:gray;
+}
+
+.profile_content_box {
+	-webkit-flex:1;
+	flex:1;
+}
+
+#profile_me textarea {
+	border:none;
+	height:1.4em;
+	padding:0.5em;
+	width:auto;
+	min-width:auto;
+	max-width:24em;
+	font-family:Open Sans, Segoe UI, sans-serif;
+	resize:none;
+	line-height:1.4em;
+}
+
+#profile_me textarea:hover,#profile_me textarea:focus {
+	background-color:rgb(222,222,222);
+}
+
+#profile_me button {
+	border:none;
+	background-color:rgba(0,0,0,0);
+}
+#profile_me button:hover {
+	text-decoration:underline;
+	cursor:pointer;
 }
