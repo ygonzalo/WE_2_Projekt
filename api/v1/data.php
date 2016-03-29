@@ -344,11 +344,11 @@ $app->post('/user', function() use ($app) {
 	
 	//is User logged in?
 	if(!empty($session['userID'])) {
-		$user=array();
-		$user['input']= "%".$req->input."%";
+		$userInput=array();
+		$userInput['input']= "%".$req->input."%";
 		
 			$sel_user = $db->preparedStmt("SELECT userID,name,email,points FROM user WHERE name LIKE ?  OR email LIKE ?");
-			$sel_user->bind_param('ss', $user['input'], $user['input']);
+			$sel_user->bind_param('ss', $userInput['input'], $userInput['input']);
 			$sel_user->execute();
 			$user_result = $sel_user->get_result();
 			$sel_user->close();
