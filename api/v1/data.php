@@ -333,9 +333,76 @@ $app->post('/rating', function() use ($app) {
 
 });
 
-//POST Add friend
+//POST User
+$app->post('/user', function() use ($app) {
 
+	//REST-Service Response
+	$response = array();
+	$db = new DB();
+	$session = $db->getSession();
+	$req = json_decode($app->request->getBody());
+	
+	//is User logged in?
+	if(!empty($session['userID'])) {
+		$user=array();
+		$user['input']= "%".$req->input."%";
+		
+			$sel_user = $db->preparedStmt("SELECT userID,name,email,points FROM user WHERE name LIKE ?  OR email LIKE ?");
+			$sel_user->bind_param('ss', $user['input'], $user['input']);
+			$sel_user->execute();
+			$user_result = $sel_user->get_result();
+			$sel_user->close();
+			$user=array();
+			
+				
+		if(mysqli_num_rows($user_result)>0){
+			$response['user'] = $user_result->fetch_assoc();
+			while ($user = $user_result->fetch_assoc()) {
+				array_push($response['user'], $user);
+			}
+			$response['status'] = "success";
+			echoResponse(200, $response);
+		} else {
+			$response['status'] = "error";
+			$response['message'] = "No user found";
+			echoResponse(201, $response);
+		}
+		
+	} else {
+		$response['status'] = "error";
+		$response['message'] = "Not logged in";
+		echoResponse(201, $response);
+	}
+
+});
+
+//POST Add friend
+$app->post('/friend', function() use ($app) {
+
+	//REST-Service Response
+	$response = array();
+	$db = new DB();
+	$session = $db->getSession();
+	$req = json_decode($app->request->getBody());
+	
+	//is User logged in?
+	if(!empty($session['userID'])) {
+		
+		
+		
+		
+		
+		
+	} else {
+		$response['status'] = "error";
+		$response['message'] = "Not logged in";
+		echoResponse(201, $response);
+	}
+
+	
+});
 //GET Friends
+
 
 
 ?>
