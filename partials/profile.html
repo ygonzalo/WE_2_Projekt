@@ -11,27 +11,43 @@
 		
 		</div>
 		<div class="profile_content_box" id="profile_me">
-			<h2>{{name}}</h2>
+			<h2>Profil</h2>
 			<table>
+				<tr>
+					<td>Name:</td>
+					<td><textarea>{{name}}</textarea></td>
+					<td><button disabled>ändern</button></td>
+				</tr>
 				<tr>
 					<td>Mail:</td>
 					<td><textarea>{{email}}</textarea></td>
-					<td><button>ändern</button></td>
+					<td><button disabled>ändern</button></td>
 				</tr>
 				<tr>
 					<td>Passwort:</td>
 					<td><textarea placeholder="********"></textarea></td>
-					<td><button>ändern</button></td>
+					<td><button disabled>ändern</button></td>
 				</tr>
 			</table>
 			
 		</div>
-		<div class="profile_content_box" id="profile_me">
-		
+		<div class="profile_content_box" id="profile_settings">
+			<h2>Einstellungen</h2>
+			<label><input type="checkbox" name="mail_notifications" />Über Nachrichten via Mail informiert werden</label><br />
+			<label><input type="checkbox" name="friend_requests" />Nutzer dürfen mir Freundschaftsanfragen senden</label><br />
+			<hr>
+			Farbschema:
+			<input type="radio" name="color" value="apple" id="color_apple"/>
+				<label class="profile_color_radio" for="color_apple"></label>
+			<input type="radio" name="color" value="apple" id="color_banana"/>
+				<label class="profile_color_radio" for="color_banana"></label>
+			<input type="radio" name="color" value="apple" id="color_cherry"/>
+				<label class="profile_color_radio" for="color_cherry"></label>
+			<input type="radio" name="color" value="apple" id="color_blueberry"/>
+				<label class="profile_color_radio" for="color_blueberry"></label>
 		</div>
 		
 		<div class="profile_content_box">
-		
 		</div>
 	</div>
 	

@@ -91,25 +91,28 @@
 }
 
 .profile_box {
-	padding:1em;
-	margin:1em;
 	display:-webkit-flex;
 	display:flex;
+	-webkit-flex-wrap:wrap;
+	flex-wrap:wrap;
 }
 
 .profile_box div {
 	margin:1em;
-}
-
-#profile_img_box {
-	width:160px;
-	height:180px;
-	background-color:gray;
+	min-width:380px;
 }
 
 .profile_content_box {
 	-webkit-flex:1;
 	flex:1;
+}
+
+#profile_img_box {
+	width:160px;
+	min-width:160px;
+	max-width:160px;
+	height:180px;
+	background-color:gray;
 }
 
 #profile_me textarea {
@@ -122,6 +125,7 @@
 	font-family:Open Sans, Segoe UI, sans-serif;
 	resize:none;
 	line-height:1.4em;
+	font-size:1em;
 }
 
 #profile_me textarea:hover,#profile_me textarea:focus {
@@ -131,8 +135,61 @@
 #profile_me button {
 	border:none;
 	background-color:rgba(0,0,0,0);
+	font-family:Open Sans, Segoe UI, sans-serif;
+	font-size:1em;
 }
 #profile_me button:hover {
 	text-decoration:underline;
 	cursor:pointer;
+}
+
+#profile_me button:disabled {
+	text-decoration:none;
+	cursor:pointer;
+}
+
+.profile_content_box input[type=checkbox] {
+	margin:1em;
+	width:1em;
+	height:1em;
+	cursor:pointer;
+}
+
+.profile_content_box input[type=radio] {
+	display:none;
+}
+.profile_color_radio {
+	cursor:pointer;
+	position:relative;
+	font-size:1em;
+	width:3em;
+	height:2em;
+}
+.profile_color_radio:before {
+	content:"";
+	display:inline-block;
+	width:3em;
+	height:2em;
+	position:relative;
+	left:0;
+	top:0;
+	margin-bottom:-0.5em;
+	margin-left:0.5em;
+	border:1px solid rgb(222,222,222);
+}
+.profile_content_box input[type=radio]:checked + .profile_color_radio:before {
+	outline:4px solid rgb(61,61,61);
+}
+
+label[for=color_apple]:before {
+	background-color:rgb(149,211,28);
+}
+label[for=color_banana]:before{
+	background-color:rgb(239,231,16);
+}
+label[for=color_cherry]:before{
+	background-color:rgb(234,53,143);
+}
+label[for=color_blueberry]:before{
+	background-color:rgb(105,22,233);
 }
