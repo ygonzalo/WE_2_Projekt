@@ -611,7 +611,47 @@ $app->get('/requests', function() use ($app) {
 
 //DELETE friend
 $app->delete('/friend', function() use ($app) {
-	//TODO: First, check if friend is added and then delete
+	
+	//REST-Service Response
+	$response = array();
+	$db = new DB();
+	$session = $db->getSession();
+	$req = json_decode($app->request->getBody());
+	
+	//check if user is logged in
+	if($session['userID']!='') {
+		$userID=session['userID'];
+		$friendID=$req->friendID;
+		//look up if friend exists
+		$sel_friends = $db->preparedStmt("SELECT f.userID,f.friendID,f.since FROM friends AS f WHERE f.userID = ? AND f.friendID = ?");
+		$sel_friends->bind_param('ii', $userID, $friendID);
+		$sel_friends->execute();
+		$sel_friends->store_result();
+		
+		//delete if exists
+		if($sel_rel->num_rows>0){
+		
+			$del_friends = $db->preparedStmt("DELETE FROM friends WHERE f.userID = ? AND f.friendID = ?")
+			$del_friends->bind_param('ii', $userID, $friendID);
+			$del_friends->execute();
+			$del_friends->store_result();	
+			$response['status'] = "success";
+			$response['message'] = "Friend deleted";
+			echoResponse(200, $response);			
+				
+		}else{
+			$response['status'] = "error";
+			$response['message'] = "Not a friend";
+			echoResponse(201, $response);
+			
+		}
+		
+	}else {
+		$response['status'] = "error";
+		$response['message'] = "Not logged in";
+		echoResponse(201, $response);
+	}
+	
 });
 
 //GET Friends
