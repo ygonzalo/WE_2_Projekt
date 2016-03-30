@@ -53,28 +53,23 @@ $app->get('/movie', function() use ($app) {
 
 				//execute query
 				$sel_movielist->execute();
-				$ml_result = $sel_movielist->get_result();
+				$sel_movielist->bind_result($db_status,$db_user_rating,$db_watched_date);
+				while($sel_movielist->fetch()) {
+					$movie['status'] = $db_status;
+					$movie['user_rating'] = $db_user_rating;
+					$movie['watched_date'] = $db_watched_date;
+				}
+
 				$sel_movielist->close();
 
 				$sel_movie->execute();
-				$m_result = $sel_movie->get_result();
+				$sel_movie->bind_result($db_watchers,$db_rating_points);
+				if ($sel_movie->fetch()) {
+					$movie['watchers'] = $db_watchers;
+					$movie['rating_points'] = $db_rating_points;
+				}
 				$sel_movie->close();
-
-				if ($ml_result->num_rows >0) {
-					$record = $ml_result->fetch_assoc();
-
-					$movie['status'] = $record['status'];
-					$movie['user_rating'] = $record['user_rating'];
-					$movie['watched_date'] = $record['watched_date'];
-				}
-
-				if ($m_result->num_rows >0) {
-					$record = $m_result->fetch_assoc();
-
-					$movie['watchers'] = $record['watchers'];
-					$movie['rating_points'] = $record['rating_points'];
-				}
-
+				
 				array_push($response['matches'], $movie);
 			}
 
