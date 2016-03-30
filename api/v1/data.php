@@ -610,18 +610,17 @@ $app->get('/requests', function() use ($app) {
 });
 
 //DELETE friend
-$app->delete('/friend', function() use ($app) {
+$app->delete('/friend/:id', function($id) use ($app) {
 	
 	//REST-Service Response
 	$response = array();
 	$db = new DB();
 	$session = $db->getSession();
-	$req = json_decode($app->request->getBody());
 	
 	//check if user is logged in
 	if($session['userID']!='') {
 		$userID=$session['userID'];
-		$friendID=$req->friendID;
+		$friendID=$id;
 		//look up if friend exists
 		$sel_friends = $db->preparedStmt("SELECT f.userID,f.friendID,f.since FROM friends AS f WHERE f.userID = ? AND f.friendID = ?");
 		$sel_friends->bind_param('ii', $userID, $friendID);
