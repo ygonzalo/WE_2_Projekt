@@ -200,12 +200,12 @@ $app->post('/status', function() use ($app) {
 							$update_watched_movie->close();
 						}
 
-							//Update movie status
-							$update_watchlist = $db->preparedStmt("UPDATE movielist SET status=?,watched_date=? WHERE movieID=? AND userID=?");
-							$update_watchlist->bind_param("ssii", $status,$watched_date, $movieID, $userID);
+						//Update movie status
+						$update_watchlist = $db->preparedStmt("UPDATE movielist SET status=?,watched_date=? WHERE movieID=? AND userID=?");
+						$update_watchlist->bind_param("ssii", $status,$watched_date, $movieID, $userID);
 
-							$update_watchlist->execute();
-							$update_watchlist->close();
+						$update_watchlist->execute();
+						$update_watchlist->close();
 
 
 					}
@@ -294,7 +294,7 @@ JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID= ? AND status= \"wat
 
 		if(mysqli_num_rows($ml_result)>0){
 
-			$response['matches'] = $ml_result->fetch_assoc();
+			$response['matches'] = array();
 			while ($movie = $ml_result->fetch_assoc()) {
 				array_push($response['matches'], $movie);
 			}
@@ -321,7 +321,7 @@ $app->post('/rating', function() use ($app) {
 	//get session
 	$db = new DB();
 	$session = $db->getSession();
-	
+
 	//check if user is authenticated
 	if($session['userID'] != '') {
 
@@ -341,20 +341,20 @@ $app->post('/user', function() use ($app) {
 	$db = new DB();
 	$session = $db->getSession();
 	$req = json_decode($app->request->getBody());
-	
+
 	//is User logged in?
 	if(!empty($session['userID'])) {
 		$userInput=array();
 		$userInput['input']= "%".$req->input."%";
-		
-			$sel_user = $db->preparedStmt("SELECT userID,name,email,points FROM user WHERE name LIKE ?  OR email LIKE ?");
-			$sel_user->bind_param('ss', $userInput['input'], $userInput['input']);
-			$sel_user->execute();
-			$user_result = $sel_user->get_result();
-			$sel_user->close();
-			$user=array();
-			
-				
+
+		$sel_user = $db->preparedStmt("SELECT userID,name,email,points FROM user WHERE name LIKE ?  OR email LIKE ?");
+		$sel_user->bind_param('ss', $userInput['input'], $userInput['input']);
+		$sel_user->execute();
+		$user_result = $sel_user->get_result();
+		$sel_user->close();
+		$user=array();
+
+
 		if(mysqli_num_rows($user_result)>0){
 			$response['user'] = $user_result->fetch_assoc();
 			while ($user = $user_result->fetch_assoc()) {
@@ -367,7 +367,7 @@ $app->post('/user', function() use ($app) {
 			$response['message'] = "No user found";
 			echoResponse(201, $response);
 		}
-		
+
 	} else {
 		$response['status'] = "error";
 		$response['message'] = "Not logged in";
@@ -384,99 +384,128 @@ $app->post('/friend', function() use ($app) {
 	$db = new DB();
 	$session = $db->getSession();
 	$req = json_decode($app->request->getBody());
-	
+
 	//is User logged in?
 	if(!empty($session['userID'])) {
-		
-		$relation=array();
-		$relation['userID']=$session['userID'];
-		$relation['friendID']=$req->friendID;
-		$relation['status']=$req->status;
-		
+
+		$relationship=array();
+		$relationship['userID']=$session['userID'];
+		$relationship['friendID']=$req->friendID;
+		$relationship['status']=$req->status;
+
 		//is friendId valid
-		$sel_exi_friend = $db->preparedStmt("SELECT userID FROM friend WHERE userID LIKE ?");
-		$sel_exi_friend->bind_param('i', $relation['friendID']);
-		$sel_exi_friend->execute();
-		
-		$friend_result = $sel_exi_friend->get_result();
-		$sel_exi_friend->close();
-		
-		if(!empty($friend_result)){
-			
-			
-			//get data from friend db
-			$sel_friend = $db->preparedStmt("SELECT userID,friendID,status,since FROM friend WHERE userID = ?  AND friendID = ?");
-			$sel_friend->bind_param('ii', $userInput['input'], $userInput['input']);
-			$sel_friend->execute();			
-					
+		$stmt_friend = $db->preparedStmt("SELECT 1 FROM user WHERE userID LIKE ?");
+		$stmt_friend->bind_param('i', $relationship['friendID']);
+		$stmt_friend->execute();
+
+		$friend_result = $stmt_friend->get_result();
+		$stmt_friend->close();
+
+		if($friend_result->num_rows>0){
+
+			//get data from friends db
+			$sel_friend = $db->preparedStmt("SELECT userID,friendID,status,since FROM friends WHERE userID = ?  AND friendID = ? OR userID = ?  AND friendID = ?");
+			$sel_friend->bind_param('iiii', $relationship['userID'], $relationship['friendID'], $relationship['friendID'],$relationship['userID']);
+			$sel_friend->execute();
+
 			$rel_result = $sel_friend->get_result();
 			$sel_friend->close();
-			
-			
-			if($rel_result['status']==$relation['status']){
-				//status already set
-				$response['status'] = "success";
-				$response['message'] = "Status already set";
-				echoResponse(200, $response);
-				
-			}else if($rel_result['status']=="accepted"){
-				//status change to accepted
-					//TODO		
-				$response['status'] = "success";
-				$response['message'] = "Status changed to accepted";
-				echoResponse(200, $response);
-			}else if($rel_result['status']=="requested"){
-				
-					//TODO
-				
-				
-				
-			}else if($rel_result['status']=="denied"){
-				//status denied
-				$response['status'] = "success";
-				$response['message'] = "friend request denied";
-				echoResponse(201, $response);
+
+			//check if relationship is already in table and update status if necessary
+			if($rel_result->num_rows>0){
+				$rel_arr = $rel_result->fetch_assoc();
+
+				if($rel_arr['status']==$relationship['status']){
+					//status already set
+					$response['status'] = "error";
+					$response['message'] = "Status already set";
+					echoResponse(201, $response);
+
+				}else if($rel_arr['status']=="requested" && $rel_arr['friendID']==$relationship['userID']){
+					if($relationship['status']=="accepted"){
+						//set timezone and get current date
+						date_default_timezone_set('UTC');
+						$since = date("Y-m-d");
+
+						//status change to accepted
+						$upd_friend = $db->preparedStmt("UPDATE friends SET status = ?, since = ? WHERE userID = ?  AND friendID = ?");
+						$upd_friend->bind_param('ssii',$relationship['status'], $since, $relationship['friendID'],$relationship['userID']);
+						$upd_friend->execute();
+						$upd_friend->close();
+						$response['status'] = "success";
+						$response['message'] = "Status changed to accepted";
+						echoResponse(200, $response);
+					} else if($relationship['status']=="denied") {
+						//status change to denied
+						$upd_friend = $db->preparedStmt("UPDATE friends SET status = ? WHERE userID = ?  AND friendID = ?");
+						$upd_friend->bind_param('sii',$relationship['status'], $relationship['friendID'],$relationship['userID']);
+						$upd_friend->execute();
+						$upd_friend->close();
+						$response['status'] = "success";
+						$response['message'] = "Status changed to denied";
+						echoResponse(200, $response);
+					}
+				} else {
+					$response['status'] = "error";
+					$response['message'] = "Not allowed";
+					echoResponse(201, $response);
+				}
+			} else {
+
+				if($relationship['status']=="requested") {
+					$ins_friend = $db->preparedStmt("INSERT INTO friends(userID, friendID, status) VALUES(?,?,?)");
+					$ins_friend->bind_param('iis', $relationship['userID'], $relationship['friendID'],$relationship['status']);
+					$ins_friend->execute();
+					$ins_friend->close();
+					$response['status'] = "success";
+					$response['message'] = "Request sent";
+					echoResponse(200, $response);
+				} else {
+					$response['status'] = "error";
+					$response['message'] = "Status not valid";
+					echoResponse(201, $response);
+				}
 			}
-			
-			
+
 		}else{
 			$response['status'] = "error";
-			$response['message'] = "Friend not found";
+			$response['message'] = "User not found";
 			echoResponse(201, $response);
 		}
-		
-			
-		
-		
-		
 	} else {
 		$response['status'] = "error";
 		$response['message'] = "Not logged in";
 		echoResponse(201, $response);
 	}
 
-	
+
 });
+
+//DELETE friend
+$app->delete('/friend', function() use ($app) {
+	//TODO: First, check if friend is added and then delete
+});
+
 //GET Friends
 $app->get('/friendlist', function() use ($app) {
 	//REST-Service Response
 	$response = array();
 	$db = new DB();
 	$session = $db->getSession();
-	
+
 	//is User logged in?
 	if(!empty($session['userID'])) {
-	
-		
+
+
 		$userID=$session['userID'];
 			
 		$sel_friendlist = $db->preparedStmt("SELECT f.friendID,f.since,u.name FROM friends AS f JOIN user AS u ON f.friendID = u.userID WHERE u.userID = ? AND f.status = 'accepted'");
 		$sel_friendlist->bind_param('i', $userID);
 		$sel_friendlist->execute();			
-					
+
 		$rel_result = $sel_friendlist->get_result();
 		$sel_friendlist->close();
-	
+
 		if(mysqli_num_rows($rel_result)>0){
 			$response['user'] = $rel_result->fetch_assoc();
 			while ($user = $rel_result->fetch_assoc()) {
@@ -489,16 +518,16 @@ $app->get('/friendlist', function() use ($app) {
 			$response['message'] = "No friends found";
 			echoResponse(201, $response);
 		}
-	
+
 	} else {
 		$response['status'] = "error";
 		$response['message'] = "Not logged in";
 		echoResponse(201, $response);
 	}
-		
-	
-		
-	});
+
+
+
+});
 //POST Passwort (Passwort ändern)
 $app->post('/changePassword', function() use ($app) {
 
@@ -507,30 +536,30 @@ $app->post('/changePassword', function() use ($app) {
 	$db = new DB();
 	$session = $db->getSession();
 	$req = json_decode($app->request->getBody());
-	
-		
+
+
 	//is User logged in?
 	if(!empty($session['userID'])) {
 		$password = $req->password;
 		$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-		
+
 		$changePw = $db->preparedStmt("UPDATE user SET password = ? WHERE userID = ?");
 		$changePw->bind_param('i', $hashedPassword,$session['userID']);
-		$changePw->execute();			
+		$changePw->execute();
 		$changePw->close();
-				
+
 		$response['status'] = "success";
 		$response['message'] = "Password changed";
 		echoResponse(200, $response);
-	
+
 	} else {
 		$response['status'] = "error";
 		$response['message'] = "Not logged in";
 		echoResponse(201, $response);
 	}
-		
-	
-	
+
+
+
 });
 //POST Email (Email ändern)
 $app->post('/changeEmail', function() use ($app) {
@@ -540,30 +569,30 @@ $app->post('/changeEmail', function() use ($app) {
 	$db = new DB();
 	$session = $db->getSession();
 	$req = json_decode($app->request->getBody());
-	
-		
+
+
 	//is User logged in?
 	if(!empty($session['userID'])) {
 		$email = $req->email;
-		
+
 		$changeEmail = $db->preparedStmt("UPDATE user SET email = ? WHERE userID = ?");
 		$changeEmail->bind_param('i', $email,$session['userID']);
-		$changeEmail->execute();			
+		$changeEmail->execute();
 		$changeEmail->close();
-				
+
 		$response['status'] = "success";
 		$response['message'] = "Email changed";
 		echoResponse(200, $response);
-		
-		
+
+
 	} else {
 		$response['status'] = "error";
 		$response['message'] = "Not logged in";
 		echoResponse(201, $response);
 	}
-		
-	
-	
+
+
+
 });
 
 ?>

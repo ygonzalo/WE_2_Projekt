@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS user (
 CREATE TABLE IF NOT EXISTS friends (
   `userID` INT UNSIGNED NOT NULL,
   `friendID` INT UNSIGNED NOT NULL,
-  `since` DATE,
+  `since` DATE DEFAULT NULL,
   `status` ENUM('requested','accepted','denied') COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`userID`,`friendID`),
   CONSTRAINT fk_userID
