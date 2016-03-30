@@ -620,7 +620,7 @@ $app->delete('/friend', function() use ($app) {
 	
 	//check if user is logged in
 	if($session['userID']!='') {
-		$userID=session['userID'];
+		$userID=$session['userID'];
 		$friendID=$req->friendID;
 		//look up if friend exists
 		$sel_friends = $db->preparedStmt("SELECT f.userID,f.friendID,f.since FROM friends AS f WHERE f.userID = ? AND f.friendID = ?");
@@ -629,9 +629,9 @@ $app->delete('/friend', function() use ($app) {
 		$sel_friends->store_result();
 		
 		//delete if exists
-		if($sel_rel->num_rows>0){
+		if($sel_friends->num_rows>0){
 		
-			$del_friends = $db->preparedStmt("DELETE FROM friends WHERE f.userID = ? AND f.friendID = ?")
+			$del_friends = $db->preparedStmt("DELETE FROM friends WHERE f.userID = ? AND f.friendID = ?");
 			$del_friends->bind_param('ii', $userID, $friendID);
 			$del_friends->execute();
 			$del_friends->store_result();	
