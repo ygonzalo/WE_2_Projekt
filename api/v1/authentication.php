@@ -3,10 +3,11 @@
 $app->get('/session', function() {
 	$db = new DB();
 	$session = $db->getSession();
+	$response = array();
 	$response['userID'] = $session['userID'];
 	$response['email'] = $session['email'];
 	$response['name'] = $session['name'];
-	echoResponse(200, $session);
+	echoResponse(200, $response);
 });
 
 //POST Login
@@ -85,7 +86,7 @@ $app->post('/signUp', function() use ($app) {
 $app->get('/logout', function() {
 	$db = new DB();
 	$msg = $db->destroySession();
-	$response["status"] = "info";
+	$response["status"] = "success";
 	$response["message"] = $msg ;
 	echoResponse(200, $response);
 });

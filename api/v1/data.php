@@ -125,7 +125,7 @@ $app->post('/status', function() use ($app) {
 				if($status == "watched") {
 
 					$watchers = $movie['watchers'] +1;
-					date_default_timezone_set('UTC');
+					date_default_timezone_set('Europe/Berlin');
 
 					$watched_date = date("Y-m-d");
 				} else {
@@ -461,7 +461,7 @@ $app->put('/request', function() use ($app) {
 					switch ($status) {
 						case "accepted":
 							//set timezone and get current date
-							date_default_timezone_set('UTC');
+							date_default_timezone_set('Europe/Berlin');
 							$since = date("Y-m-d");
 							//bind params to statement and execute
 							$upd_friend->bind_param('ssii', $status, $since, $friendID, $userID);

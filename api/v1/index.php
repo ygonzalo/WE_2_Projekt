@@ -8,6 +8,7 @@ $app = new \Slim\Slim();
 
 require_once("authentication.php");
 require_once("data.php");
+require_once("documentation.php");
 
 /*
 Encodes response to JSON
