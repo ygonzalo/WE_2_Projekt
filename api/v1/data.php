@@ -469,11 +469,9 @@ $app->get('/friendlist', function() use ($app) {
 	
 		
 		$userID=$session['userID'];
-		$accepted="accepted";
-		
-		$sel_friendlist = $db->preparedStmt("SELECT f.friendID,f.since,u.name FROM friend AS f JOIN user AS u ON f.friendID = u.userID WHERE u.userID = ? AND f.status = ?");
-		//TODO kann nicht preparen - query oder objekte falsch
-		$sel_friendlist->bind_param('is', $userID, $accepted);
+			
+		$sel_friendlist = $db->preparedStmt("SELECT f.friendID,f.since,u.name FROM friends AS f JOIN user AS u ON f.friendID = u.userID WHERE u.userID = ? AND f.status = 'accepted'");
+		$sel_friendlist->bind_param('i', $userID);
 		$sel_friendlist->execute();			
 					
 		$rel_result = $sel_friendlist->get_result();
