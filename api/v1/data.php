@@ -513,9 +513,17 @@ $app->post('/changePassword', function() use ($app) {
 		
 	//is User logged in?
 	if(!empty($session['userID'])) {
-	
-	
-	//TODO UPDATE Passwort
+		$password = $req->password;
+		$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+		
+		$changePw = $db->preparedStmt("UPDATE user SET password = ? WHERE userID = ?");
+		$changePw->bind_param('i', $hashedPassword,$session['userID']);
+		$changePw->execute();			
+		$changePw->close();
+				
+		$response['status'] = "success";
+		$response['message'] = "Password changed";
+		echoResponse(200, $response);
 	
 	} else {
 		$response['status'] = "error";
@@ -538,10 +546,18 @@ $app->post('/changeEmail', function() use ($app) {
 		
 	//is User logged in?
 	if(!empty($session['userID'])) {
-	
-	
-	//TODO UPDATE Email
-	
+		$email = $req->email;
+		
+		$changeEmail = $db->preparedStmt("UPDATE user SET email = ? WHERE userID = ?");
+		$changeEmail->bind_param('i', $email,$session['userID']);
+		$changeEmail->execute();			
+		$changeEmail->close();
+				
+		$response['status'] = "success";
+		$response['message'] = "Email changed";
+		echoResponse(200, $response);
+		
+		
 	} else {
 		$response['status'] = "error";
 		$response['message'] = "Not logged in";
