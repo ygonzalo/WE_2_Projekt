@@ -795,23 +795,24 @@ $app->get('/user/color', function() use ($app) {
 	$db = new DB();
 	$session = $db->getSession();
 
-
 	//check if user is logged in
 	if(!empty($session['userID'])) {
 		
-		//TODO get defaultColor from user
 		$sel_col= $db->preparedStmt("SELECT color FROM user WHERE userID = ?");
 		$sel_col->bind_param('i', $userID);
 		$sel_col->execute();
 
 		$sel_col->store_result();
+		$sel_col->bind_result($db_color);
 		
-		///TODO color aus sel_col holen
-		$color =  "green";
+		$color =  $db_color;
 		$response['color'] = $color;
 		$response['status'] = "success";
 		$response['message'] = "Color choosen";
 		echoResponse(200, $response);
+
+		$sel_col->free_result();
+		$sel_col->close();
 		
 	} else {
 		$response['status'] = "error";
