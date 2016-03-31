@@ -788,3 +788,36 @@ $app->post('/user/email', function() use ($app) {
 
 });
 
+//GET Color
+$app->get('/user/color', function() use ($app) {
+	//REST-Service Response
+	$response = array();
+	$db = new DB();
+	$session = $db->getSession();
+
+
+	//check if user is logged in
+	if(!empty($session['userID'])) {
+		
+		//TODO get defaultColor from user
+		$sel_col= $db->preparedStmt("SELECT color FROM user WHERE userID = ?");
+		$sel_col->bind_param('i', $userID);
+		$sel_col->execute();
+
+		$sel_col->store_result();
+		
+		///TODO color aus sel_col holen
+		$color =  "green";
+		$response['color'] = $color;
+		$response['status'] = "success";
+		$response['message'] = "Color choosen";
+		echoResponse(200, $response);
+		
+	} else {
+		$response['status'] = "error";
+		$response['message'] = "Not logged in";
+		echoResponse(201, $response);
+	}
+
+});
+
