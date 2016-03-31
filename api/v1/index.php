@@ -7,8 +7,7 @@ require(".././libs/Slim/Slim.php");
 $app = new \Slim\Slim();
 
 require_once("authentication.php");
-require_once("friends.php");
-require_once("movie.php");
+require_once("data.php");
 require_once("documentation.php");
 
 /*

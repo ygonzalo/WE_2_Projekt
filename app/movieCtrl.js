@@ -11,12 +11,9 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$location'
 
 		}
 
-		Data.get('movie?title='+$location.search().title).then(function (results) {
+		Data.get('movies/search/'+$location.search().title).then(function (results) {
 
 			if(results.status == "success") {
-				angular.forEach(results.matches, function(match, index){
-					match.index = index;
-				});
 				$scope.results = results;
 			}
 			else {
@@ -26,9 +23,9 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$location'
 	};
 
 	$scope.status = "";
-	$scope.changeStatus = function (status, index) {
+	$scope.changeStatus = function (status, movieID) {
 
-		Data.post('status', {
+		Data.post('movies/'+ movieID +'/status', {
 			status: status,
 			index: index
 		}).then(function (results){
@@ -38,12 +35,21 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$location'
 	};
 
 	$scope.getWatchlist = function () {
-		Data.get('watchlist').then(function (results) {
+		Data.get('movies/watchlist').then(function (results) {
 			if(results.status == "success") {
 				$scope.result = results;
 			}
 		})
 	};
+
+	$scope.getWatched = function () {
+		Data.get('movies/watched').then(function (results) {
+			if(results.status == "success") {
+				$scope.result = results;
+			}
+		})
+	};
+
 	
 	$scope.includeFilmTemplate = function() {
 		if($rootScope.authenticated){
