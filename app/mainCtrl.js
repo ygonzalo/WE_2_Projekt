@@ -8,10 +8,7 @@ app.controller('mainCtrl', ['$scope', '$rootScope', '$routeParams', '$location',
 			return "";
 		};
 
-		$scope.includeProfile = function(){
-			if($rootScope.authenticated){
-				return "partials/header_profile.html";
-			}
-			return "";
+		$scope.includeHeader = function(){
+			return "partials/header.html";
 		};
 }]);

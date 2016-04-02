@@ -1,0 +1,29 @@
+<div class="header">
+	<table class="coloredline" >
+		<tr>
+			<td id="t1"></td>
+			<td id="t2"></td>
+			<td id="t3"></td>
+			<td id="t4"></td>
+		</tr>
+	</table>
+	<div id="header_content">
+		<div class="header_left">
+			<div data-ng-if="authenticated" data-ng-controller="authCtrl">
+				<a data-ng-click="logout();">Abmelden</a>
+			</div>
+		</div>
+		<div class="header_center">
+			<a href="#/home">
+				<div id="logo_container">
+					<img src="resources/images/logo.png" id="logo" />
+				</div>
+			</a>
+		</div>
+		<div class="header_right">
+			<div data-ng-if="authenticated" data-ng-controller="authCtrl">
+				<a href="#/profile"><b>{{name}}</b></a>
+			</div>
+		</div>
+	</div>
+</div>

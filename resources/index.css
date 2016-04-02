@@ -26,28 +26,30 @@ input:focus{
 /* basic style of content */
 #ng-view
 {
-	position:relative;
-	height:auto;
-	margin:1em;
+	position:absolute;
+	top:0;
+	height:100%;
+	width:100%;
 	padding:0;
 }
 
 /* .box class: this container overrides all other visible content, excpet for the header. used for signup and login*/
 .box{
+	position:relative;
+	top:0px;
+	left:0px;
+	width:100%;
+	height:100%;
 	background-color:rgb(61,61,61);
     text-align: center;
 	color:white;
-	position:fixed;
-	top:0px;
-	left:0px;
-	height:100%;
-	width:100%;
-	display:flex;
+	
 	display:-webkit-flex;
-	align-items: center;
+	display:flex;
 	-webkit-align-items: center;
-	justify-content: center;
+	align-items: center;
 	-webkit-justify-content: center;
+	justify-content: center;
 	
 }
 

@@ -3,8 +3,7 @@
 
   <head>
     <meta charset="utf-8">
-	<!--meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /-->
-	<meta name="viewport" content="width=480, height=800, user-scalable=no" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, minimum-scale=0.5, user-scalable=yes" >
     
 	<link rel="shortcut icon" href="">
     <link rel="stylesheet" href="resources/search.css">
@@ -17,34 +16,7 @@
   </head>
 
   <body data-ng-controller="mainCtrl">
-    <div class="header">
-		<table class="coloredline" >
-			<tr>
-				<td id="t1"></td>
-				<td id="t2"></td>
-				<td id="t3"></td>
-				<td id="t4"></td>
-			</tr>
-		</table>
-		<div id="header_content">
-			<div class="header_left"></div>
-			<div class="header_center">
-				<a href="#/home">
-					<div id="logo_container">
-						<img src="resources/images/wtm_logo.png" id="logo" />
-						<div id="logo_text">
-							<h1>
-							Watched that<br /><b>Movie</b>
-							</h1>
-						</div>
-					</div>
-				</a>
-			</div>
-			<div class="header_right">
-				<div data-ng-include="includeProfile()"></div>
-			</div>
-		</div>
-    </div>
+    <div data-ng-include="includeHeader()" id="header"></div>
     <div data-ng-include="includeSearch()" id="search_box"></div>
     <div data-ng-view="" id="ng-view"></div>
   </body>
