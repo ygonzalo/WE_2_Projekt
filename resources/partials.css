@@ -97,22 +97,19 @@
 	flex-wrap:wrap;
 }
 
-.profile_box div {
-	margin:1em;
-	min-width:380px;
-}
-
 .profile_content_box {
 	-webkit-flex:1;
 	flex:1;
+	padding:1em;
+	min-width:380px;
+	position:relative;
 }
 
 #profile_img_box {
-	width:160px;
-	min-width:160px;
-	max-width:160px;
-	height:180px;
+	width:10.5em;
+	height:12em;
 	background-color:gray;
+	margin:1em;
 }
 
 #profile_me textarea {
@@ -168,7 +165,7 @@
 .profile_color_radio:before {
 	content:"";
 	display:inline-block;
-	width:3em;
+	width:2.4em;
 	height:2em;
 	position:relative;
 	left:0;
@@ -192,4 +189,88 @@ label[for=color_cherry]:before{
 }
 label[for=color_blueberry]:before{
 	background-color:rgb(105,22,233);
+}
+label[for=color_default]:before{
+	background-color:rgb(111,111,111);
+}
+
+.profile_content_header {
+	padding:0.3em;
+	padding-left:1em;
+	background-color:rgb(233,233,233);
+}
+
+#friend_box_header {
+	position:relative;
+	left:0;
+	top:0;
+	display:-webkit-flex;
+	display:flex;
+	-webkit-flex-wrap:wrap;
+	flex-wrap:wrap;
+	-webkit-align-items:center;
+	align-items:center;
+	margin:0;
+}
+
+#friend_box_header div:first-child {
+	-webkit-flex:1;
+	flex:1;
+}
+
+#friend_box_header div:last-child {
+	text-align:right;
+	position:relative;
+}
+
+#friend_box_header form {
+}
+
+#friend_box_header input, #friend_box_header button {
+	position:relative;
+	-moz-box-sizing:border-box;
+	box-sizing:border-box;
+	border:2px solid rgb(61,61,61);
+	border-radius:4px;
+	height:2.4em;
+	padding:0 0.5em;
+	background-color:rgba(0,0,0,0);
+}
+
+#friend_box_header input {
+	width:18em;
+}
+
+#friend_box_header button {
+	cursor:pointer;
+}
+
+#friend_box_header input:focus, #friend_box_header input:hover, #friend_box_header button:focus, #friend_box_header button:hover {
+	background-color:rgb(222,222,222);
+}
+
+.friend_box_template {
+	position:relative;
+	width:20em;
+	height:10em;
+	display:-webkit-flex;
+	display:flex;
+	float:left;
+	margin:1em;
+}
+
+.friend_box_template:last-child {
+	-webkit-flex:1;
+	flex:1;
+}
+
+.friend_box_template_img {
+	width:7em;
+	height:8em;
+	background-color:rgb(222,222,222);
+	margin:1em;
+}
+
+.friend_box_template a {
+	color:rgb(111,111,111);
 }
