@@ -27,7 +27,6 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$location'
 
 		Data.post('movies/'+ movieID +'/status', {
 			status: status,
-			index: index
 		}).then(function (results){
 			if(results.status == "success") {
 			}

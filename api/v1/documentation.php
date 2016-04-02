@@ -102,15 +102,11 @@ $app->get('/', function() use ($app) {
 		<tbody>
 		<tr>
 			<th>URL</th>
-			<td>/movie</td>
+			<td>/movies/search/<b>:query</b></td>
 		</tr>
 		<tr>
 			<th>Method</th>
 			<td>GET</td>
-		</tr>
-		<tr>
-			<th>URLS Params</th>
-			<td>title</td>
 		</tr>
 		<tr>
 			<th>Results</th>
@@ -128,7 +124,7 @@ $app->get('/', function() use ($app) {
 		<tbody>
 		<tr>
 			<th>URL</th>
-			<td>/status</td>
+			<td>/movies/:movieID/status</td>
 		</tr>
 		<tr>
 			<th>Method</th>
@@ -154,11 +150,7 @@ $app->get('/', function() use ($app) {
 		<tbody>
 		<tr>
 			<th>URL</th>
-			<td>/watchlist</td>
-		</tr>
-		<tr>
-			<th>Method</th>
-			<td>GET</td>
+			<td>/movies/watchlist</td>
 		</tr>
 		<tr>
 			<th>URLS Params</th>
@@ -179,15 +171,11 @@ $app->get('/', function() use ($app) {
 		<tbody>
 		<tr>
 			<th>URL</th>
-			<td>/watched</td>
+			<td>/movies/watched</td>
 		</tr>
 		<tr>
 			<th>Method</th>
 			<td>GET</td>
-		</tr>
-		<tr>
-			<th>URLS Params</th>
-			<td></td>
 		</tr>
 		<tr>
 			<th>Results</th>
@@ -206,15 +194,11 @@ $app->get('/', function() use ($app) {
 		<tbody>
 		<tr>
 			<th>URL</th>
-			<td>/findUser</td>
+			<td>/friends/search/<b>:query</b></td>
 		</tr>
 		<tr>
 			<th>Method</th>
 			<td>GET</td>
-		</tr>
-		<tr>
-			<th>URLS Params</th>
-			<td>user</td>
 		</tr>
 		<tr>
 			<th>Results</th>
