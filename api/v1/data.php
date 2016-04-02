@@ -1,4 +1,27 @@
 <?php
+
+function isMovieWatched($movieID,$userID) {
+
+	$db = new DB();
+
+	//check if user has watched the movie
+	$stmt_movielist = $db->preparedStmt("SELECT 1 FROM movielist WHERE userID = ? AND movieID = ? AND status = 'watched'");
+	$stmt_movielist->bind_param('ii',$userID,$movieID);
+
+	$stmt_movielist->execute();
+	$stmt_movielist->store_result();
+
+	if($stmt_movielist->num_rows>0){
+		$stmt_movielist->free_result();
+		$stmt_movielist->close();
+		return true;
+	} else {
+		$stmt_movielist->free_result();
+		$stmt_movielist->close();
+		return false;
+	}
+}
+
 //GET Film by name
 $app->get('/movies/search/:title', function($title) use ($app) {
 	$db = new DB();
@@ -209,7 +232,6 @@ $app->post('/movies/:movieID/status', function($movieID) use ($app) {
 							$update_watchlist->close();
 
 						}
-
 					}
 
 					$response['status'] = "success";
@@ -346,8 +368,8 @@ JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID= ? AND status= 'watc
 	}
 });
 
-//POST Rating
-$app->post('/movies/:movieID/rating', function($movieID) use ($app) {
+//PUT Rating
+$app->put('/movies/:movieID/rating', function($movieID) use ($app) {
 
 	//get JSON body and parse to array
 	$req = json_decode($app->request->getBody());
@@ -362,7 +384,23 @@ $app->post('/movies/:movieID/rating', function($movieID) use ($app) {
 
 	//check if user is authenticated
 	if($session['userID'] != '') {
+		$userID=$session['userID'];
 
+		if(isMovieWatched($movieID,$userID)){
+			//Update movie user rating
+			$update_movielist = $db->preparedStmt("UPDATE movielist SET user_rating = ? WHERE movieID=? AND userID=?");
+			$update_movielist->bind_param("iii", $rating,$movieID,$userID);
+			$update_movielist->execute();
+			$update_movielist->close();
+
+		
+			$response['status'] = "success";
+			echoResponse(200, $response);
+		}else {
+			$response['status'] = "error";
+			$response['message'] = "Cannot give rating for unwatched movies";
+			echoResponse(201, $response);
+		}
 	} else {
 		$response['status'] = "error";
 		$response['message'] = "Not logged in";
@@ -381,6 +419,7 @@ $app->get('/friends/search/:query', function($query) use ($app) {
 
 	//check if user is logged in
 	if($session['userID']!='') {
+		$userID=$session['userID'];
 		$userInput= "%".$query."%";
 
 		$sel_user = $db->preparedStmt("SELECT userID,name,email,points FROM user WHERE name LIKE ?  OR email LIKE ?");
@@ -390,7 +429,6 @@ $app->get('/friends/search/:query', function($query) use ($app) {
 		$sel_user->bind_result($db_userID,$db_name,$db_email,$db_points);
 
 		if($sel_user->num_rows>0){
-			$userID=$session['userID'];
 			$response['users'] = array();
 			$user = array();
 			while ($sel_user->fetch()) {
@@ -442,7 +480,10 @@ $app->put('/friends/:friendID/request', function($friendID) use ($app) {
 		$sel_rel->store_result();
 		$sel_rel->bind_result($db_userID,$db_friendID,$db_status,$db_since);
 
+		$sel_rel->fetch();
+
 		if($db_friendID==$userID){
+
 			//check if relationship is already in table and update status if necessary
 			if($sel_rel->num_rows>0){
 				$sel_rel->fetch();
@@ -608,12 +649,12 @@ $app->get('/friends/requests', function() use ($app) {
 
 //DELETE friend
 $app->delete('/friends/:friendID', function($friendID) use ($app) {
-	
+
 	//REST-Service Response
 	$response = array();
 	$db = new DB();
 	$session = $db->getSession();
-	
+
 	//check if user is logged in
 	if($session['userID']!='') {
 		$userID=$session['userID'];
@@ -622,31 +663,31 @@ $app->delete('/friends/:friendID', function($friendID) use ($app) {
 		$sel_friends->bind_param('iiii', $userID, $friendID ,$friendID ,$userID);
 		$sel_friends->execute();
 		$sel_friends->store_result();
-		
+
 		//delete if exists
 		if($sel_friends->num_rows>0){
-		
+
 			$del_friends = $db->preparedStmt("DELETE FROM friends WHERE userID = ? AND friendID = ? OR userID = ? AND friendID = ?");
 			$del_friends->bind_param('iiii', $userID, $friendID ,$friendID ,$userID);
 			$del_friends->execute();
-			$del_friends->store_result();	
+			$del_friends->store_result();
 			$response['status'] = "success";
 			$response['message'] = "Friend deleted";
-			echoResponse(200, $response);			
-				
+			echoResponse(200, $response);
+
 		}else{
 			$response['status'] = "error";
 			$response['message'] = "Not a friend";
 			echoResponse(201, $response);
-			
+
 		}
-		
+
 	}else {
 		$response['status'] = "error";
 		$response['message'] = "Not logged in";
 		echoResponse(201, $response);
 	}
-	
+
 });
 
 //GET Friends
@@ -721,6 +762,152 @@ $app->get('/friends', function() use ($app) {
 
 });
 
+//POST Send a movie recommendation to a friend
+$app->post('/friends/:friendID/recommend', function($friendID) use ($app) {
+	//REST-Service Response
+	$response = array();
+	$db = new DB();
+	$session = $db->getSession();
+	$req = json_decode($app->request->getBody());
+
+	//movieID to recommend
+	$movieID = $req->movieID;
+
+	//check if user is logged in
+	if($session['userID']!='') {
+		$userID = $session['userID'];
+
+		//check if user is a friend
+		$stmt_friends = $db->preparedStmt("SELECT 1 FROM friends WHERE friendID = ? AND userID = ? OR friendID = ? AND userID = ?");
+		$stmt_friends->bind_param('iiii',$friendID,$userID,$userID,$friendID);
+
+		$stmt_friends->execute();
+		$stmt_friends->store_result();
+
+		if($stmt_friends->num_rows>0){
+
+			if(isMovieWatched($movieID,$userID)){
+				//Insert new recommendation
+				$stmt_recommendations = $db->preparedStmt("INSERT INTO recommendations(fromID,toID,movieID) VALUES(?,?,?)");
+				$stmt_recommendations->bind_param('iii',$userID,$friendID,$movieID);
+				$stmt_recommendations->execute();
+				$stmt_recommendations->close();
+
+				$response['status'] = "success";
+				echoResponse(200, $response);
+			}else{
+				$response['status'] = "error";
+				$response['message'] = "Cannot recommend a movie that has not been watched";
+				echoResponse(201, $response);
+			}
+		} else{
+			$response['status'] = "error";
+			$response['message'] = "Friend not added";
+			echoResponse(201, $response);
+		}
+		$stmt_friends->free_result();
+		$stmt_friends->close();
+	} else {
+		$response['status'] = "error";
+		$response['message'] = "Not logged in";
+		echoResponse(201, $response);
+	}
+
+});
+
+//GET recommendations
+$app->get('/friends/recommendations', function() use ($app) {
+	//REST-Service Response
+	$response = array();
+	$db = new DB();
+	$session = $db->getSession();
+
+	//check if user is logged in
+	if($session['userID']!='') {
+		$userID = $session['userID'];
+		$stmt_rec = $db->preparedStmt("SELECT r.fromID,u.name,r.movieID FROM recommendations AS r JOIN user AS u ON r.fromID = u.userID WHERE r.toID = ?");
+		$stmt_rec->bind_param('i',$userID);
+		$stmt_rec->execute();
+
+		$stmt_rec->store_result();
+		$stmt_rec->bind_result($db_fromID,$db_name,$db_movieID);
+
+		$response['recommendations'] = array();
+
+
+		if($stmt_rec->num_rows>0){
+
+			echo $userID;
+
+			while($stmt_rec->fetch()){
+				$reco = array();
+				$reco['from'] = $db_fromID;
+				$reco['name'] = $db_name;
+
+				$movie_stmt = $db->preparedStmt("SELECT m.movieID, m.original_title, m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, mi.poster
+FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID= ?");
+				$movie_stmt->bind_param('i',$db_movieID);
+				$movie_stmt->execute();
+				$movie_stmt->store_result();
+				$movie_stmt->bind_result($db_movieID,$db_original_title,$db_ratings,$db_rating_points,$db_watchers, $db_title, $db_plot, $db_release_date, $db_poster);
+
+				if($movie_stmt->num_rows>0){
+
+					$movie_stmt->fetch();
+
+					$reco['movieID'] = $db_movieID;
+					$reco['title'] = $db_title;
+					$reco['plot'] = $db_plot;
+					$reco['release_date'] = $db_release_date;
+					$reco['original_title'] = $db_original_title;
+					$reco['poster'] = $db_poster;
+					$reco['watchers'] = $db_watchers;
+					$reco['rating_points'] = $db_rating_points;
+
+					$movielist_stmt = $db->preparedStmt("SELECT user_rating, status FROM movielist WHERE movieID= ? AND userID = ?");
+					$movielist_stmt->bind_param('ii',$db_movieID, $userID);
+					$movielist_stmt->execute();
+					$movielist_stmt->store_result();
+					$movielist_stmt->bind_result($db_user_rating, $db_status);
+
+					if($movielist_stmt->num_rows>0){
+						$movielist_stmt->fetch();
+						$reco['status'] = $db_status;
+						$reco['user_rating'] = $db_user_rating;
+					} else{
+						$reco['status'] = null;
+						$reco['user_rating'] = null;
+					}
+
+					$movielist_stmt->free_result();
+					$movielist_stmt->close();
+
+				}
+
+				$movie_stmt->free_result();
+				$movie_stmt->close();
+				array_push($response['recommendations'],$reco);
+			}
+
+			$response['status'] = "success";
+			echoResponse(200, $response);
+
+		} else{
+			$response['status'] = "error";
+			$response['message'] = "No new recommendations";
+			echoResponse(201, $response);
+		}
+
+		$stmt_rec->free_result();
+		$stmt_rec->close();
+
+	} else {
+		$response['status'] = "error";
+		$response['message'] = "Not logged in";
+		echoResponse(201, $response);
+	}
+});
+
 //PUT Passwort (Passwort ändern)
 $app->post('/user/password', function() use ($app) {
 
@@ -730,9 +917,8 @@ $app->post('/user/password', function() use ($app) {
 	$session = $db->getSession();
 	$req = json_decode($app->request->getBody());
 
-
 	//check if user is logged in
-	if(!empty($session['userID'])) {
+	if($session['userID']!='') {
 		$password = $req->password;
 		$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
@@ -751,9 +937,8 @@ $app->post('/user/password', function() use ($app) {
 		echoResponse(201, $response);
 	}
 
-
-
 });
+
 //PUT Email (Email ändern)
 $app->post('/user/email', function() use ($app) {
 
@@ -763,9 +948,8 @@ $app->post('/user/email', function() use ($app) {
 	$session = $db->getSession();
 	$req = json_decode($app->request->getBody());
 
-
 	//check if user is logged in
-	if(!empty($session['userID'])) {
+	if($session['userID']!='') {
 		$email = $req->email;
 
 		$changeEmail = $db->preparedStmt("UPDATE user SET email = ? WHERE userID = ?");
@@ -783,9 +967,6 @@ $app->post('/user/email', function() use ($app) {
 		$response['message'] = "Not logged in";
 		echoResponse(201, $response);
 	}
-
-
-
 });
 
 //GET Color
@@ -796,15 +977,15 @@ $app->get('/user/color', function() use ($app) {
 	$session = $db->getSession();
 
 	//check if user is logged in
-	if(!empty($session['userID'])) {
-		
+	if($session['userID']!='') {
+
 		$sel_col= $db->preparedStmt("SELECT color FROM user WHERE userID = ?");
 		$sel_col->bind_param('i', $userID);
 		$sel_col->execute();
 
 		$sel_col->store_result();
 		$sel_col->bind_result($db_color);
-		
+
 		$color =  $db_color;
 		$response['color'] = $color;
 		$response['status'] = "success";
@@ -813,7 +994,7 @@ $app->get('/user/color', function() use ($app) {
 
 		$sel_col->free_result();
 		$sel_col->close();
-		
+
 	} else {
 		$response['status'] = "error";
 		$response['message'] = "Not logged in";
