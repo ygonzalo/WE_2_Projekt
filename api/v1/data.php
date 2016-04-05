@@ -1,72 +1,6 @@
 <?php
 
-function isMovieWatched($movieID,$userID) {
-
-	$db = new DB();
-
-	//check if user has watched the movie
-	$stmt_movielist = $db->preparedStmt("SELECT 1 FROM movielist WHERE userID = ? AND movieID = ? AND status = 'watched'");
-	$stmt_movielist->bind_param('ii',$userID,$movieID);
-
-	$stmt_movielist->execute();
-	$stmt_movielist->store_result();
-
-	if($stmt_movielist->num_rows>0){
-		$stmt_movielist->free_result();
-		$stmt_movielist->close();
-		return true;
-	} else {
-		$stmt_movielist->free_result();
-		$stmt_movielist->close();
-		return false;
-	}
-}
-
-function isFriend($userID, $friendID) {
-	$db = new DB();
-
-	//check if user is a friend
-	$stmt_friends = $db->preparedStmt("SELECT 1 FROM friends WHERE friendID = ? AND userID = ? OR friendID = ? AND userID = ?");
-	$stmt_friends->bind_param('iiii',$friendID,$userID,$userID,$friendID);
-
-	$stmt_friends->execute();
-	$stmt_friends->store_result();
-
-	if($stmt_friends->num_rows>0) {
-		$stmt_friends->free_result();
-		$stmt_friends->close();
-		return true;
-	} else {
-		$stmt_friends->free_result();
-		$stmt_friends->close();
-		return false;
-	}
-}
-
-function movieIsRated($userID,$movieID) {
-	$db = new DB();
-
-	//check if user already gave a rating
-	$stmt_movielist = $db->preparedStmt("SELECT user_rating FROM movielist WHERE userID = ? AND movieID = ?");
-	$stmt_movielist->bind_param('ii',$userID,$movieID);
-
-	$stmt_movielist->execute();
-	$stmt_movielist->store_result();
-	$stmt_movielist->bind_result($db_user_rating);
-
-	$stmt_movielist->fetch();
-
-	if($db_user_rating != null) {
-		$stmt_movielist->free_result();
-		$stmt_movielist->close();
-		return true;
-	} else {
-		$stmt_movielist->free_result();
-		$stmt_movielist->close();
-		return false;
-	}
-}
-
+require_once("helper_methods.php");
 
 /*************************************************************************************
 REST API
@@ -539,6 +473,64 @@ $app->get('/friends/search/:query', function($query) use ($app) {
 
 });
 
+//POST Send friend request
+$app->post('/friends/:friendID/request', function($friendID) use ($app) {
+
+	//REST-Service Response
+	$response = array();
+	$db = new DB();
+	$session = $db->getSession();
+
+	//check if user is logged in
+	if($session['userID']!='') {
+
+		$userID=$session['userID'];
+
+		if($friendID!=$userID) {
+
+			if (userExists($friendID)) {
+
+				if (isFriend($userID,$friendID)) {
+					$ins_friend = $db->preparedStmt("INSERT INTO friends(userID, friendID, status) VALUES(?,?,'requested')");
+					$ins_friend->bind_param('ii', $userID, $friendID);
+					$ins_friend->execute();
+					$ins_friend->close();
+
+					$user_name = getUsername($userID);
+					$friend_email = getUserEmail($friendID);
+
+					$message = "Du hast eine neue Freundschaftsanfrage von $user_name";
+					$subject = "Neue Freundschaftsanfrage";
+
+					sendMail($friend_email,$subject,$message);
+
+					$response['status'] = "success";
+					$response['message'] = "Request sent";
+					echoResponse(200, $response);
+				} else {
+					$response['status'] = "error";
+					$response['message'] = "Relationship already exists";
+					echoResponse(201, $response);
+				}
+
+			} else {
+				$response['status'] = "error";
+				$response['message'] = "User not found";
+				echoResponse(201, $response);
+			}
+		}else{
+			$response['status'] = "error";
+			$response['message'] = "It is only possible to send requests to other users";
+			echoResponse(201, $response);
+		}
+	} else {
+		$response['status'] = "error";
+		$response['message'] = "Not logged in";
+		echoResponse(201, $response);
+	}
+
+});
+
 //PUT Accept or deny friend request
 $app->put('/friends/:friendID/request', function($friendID) use ($app) {
 	//REST-Service Response
@@ -623,62 +615,7 @@ $app->put('/friends/:friendID/request', function($friendID) use ($app) {
 	}
 });
 
-//POST Send friend request
-$app->post('/friends/:friendID/request', function($friendID) use ($app) {
 
-	//REST-Service Response
-	$response = array();
-	$db = new DB();
-	$session = $db->getSession();
-
-	//check if user is logged in
-	if($session['userID']!='') {
-
-		$userID=$session['userID'];
-
-		if($friendID!=$userID) {
-			//check if there is a user with the id in friendID
-			$stmt_friend = $db->preparedStmt("SELECT 1 FROM user WHERE userID LIKE ?");
-			$stmt_friend->bind_param('i', $friendID);
-			$stmt_friend->execute();
-
-			$stmt_friend->store_result();
-
-			if ($stmt_friend->num_rows > 0) {
-
-				if (isFriend($userID,$friendID)) {
-					$ins_friend = $db->preparedStmt("INSERT INTO friends(userID, friendID, status) VALUES(?,?,'requested')");
-					$ins_friend->bind_param('ii', $userID, $friendID);
-					$ins_friend->execute();
-					$ins_friend->close();
-					$response['status'] = "success";
-					$response['message'] = "Request sent";
-					echoResponse(200, $response);
-				} else {
-					$response['status'] = "error";
-					$response['message'] = "Relationship already exists";
-					echoResponse(201, $response);
-				}
-
-			} else {
-				$response['status'] = "error";
-				$response['message'] = "User not found";
-				echoResponse(201, $response);
-			}
-			$stmt_friend->free_result();
-			$stmt_friend->close();
-		}else{
-			$response['status'] = "error";
-			$response['message'] = "It is only possible to send requests to other users";
-			echoResponse(201, $response);
-		}
-	} else {
-		$response['status'] = "error";
-		$response['message'] = "Not logged in";
-		echoResponse(201, $response);
-	}
-
-});
 
 //GET Friend requests
 $app->get('/friends/requests', function() use ($app) {
