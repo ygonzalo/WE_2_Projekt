@@ -4,7 +4,7 @@ require_once("helper_methods.php");
 
 /*************************************************************************************
 REST API
-**************************************************************************************/
+ **************************************************************************************/
 
 //GET Film by name
 $app->get('/movies/search/:title', function($title) use ($app) {
@@ -490,7 +490,7 @@ $app->post('/friends/:friendID/request', function($friendID) use ($app) {
 
 			if (userExists($friendID)) {
 
-				if (isFriend($userID,$friendID)) {
+				if (!isFriend($userID,$friendID)) {
 					$ins_friend = $db->preparedStmt("INSERT INTO friends(userID, friendID, status) VALUES(?,?,'requested')");
 					$ins_friend->bind_param('ii', $userID, $friendID);
 					$ins_friend->execute();
@@ -905,6 +905,76 @@ FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID= 
 		$response['message'] = "Not logged in";
 		echoResponse(201, $response);
 	}
+});
+
+//GET Movies which are in both the user's watchlists
+$app->get('/friends/:friendID/commonWatchlist', function($friendID) use ($app) {
+	//REST-Service Response
+	$response = array();
+	$db = new DB();
+	$session = $db->getSession();
+
+	//check if user is logged in
+	if($session['userID']!='') {
+		$userID = $session['userID'];
+
+		if (isFriend($userID,$friendID)){
+			$sel_movielist = $db->preparedStmt("SELECT ml1.movieID FROM movielist AS ml1 JOIN movielist AS ml2 ON ml2.movieID = ml1.movieID WHERE ml1.userID = ? AND ml2.userID = ? AND ml1.status = 'watchlist' AND ml2.status = 'watchlist'");
+			$sel_movielist->bind_param('ii',$userID,$friendID);
+			$sel_movielist->execute();
+			$sel_movielist->store_result();
+			$sel_movielist->bind_result($db_movieID);
+
+			$response['matches'] = array();
+
+			if($sel_movielist->num_rows>0) {
+
+				$sel_movie = $db->preparedStmt("SELECT m.original_title, m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, mi.poster
+FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID= ?");
+
+				$sel_movie->bind_param('i',$db_movieID);
+				while($sel_movielist->fetch()){
+
+					$sel_movie->execute();
+					$sel_movie->bind_result($db_original_title,$db_ratings,$db_rating_points,$db_watchers, $db_title, $db_plot, $db_release_date, $db_poster);
+					$sel_movie->fetch();
+
+					$movie = array();
+					$movie['movieID'] = $db_movieID;
+					$movie['title'] = $db_title;
+					$movie['plot'] = $db_plot;
+					$movie['release_date'] = $db_release_date;
+					$movie['original_title'] = $db_original_title;
+					$movie['poster'] = $db_poster;
+					$movie['watchers'] = $db_watchers;
+					$movie['rating_points'] = $db_rating_points;
+					array_push($response['matches'], $movie);
+
+				}
+				$sel_movie->close();
+
+				$sel_movielist->free_result();
+				$sel_movielist->close();
+				$response['status'] = "success";
+				echoResponse(200, $response);
+			}else {
+				$response['status'] = "error";
+				$response['message'] = "No movies in common";
+				echoResponse(201, $response);
+			}
+
+		} else {
+			$response['status'] = "error";
+			$response['message'] = "Not a friend";
+			echoResponse(201, $response);
+		}
+
+	} else {
+		$response['status'] = "error";
+		$response['message'] = "Not logged in";
+		echoResponse(201, $response);
+	}
+
 });
 
 //PUT Passwort (Passwort ändern)
