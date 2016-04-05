@@ -2,13 +2,6 @@ app.controller('profileCtrl', ['$scope', '$rootScope', '$routeParams', '$locatio
 
 	$controller('movieCtrl', {$scope: $scope});
 
-	$scope.getFriends = function() {
-		Data.get('friends').then(function (results) {
-			if (results.status == "success") {
-				$rootScope.friends = results;
-			}
-		});
-	};
-	
+	$controller('friendsCtrl', {$scope: $scope});
 	
 }]);
