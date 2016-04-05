@@ -11,4 +11,19 @@ app.controller('mainCtrl', ['$scope', '$rootScope', '$routeParams', '$location',
 		$scope.includeHeader = function(){
 			return "partials/header.html";
 		};
+		
+		$scope.getColor = function (user) {
+			Data.get('user/color').then(function (results) {
+    
+				if(results.status == "success") {
+					$rootScope.color = results;
+				}else{
+					$rootScope.color = 'default';
+				}
+           
+			})
+		};
+		
+		
+		
 }]);
