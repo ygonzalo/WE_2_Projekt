@@ -1,55 +1,6 @@
 /* partial styles */
 
-.default_container
-{
-	position:relative;
-	top:11em;
-	width:100%;
-	padding:1em;
-	
-	display:-webkit-flex;
-	display:flex;
-	-webkit-flex-wrap: wrap;
-	flex-wrap:wrap;
-	-moz-box-sizing:border-box;
-	box-sizing:border-box;
-}
-
-.wrap_box {
-	-webkit-flex:1 1 auto;
-	flex:1 1 auto;
-	min-width:400px;
-	padding:1em;
-	min-height:10em;
-	position:relative;
-	-moz-box-sizing:border-box;
-	box-sizing:border-box;
-}
-
-.wrap_box_content {
-	position:relative;
-	width:100%;
-	margin:auto;
-	padding:1em;
-	-moz-box-sizing:border-box;
-	box-sizing:border-box;
-}
-
-.default_container h1
-{
-	font-weight:lighter;
-	color:rgb(61,61,61);
-	
-}
-
-.default_container h2
-{
-	font-weight:lighter;
-	color:rgb(61,61,61);
-	font-size:1.4em;
-	line-height:0.5em;
-}
-
+/* partial: results */
 .poster_box {
 	position:relative;
 	width:100%;
@@ -68,9 +19,6 @@
 	width:24em;
 	height:12em;	
 	background-color:rgba(61,61,61,0.1);
-}
-
-.poster_imgbox {
 }
 
 .poster_img {
@@ -113,4 +61,134 @@
 	margin:0;
 	padding:0;
 	border:none;
+}
+
+
+/* partial: profile */
+
+#profile_info {
+	
+}
+
+#profile_info table{
+	max-width:100%;
+}
+
+.profile_image{
+	height:10em;
+	width:8em;
+	outline:1px solid gray;
+	margin:2em 2em 2em 0.5em;
+	float:left;
+}
+
+#profile_info textarea{
+    font-family: Open Sans, Segoe UI, sans-serif;
+	overflow:auto;
+	resize:none;
+}
+
+#profile_info button {
+	border:none;
+	background-color:transparent;
+	cursor:pointer;
+	
+}
+
+#profile_settings {
+	
+}
+
+#profile_settings table {
+	width:24em;
+	max-width:90%;
+	border:0px solid black;
+	border-spacing:none;
+	margin:0;
+	padding:0;
+	margin:1em;
+}
+
+#profile_settings table tr {
+	border:none;
+	border-spacing:none;
+	margin:0;
+	padding:0;
+}
+
+#profile_settings table td {
+	border:none;
+	border-spacing:none;
+	margin:0;
+	padding:0;
+}
+
+#profile_settings input[type=checkbox] {
+	margin:1em;
+	width:1em;
+	height:1em;
+	cursor:pointer;
+}
+
+#profile_settings input[type=radio] {
+	display:none;
+}
+.profile_color_radio {
+	cursor:pointer;
+	position:relative;
+	font-size:1em;
+	width:3em;
+	height:2em;
+}
+.profile_color_radio:before {
+	content:"";
+	display:inline-block;
+	width:100%;
+	height:2em;
+	position:relative;
+	left:0;
+	top:0;
+	margin-bottom:-0.5em;
+	margin-left:0.5em;
+	border:1px solid rgb(222,222,222);
+}
+#profile_settings input[type=radio]:checked + .profile_color_radio:before {
+	z-index:100;
+	outline:4px solid rgb(61,61,61);
+}
+
+#profile_settings label[for=color_apple]:before {
+	background-color:rgb(149,211,28);
+}
+#profile_settings label[for=color_banana]:before{
+	background-color:rgb(239,231,16);
+}
+#profile_settings label[for=color_raspberry]:before{
+	background-color:rgb(234,53,143);
+}
+#profile_settings label[for=color_blueberry]:before{
+	background-color:rgb(105,22,233);
+}
+#profile_settings label[for=color_default]:before{
+	background-color:rgb(111,111,111);
+}
+
+.profile_input {
+	height:2.5em;
+	margin:0.5em;
+	padding:0.5em;
+	
+	outline:none;
+	border:none;
+	-moz-box-sizing: border-box;
+	box-sizing:border-box;
+}
+.profile_input:hover, .profile_input:focus {
+	background-color:rgb(222,222,222);
+}
+
+.profile_content_header {
+	background-color:rgb(233,233,233);
+	padding:0.1em 1em;
+	margin-bottom:1em;
 }

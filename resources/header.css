@@ -5,51 +5,36 @@
 }
 .header {
 	position:relative;
-	height: 7em;
+	min-height: 7em;
 	width: 100%;
+	max-width:100%;
+	overflow:hidden;
 	background-color: rgb(61,61,61);
 	z-index:100;
 }
 
 .header_left, .header_right
 {
-	-webkit-flex:1;
+	-webkit-flex:1 1 auto;
 	flex:1;
-	padding:1em;
 	word-wrap:break-word;
-	position:relative;
-	min-width:2em;
+	min-width:16em;
+}
+
+.header_left {
+	padding:1em 0;
 }
 
 .header_right {
+	padding:1em;
 	text-align:right;
-}
-
-.profile {
-	float: right;
-	width: auto;
-	text-align: right;
-	color: white;
-	margin:0 1em;
-}
-
-#logo_container
-{
-	position:relative;
-	float:left;
-	display:-webkit-flex;
-	display:flex;
-	-webkit-align-items:center;
-	align-items:center;
+	color:white;
 }
 
 #logo
 {
+	margin-top:1.2em;
 	height:4em;
-	float:left;
-	padding:0.6em;
-	-webkit-flex:1;
-	flex:1;
 }
 
 #header_content
@@ -59,8 +44,12 @@
 	height:90%;
 	display:-webkit-flex;
 	display:flex;
+	-webkit-flex-wrap: wrap;
+	flex-wrap:wrap;
 	-webkit-align-items:center;
 	align-items:center;
+	-webkit-justify-content:center;
+	justify-content:center;
 }
 
 .header a
@@ -71,7 +60,7 @@
 /* the accent colors in header */
 .coloredline {
 	width:100%;
-	height:10%;
+	height:0.5em;
 	table-layout:fixed;
 	position:relative;
 	left:0;

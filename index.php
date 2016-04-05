@@ -3,7 +3,7 @@
 
   <head>
     <meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, minimum-scale=0.5, user-scalable=yes" >
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no" >
     
 	<link rel="shortcut icon" href="">
     <link rel="stylesheet" href="resources/search.css">
@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="resources/partials.css">
     <link rel="stylesheet" href="resources/overrides.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
-    <link rel="icon" href="resources/images/wtm_logo_circle.ico" type="image/x-icon" />
+    <link rel="icon" href="resources/images/wtm_logo_circle.ico" type="image/ico" />
 	
 	<title>Watched That Movie</title>
   </head>

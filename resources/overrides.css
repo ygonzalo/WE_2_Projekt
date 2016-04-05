@@ -2,30 +2,24 @@
 
 
 /* smarphone */
-@media screen and (orientation:portrait) and (min-device-width:360px) and (max-device-width:480px) {
+@media screen and (orientation:portrait) and (max-device-width:480px) {
 	
 	#logo {
 		height:3em;
 	}
 	.wrap_box {
 		min-width:100%;
+		padding:1em 0;
 	}
 	
 }
-/* FUCK safari-iphone-drecks-apple-browser-extra-wurst: leute die sowas verwenden, 
-	bekommen die seite dann eben scheiße dargestellt (safari unterstützt kein @viewport als EINZIGSTER browser) */ 
-@media screen and (orientation:portrait) and (max-device-width:360px) {
-	
-	body {
-		min-width:480px;
-		min-height:720px;
-	}
-}
-
 /* smartphone landscape */
 
 @media screen and (orientation:landscape) and (max-width:60em) {
 
+	body {
+		font-size:0.8em;
+	}
 	.box {
 		position:absolute;
 		top:7em;

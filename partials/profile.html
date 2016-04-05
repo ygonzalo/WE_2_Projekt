@@ -11,21 +11,66 @@
 				<div class="profile_content_header">
 					<h2>Profil</h2>
 				</div>
-				<table style="display:inline-block">
+				<div class="profile_image"></div>
+				<table>
 					<tr>
 						<td>Name:</td>
-						<td><textarea>{{name}}</textarea></td>
-						<td><button disabled>ändern</button></td>
+						<td><textarea class="profile_input">{{name}}</textarea></td>
+						<td><button class="profile_input" disabled>ändern</button></td>
 					</tr>
 					<tr>
 						<td>Mail:</td>
-						<td><textarea>{{email}}</textarea></td>
-						<td><button disabled>ändern</button></td>
+						<td><textarea class="profile_input">{{email}}</textarea></td>
+						<td><button class="profile_input" disabled>ändern</button></td>
 					</tr>
 					<tr>
-						<td>Passwort:</td>
-						<td><textarea placeholder="********"></textarea></td>
-						<td><button disabled>ändern</button></td>
+						<td>Passwort (alt):</td>
+						<td><textarea class="profile_input" placeholder="********"></textarea></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Passwort (neu):</td>
+						<td><textarea class="profile_input" placeholder="********"></textarea></td>
+						<td><button class="profile_input" disabled>ändern</button></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="wrap_box">
+		<div class="wrap_box_content">
+			<div id="profile_settings">
+				<div class="profile_content_header">
+					<h2>Einstellungen</h2>
+				</div>
+				<label><input type="checkbox" name="mail_notifications" />Nachrichten via Mail erhalten</label><br />
+				<label><input type="checkbox" name="friend_requests" />Andere Nutzer können mich finden</label><br />
+				<br />
+				<table>
+					<tr>
+						<td width="1">
+							Farbschema:
+						</td>
+						<td>
+							<input type="radio" name="color" value="apple" id="color_apple"/>
+								<label class="profile_color_radio" for="color_apple"></label>
+						</td>
+						<td>
+							<input type="radio" name="color" value="banana" id="color_banana"/>
+								<label class="profile_color_radio" for="color_banana"></label>
+						</td>
+						<td>
+							<input type="radio" name="color" value="cherry" id="color_raspberry"/>
+								<label class="profile_color_radio" for="color_raspberry"></label>
+						</td>
+						<td>
+							<input type="radio" name="color" value="blueberry" id="color_blueberry"/>
+								<label class="profile_color_radio" for="color_blueberry"></label>
+						</td>
+						<td>
+							<input type="radio" name="color" value="default" id="color_default"/>
+								<label class="profile_color_radio" for="color_default"></label>
+						</td>
 					</tr>
 				</table>
 			</div>
@@ -34,42 +79,7 @@
 	<div class="wrap_box">
 		<div class="wrap_box_content">
 			<div class="profile_content_header">
-				<h2>Einstellungen</h2>
-			</div>
-			<label><input type="checkbox" name="mail_notifications" />Nachrichten via Mail erhalten</label><br />
-			<label><input type="checkbox" name="friend_requests" />Andere Nutzer können mich finden</label><br />
-			<br />
-			Farbschema:
-			<input type="radio" name="color" value="apple" id="color_apple"/>
-				<label class="profile_color_radio" for="color_apple"></label>
-			<input type="radio" name="color" value="apple" id="color_banana"/>
-				<label class="profile_color_radio" for="color_banana"></label>
-			<input type="radio" name="color" value="apple" id="color_cherry"/>
-				<label class="profile_color_radio" for="color_cherry"></label>
-			<input type="radio" name="color" value="apple" id="color_blueberry"/>
-				<label class="profile_color_radio" for="color_blueberry"></label>
-			<input type="radio" name="color" value="default" id="color_default"/>
-				<label class="profile_color_radio" for="color_default"></label>
-		</div>
-	</div>
-	<div class="wrap_box">
-		<div class="wrap_box_content">
-			<div>
 				<h2>Freundschaftsanfragen</h2>
-			</div>
-			<div>
-				<form>
-					<table>
-						<tr>
-							<td>
-								<input type="text" placeholder="Freunde finden" />
-							</td>
-							<td>
-								<button type="submit">Suche</button>
-							</td>
-						</tr>
-					</table>
-				</form>
 			</div>
 		</div>
 	</div>
