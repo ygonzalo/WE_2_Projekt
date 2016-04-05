@@ -37,6 +37,32 @@ function isFriend($userID, $friendID) {
 		$stmt_friends->close();
 		return true;
 	} else {
+		$stmt_friends->free_result();
+		$stmt_friends->close();
+		return false;
+	}
+}
+
+function movieIsRated($userID,$movieID) {
+	$db = new DB();
+
+	//check if user already gave a rating
+	$stmt_movielist = $db->preparedStmt("SELECT user_rating FROM movielist WHERE userID = ? AND movieID = ?");
+	$stmt_movielist->bind_param('ii',$userID,$movieID);
+
+	$stmt_movielist->execute();
+	$stmt_movielist->store_result();
+	$stmt_movielist->bind_result($db_user_rating);
+
+	$stmt_movielist->fetch();
+
+	if($db_user_rating != null) {
+		$stmt_movielist->free_result();
+		$stmt_movielist->close();
+		return true;
+	} else {
+		$stmt_movielist->free_result();
+		$stmt_movielist->close();
 		return false;
 	}
 }
@@ -411,13 +437,42 @@ $app->put('/movies/:movieID/rating', function($movieID) use ($app) {
 		$userID=$session['userID'];
 
 		if(isMovieWatched($movieID,$userID)){
+
+			$sel_rating = $db->preparedStmt("SELECT user_rating FROM movielist WHERE movieID = ? AND userID = ?");
+			$sel_rating->bind_param("ii", $movieID,$userID);
+			$sel_rating->execute();
+			$sel_rating->bind_result($db_user_rating);
+			$sel_rating->fetch();
+			$sel_rating->close();
+
+			$sel_rating = $db->preparedStmt("SELECT rating_points, ratings FROM movie WHERE movieID = ?");
+			$sel_rating->bind_param("i", $movieID);
+			$sel_rating->execute();
+			$sel_rating->bind_result($db_rating_points, $db_ratings);
+			$sel_rating->fetch();
+			$sel_rating->close();
+
+			$ratings = $db_ratings + 1;
+			$rating_points = $db_rating_points + $rating;
+
+			//Add one rating to ratings count if movie was not already rated by user
+			if(movieIsRated($userID,$movieID)){
+				$ratings = $db_ratings;
+				$rating_points = $db_rating_points - $db_user_rating + $rating;
+			}
+
 			//Update movie user rating
 			$update_movielist = $db->preparedStmt("UPDATE movielist SET user_rating = ? WHERE movieID=? AND userID=?");
 			$update_movielist->bind_param("iii", $rating,$movieID,$userID);
 			$update_movielist->execute();
 			$update_movielist->close();
 
-		
+
+			$update_movielist = $db->preparedStmt("UPDATE movie SET ratings = ?, rating_points = ? WHERE movieID=?");
+			$update_movielist->bind_param("iii", $ratings,$rating_points,$movieID);
+			$update_movielist->execute();
+			$update_movielist->close();
+
 			$response['status'] = "success";
 			echoResponse(200, $response);
 		}else {
