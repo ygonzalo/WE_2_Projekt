@@ -10,7 +10,7 @@
 	<div id="header_content">
 		<div class="header_left">
 			<div data-ng-if="authenticated" data-ng-controller="authCtrl">
-				<a data-ng-click="logout();">Abmelden</a>
+				<a href="#/profile"><b>{{name}}</b></a>
 			</div>
 		</div>
 		<div class="header_center">
@@ -22,7 +22,7 @@
 		</div>
 		<div class="header_right">
 			<div data-ng-if="authenticated" data-ng-controller="authCtrl">
-				<a href="#/profile"><b>{{name}}</b></a>
+				<a data-ng-click="logout();">Abmelden</a>
 			</div>
 		</div>
 	</div>

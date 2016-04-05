@@ -12,7 +12,9 @@
     <link rel="stylesheet" href="resources/partials.css">
     <link rel="stylesheet" href="resources/overrides.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
-    <title>Watched That Movie</title>
+    <link rel="icon" href="resources/images/wtm_logo_circle.ico" type="image/x-icon" />
+	
+	<title>Watched That Movie</title>
   </head>
 
   <body data-ng-controller="mainCtrl">

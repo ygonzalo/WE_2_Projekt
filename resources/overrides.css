@@ -7,6 +7,10 @@
 	#logo {
 		height:3em;
 	}
+	.wrap_box {
+		min-width:100%;
+	}
+	
 }
 /* FUCK safari-iphone-drecks-apple-browser-extra-wurst: leute die sowas verwenden, 
 	bekommen die seite dann eben scheiße dargestellt (safari unterstützt kein @viewport als EINZIGSTER browser) */ 
@@ -15,9 +19,6 @@
 	body {
 		min-width:480px;
 		min-height:720px;
-	}
-	.header {
-		background-color:red;
 	}
 }
 
@@ -36,13 +37,25 @@
 /* tablets */
 @media screen and (orientation:portrait) and (min-device-width:480px) and (max-device-width:1024px) {
 
+	body {
+		font-size:1.2em;
+	}
+	.wrap_box {
+		-webkit-flex:1 1 auto;
+		flex:1 1 auto;
+		width:100%;
+	}
+	.wrap_box_content h2{
+		text-align:center;
+	}
 }
 
 /* tablets landscape */
 @media screen and (orientation:landscape) and (min-width:61em) and (max-width:80em) {
 
-	body {
-		font-size:0.8em;
+	.wrap_box {
+		-webkit-flex:1 1 auto;
+		flex:1 1 auto;
 	}
 }
 

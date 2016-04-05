@@ -5,32 +5,37 @@
 	 <br/>E-MAIL: {{email}}
 	 <br/>
 	</div-->
-	
-	<div class="profile_box">
-		<div class="profile_content_box" id="profile_me">
-			<div class="profile_content_header">
-				<h2>Profil</h2>
+	<div class="wrap_box">
+		<div class="wrap_box_content">
+			<div id="profile_info">
+				<div class="profile_content_header">
+					<h2>Profil</h2>
+				</div>
+				<table style="display:inline-block">
+					<tr>
+						<td>Name:</td>
+						<td><textarea>{{name}}</textarea></td>
+						<td><button disabled>ändern</button></td>
+					</tr>
+					<tr>
+						<td>Mail:</td>
+						<td><textarea>{{email}}</textarea></td>
+						<td><button disabled>ändern</button></td>
+					</tr>
+					<tr>
+						<td>Passwort:</td>
+						<td><textarea placeholder="********"></textarea></td>
+						<td><button disabled>ändern</button></td>
+					</tr>
+				</table>
 			</div>
-			<table>
-				<tr>
-					<td>Name:</td>
-					<td><textarea>{{name}}</textarea></td>
-					<td><button disabled>ändern</button></td>
-				</tr>
-				<tr>
-					<td>Mail:</td>
-					<td><textarea>{{email}}</textarea></td>
-					<td><button disabled>ändern</button></td>
-				</tr>
-				<tr>
-					<td>Passwort:</td>
-					<td><textarea placeholder="********"></textarea></td>
-					<td><button disabled>ändern</button></td>
-				</tr>
-			</table>
 		</div>
-		<div class="profile_content_box" id="profile_settings">
-			<div class="profile_content_header"><h2>Einstellungen</h2></div>
+	</div>
+	<div class="wrap_box">
+		<div class="wrap_box_content">
+			<div class="profile_content_header">
+				<h2>Einstellungen</h2>
+			</div>
 			<label><input type="checkbox" name="mail_notifications" />Nachrichten via Mail erhalten</label><br />
 			<label><input type="checkbox" name="friend_requests" />Andere Nutzer können mich finden</label><br />
 			<br />
@@ -46,53 +51,26 @@
 			<input type="radio" name="color" value="default" id="color_default"/>
 				<label class="profile_color_radio" for="color_default"></label>
 		</div>
-		
-		<div class="profile_content_box">
-			<div id="friend_box_header" class="profile_content_header">
-				<div><h2>Freundschaftsanfragen</h2></div>
-				<div>
-					<form>
-						<table>
-							<tr>
-								<td>
-									<input type="text" placeholder="Freunde finden" />
-								</td>
-								<td>
-									<button type="submit">Suche</button>
-								</td>
-							</tr>
-						</table>
-					</form>
-				</div>
+	</div>
+	<div class="wrap_box">
+		<div class="wrap_box_content">
+			<div>
+				<h2>Freundschaftsanfragen</h2>
 			</div>
-			<div id="profile_friends_content">
-				<div class="friend_box_template">
-					<div class="friend_box_template_img">
-					
-					</div>
-					<div>
-						<h3>Steffen</h3>
-						<a>annehmen</a><br />
-						<a>ablehnen und blockieren</a>
-					</div>
-				</div>
-				<div class="friend_box_template">
-					<div class="friend_box_template_img">
-					
-					</div>
-					<div>
-						<h3>Yaiza</h3>
-						<a>annehmen</a><br />
-						<a>ablehnen und blockieren</a>
-					</div>
-				</div>
+			<div>
+				<form>
+					<table>
+						<tr>
+							<td>
+								<input type="text" placeholder="Freunde finden" />
+							</td>
+							<td>
+								<button type="submit">Suche</button>
+							</td>
+						</tr>
+					</table>
+				</form>
 			</div>
 		</div>
 	</div>
-	
-	<div class="profile_box">
-		
-	</div>
-	
-	
 </div>
