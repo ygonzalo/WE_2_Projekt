@@ -22,6 +22,30 @@ function isMovieWatched($movieID,$userID) {
 	}
 }
 
+function isFriend($userID, $friendID) {
+	$db = new DB();
+
+	//check if user is a friend
+	$stmt_friends = $db->preparedStmt("SELECT 1 FROM friends WHERE friendID = ? AND userID = ? OR friendID = ? AND userID = ?");
+	$stmt_friends->bind_param('iiii',$friendID,$userID,$userID,$friendID);
+
+	$stmt_friends->execute();
+	$stmt_friends->store_result();
+
+	if($stmt_friends->num_rows>0) {
+		$stmt_friends->free_result();
+		$stmt_friends->close();
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
+/*************************************************************************************
+REST API
+**************************************************************************************/
+
 //GET Film by name
 $app->get('/movies/search/:title', function($title) use ($app) {
 	$db = new DB();
@@ -51,7 +75,7 @@ $app->get('/movies/search/:title', function($title) use ($app) {
 			foreach ($matches as $item){
 
 				//build poster path with size configuration
-				$poster = "http://image.tmdb.org/t/p/w185". $item['poster_path'];
+				$poster = "https://image.tmdb.org/t/p/w185". $item['poster_path'];
 
 				$movie['movieID'] = $item['id'];
 				$movie['title'] = $item['title'];
@@ -567,13 +591,7 @@ $app->post('/friends/:friendID/request', function($friendID) use ($app) {
 
 			if ($stmt_friend->num_rows > 0) {
 
-				//check if there is already a relationship between the users
-				$sel_rel = $db->preparedStmt("SELECT 1 FROM friends WHERE userID = ?  AND friendID = ? OR userID = ?  AND friendID = ?");
-				$sel_rel->bind_param('iiii', $userID, $friendID, $friendID, $userID);
-				$sel_rel->execute();
-				$sel_rel->store_result();
-
-				if ($sel_rel->num_rows == 0) {
+				if (isFriend($userID,$friendID)) {
 					$ins_friend = $db->preparedStmt("INSERT INTO friends(userID, friendID, status) VALUES(?,?,'requested')");
 					$ins_friend->bind_param('ii', $userID, $friendID);
 					$ins_friend->execute();
@@ -586,9 +604,6 @@ $app->post('/friends/:friendID/request', function($friendID) use ($app) {
 					$response['message'] = "Relationship already exists";
 					echoResponse(201, $response);
 				}
-
-				$sel_rel->free_result();
-				$sel_rel->close();
 
 			} else {
 				$response['status'] = "error";
@@ -777,14 +792,7 @@ $app->post('/friends/:friendID/recommend', function($friendID) use ($app) {
 	if($session['userID']!='') {
 		$userID = $session['userID'];
 
-		//check if user is a friend
-		$stmt_friends = $db->preparedStmt("SELECT 1 FROM friends WHERE friendID = ? AND userID = ? OR friendID = ? AND userID = ?");
-		$stmt_friends->bind_param('iiii',$friendID,$userID,$userID,$friendID);
-
-		$stmt_friends->execute();
-		$stmt_friends->store_result();
-
-		if($stmt_friends->num_rows>0){
+		if(isFriend($userID,$friendID)){
 
 			if(isMovieWatched($movieID,$userID)){
 				//Insert new recommendation
@@ -805,8 +813,7 @@ $app->post('/friends/:friendID/recommend', function($friendID) use ($app) {
 			$response['message'] = "Friend not added";
 			echoResponse(201, $response);
 		}
-		$stmt_friends->free_result();
-		$stmt_friends->close();
+
 	} else {
 		$response['status'] = "error";
 		$response['message'] = "Not logged in";

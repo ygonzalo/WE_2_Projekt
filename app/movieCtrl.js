@@ -26,7 +26,7 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$location'
 	$scope.changeStatus = function (status, movieID) {
 
 		Data.post('movies/'+ movieID +'/status', {
-			status: status,
+			status: status
 		}).then(function (results){
 			if(results.status == "success") {
 			}
@@ -63,7 +63,7 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$location'
 			return poster;
 		}
 		return "resources/images/default_poster.jpg";
-	}
+	};
 
 	$scope.init = function () {
 

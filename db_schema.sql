@@ -2,12 +2,13 @@ CREATE DATABASE IF NOT EXISTS watchedthatmovie;
 CREATE SCHEMA IF NOT EXISTS watchedthatmovie DEFAULT CHARACTER SET UTF8;
 USE watchedthatmovie;
 
-#DROP TABLE IF EXISTS movieInfo;
+DROP TABLE IF EXISTS movieInfo;
 DROP TABLE IF EXISTS movieList;
-#DROP TABLE IF EXISTS friends;
-#DROP TABLE IF EXISTS user;
-#DROP TABLE IF EXISTS movie;
-#DROP TABLE IF EXISTS recommendations;
+DROP TABLE IF EXISTS friends;
+DROP TABLE IF EXISTS recommendations;
+DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS movie;
+
 
 CREATE TABLE IF NOT EXISTS user (
   `userID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -15,6 +16,8 @@ CREATE TABLE IF NOT EXISTS user (
   `email` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `password` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `points` INT UNSIGNED DEFAULT 0,
+  `color` ENUM('default','banana','apple','raspberry','plum') COLLATE utf8_unicode_ci NOT NULL,
+  `notifications` BOOLEAN DEFAULT FALSE,
   PRIMARY KEY (`userID`))
   ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
