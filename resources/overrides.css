@@ -11,7 +11,12 @@
 		min-width:100%;
 		padding:1em 0;
 	}
-	
+	.header_left, .header_right
+	{
+		-webkit-flex:1 1 auto;
+		flex:1 1 auto;
+	}
+
 }
 /* smartphone landscape */
 

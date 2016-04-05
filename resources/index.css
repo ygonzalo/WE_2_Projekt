@@ -26,18 +26,16 @@ input:focus{
 /* basic style of content */
 #ng-view
 {
-	position:absolute;
-	top:0;
-	height:100%;
+	position:relative;
 	width:100%;
 	padding:0;
 }
 
 /* .box class: this container overrides all other visible content, excpet for the header. used for signup and login*/
 .box{
-	position:relative;
-	top:0px;
+	position:fixed;
 	left:0px;
+	top:0px;
 	width:100%;
 	height:100%;
 	background-color:rgb(61,61,61);
@@ -91,7 +89,6 @@ input:focus{
 .default_container
 {
 	position:relative;
-	top:11em;
 	width:100%;
 	max-width:100%;
 	overflow:hidden;
@@ -124,6 +121,12 @@ input:focus{
 	overflow:auto;
 	-moz-box-sizing:border-box;
 	box-sizing:border-box;
+}
+
+.wrap_box_header {
+	background-color:rgb(233,233,233);
+	padding:0.1em 1em;
+	margin-bottom:1em;
 }
 
 .default_container h1
