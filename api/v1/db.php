@@ -98,6 +98,20 @@ class DB {
 		}
 		return $sess;
 	}
+	
+	public function changeSessionEmail($email) {
+		if(isset($_SESSION['userID']))
+		{
+			$_SESSION['email'] = $email;
+		}
+	}
+
+	public function changeSessionName($name) {
+		if(isset($_SESSION['userID']))
+		{
+			$_SESSION['name'] = $name;
+		}
+	}
 
 	public function destroySession(){
 		if (!isset($_SESSION)) {

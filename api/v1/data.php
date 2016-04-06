@@ -284,9 +284,9 @@ JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID= ? AND status= 'watc
 			$response['status'] = "success";
 			echoResponse(200, $response);
 		} else {
-			$response['status'] = "error";
+			$response['status'] = "success";
 			$response['message'] = "No movies in watchlist";
-			echoResponse(201, $response);
+			echoResponse(200, $response);
 		}
 		$movielist_stmt->free_result();
 		$movielist_stmt->close();
@@ -310,6 +310,8 @@ $app->get('/movies/watched', function() use ($app) {
 	if(!empty($session['userID'])) {
 		$userID = $session['userID'];
 
+		$response['matches'] = array();
+
 		//prepare sql statement and bind parameters
 		$movielist_stmt = $db->preparedStmt("SELECT m.movieID, m.original_title, m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, mi.poster, ml.status, ml.user_rating 
 FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID 
@@ -320,7 +322,6 @@ JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID= ? AND status= 'watc
 		$movielist_stmt->bind_result($db_movieID,$db_original_title,$db_ratings,$db_rating_points,$db_watchers, $db_title, $db_plot, $db_release_date, $db_poster, $db_status, $db_user_rating);
 
 		if($movielist_stmt->num_rows>0){
-			$response['matches'] = array();
 			$movie = array();
 			while ($movielist_stmt->fetch()) {
 				$movie['movieID'] = $db_movieID;
@@ -338,9 +339,9 @@ JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID= ? AND status= 'watc
 			$response['status'] = "success";
 			echoResponse(200, $response);
 		} else {
-			$response['status'] = "error";
+			$response['status'] = "success";
 			$response['message'] = "No movies marked as watched";
-			echoResponse(201, $response);
+			echoResponse(200, $response);
 		}
 		$movielist_stmt->free_result();
 		$movielist_stmt->close();
@@ -462,9 +463,9 @@ $app->get('/friends/search/:query', function($query) use ($app) {
 			$response['status'] = "success";
 			echoResponse(200, $response);
 		} else {
-			$response['status'] = "error";
+			$response['status'] = "success";
 			$response['message'] = "No user found";
-			echoResponse(201, $response);
+			echoResponse(200, $response);
 		}
 		$sel_user->free_result();
 		$sel_user->close();
@@ -841,8 +842,6 @@ $app->get('/friends/recommendations', function() use ($app) {
 
 		if($stmt_rec->num_rows>0){
 
-			echo $userID;
-
 			while($stmt_rec->fetch()){
 				$reco = array();
 				$reco['from'] = $db_fromID;
@@ -897,9 +896,9 @@ FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID= 
 			echoResponse(200, $response);
 
 		} else{
-			$response['status'] = "error";
+			$response['status'] = "success";
 			$response['message'] = "No new recommendations";
-			echoResponse(201, $response);
+			echoResponse(200, $response);
 		}
 
 		$stmt_rec->free_result();
@@ -963,9 +962,9 @@ FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID= 
 				$response['status'] = "success";
 				echoResponse(200, $response);
 			}else {
-				$response['status'] = "error";
+				$response['status'] = "success";
 				$response['message'] = "No movies in common";
-				echoResponse(201, $response);
+				echoResponse(200, $response);
 			}
 
 		} else {
@@ -983,7 +982,7 @@ FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID= 
 });
 
 //PUT Passwort (Passwort ändern)
-$app->post('/user/password', function() use ($app) {
+$app->put('/user/password', function() use ($app) {
 
 	//REST-Service Response
 	$response = array();
@@ -993,17 +992,35 @@ $app->post('/user/password', function() use ($app) {
 
 	//check if user is logged in
 	if($session['userID']!='') {
-		$password = $req->password;
-		$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-		$changePw = $db->preparedStmt("UPDATE user SET password = ? WHERE userID = ?");
-		$changePw->bind_param('i', $hashedPassword,$session['userID']);
-		$changePw->execute();
-		$changePw->close();
+		$userID = $session['userID'];
+		$old_pwd = $req->old_pwd;
+		$new_pwd = $req->new_pwd;
 
-		$response['status'] = "success";
-		$response['message'] = "Password changed";
-		echoResponse(200, $response);
+		$sel_pwd = $db->preparedStmt("SELECT `password` FROM user WHERE `userID` = ?");
+		$sel_pwd->bind_param('i',$userID);
+		$sel_pwd->execute();
+		$sel_pwd->bind_result($db_password);
+		$sel_pwd->fetch();
+
+		if(password_verify($old_pwd,$db_password)){
+
+			$hashedPassword = password_hash($new_pwd, PASSWORD_DEFAULT);
+			$changePw = $db->preparedStmt("UPDATE `user` SET `password` = ? WHERE `userID` = ?");
+			$changePw->bind_param('si', $hashedPassword,$userID);
+			$changePw->execute();
+			$changePw->close();
+
+			$sel_pwd->close();
+			$response['status'] = "success";
+			$response['message'] = "Password changed";
+			echoResponse(200, $response);
+		} else {
+			$sel_pwd->close();
+			$response['status'] = "error";
+			$response['message'] = "Old password wrong";
+			echoResponse(201, $response);
+		}
 
 	} else {
 		$response['status'] = "error";
@@ -1014,7 +1031,7 @@ $app->post('/user/password', function() use ($app) {
 });
 
 //PUT Email (Email ändern)
-$app->post('/user/email', function() use ($app) {
+$app->put('/user/email', function() use ($app) {
 
 	//REST-Service Response
 	$response = array();
@@ -1027,12 +1044,66 @@ $app->post('/user/email', function() use ($app) {
 		$email = $req->email;
 
 		$changeEmail = $db->preparedStmt("UPDATE user SET email = ? WHERE userID = ?");
-		$changeEmail->bind_param('i', $email,$session['userID']);
+		$changeEmail->bind_param('si', $email,$session['userID']);
 		$changeEmail->execute();
 		$changeEmail->close();
 
+		$sel_email = $db->preparedStmt("SELECT email FROM user WHERE userID = ?");
+		$sel_email->bind_param('i',$session['userID']);
+		$sel_email->execute();
+		$sel_email->bind_result($db_email);
+		$sel_email->fetch();
+
+		$response['email'] = $db_email;
+
+		$sel_email->close();
+
+		$db->changeSessionEmail($db_email);
+
 		$response['status'] = "success";
 		$response['message'] = "Email changed";
+		echoResponse(200, $response);
+
+
+	} else {
+		$response['status'] = "error";
+		$response['message'] = "Not logged in";
+		echoResponse(201, $response);
+	}
+});
+
+//PUT Name (Name ändern)
+$app->put('/user/name', function() use ($app) {
+
+	//REST-Service Response
+	$response = array();
+	$db = new DB();
+	$session = $db->getSession();
+	$req = json_decode($app->request->getBody());
+
+	//check if user is logged in
+	if($session['userID']!='') {
+		$name = $req->name;
+
+		$changeEmail = $db->preparedStmt("UPDATE user SET name = ? WHERE userID = ?");
+		$changeEmail->bind_param('si', $name,$session['userID']);
+		$changeEmail->execute();
+		$changeEmail->close();
+
+		$sel_email = $db->preparedStmt("SELECT name FROM user WHERE userID = ?");
+		$sel_email->bind_param('i',$session['userID']);
+		$sel_email->execute();
+		$sel_email->bind_result($db_name);
+		$sel_email->fetch();
+
+		$response['name'] = $db_name;
+
+		$sel_email->close();
+
+		$db->changeSessionName($db_name);
+
+		$response['status'] = "success";
+		$response['message'] = "Name changed";
 		echoResponse(200, $response);
 
 

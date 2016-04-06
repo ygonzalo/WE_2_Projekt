@@ -15,23 +15,23 @@
 				<table>
 					<tr>
 						<td>Name:</td>
-						<td><textarea class="profile_input" placeholder="{{name}}"></textarea></td>
-						<td><button class="profile_input" data-ng-disabled="!changed" data-ng-click="changeName(name)">ändern</button></td>
+						<td><textarea class="profile_input" data-ng-model="profile_name" data-ng-change="compareName(profile_name)"></textarea></td>
+						<td><button class="profile_input" data-ng-disabled="!name_changed" data-ng-click="changeName(profile_name)">ändern</button></td>
 					</tr>
 					<tr>
 						<td>Mail:</td>
-						<td><textarea class="profile_input">{{email}}</textarea></td>
-						<td><button class="profile_input" disabled>ändern</button></td>
+						<td><textarea class="profile_input" data-ng-model="profile_email" data-ng-change="compareEmail(profile_email)"></textarea></td>
+						<td><button class="profile_input" data-ng-disabled="!email_changed" data-ng-click="changeEmail(profile_email)">ändern</button></td>
 					</tr>
 					<tr>
 						<td>Passwort (alt):</td>
-						<td><textarea class="profile_input" placeholder="********"></textarea></td>
+						<td><input type="password" class="profile_input" placeholder="********" data-ng-model="old_pwd"/></td>
 						<td></td>
 					</tr>
 					<tr>
 						<td>Passwort (neu):</td>
-						<td><textarea class="profile_input" placeholder="********"></textarea></td>
-						<td><button class="profile_input" disabled>ändern</button></td>
+						<td><input type="password" class="profile_input" placeholder="********" data-ng-model="new_pwd"/></td>
+						<td><button class="profile_input" data-ng-click="changePassword(old_pwd,new_pwd)">ändern</button></td>
 					</tr>
 				</table>
 			</div>

@@ -1,4 +1,4 @@
-var app = angular.module('wtmApp', ['ngRoute', 'ngAnimate']);
+var app = angular.module('wtmApp', ['ngRoute', 'ngCookies']);
 
 app.config(['$routeProvider',
   function ($routeProvider) {
@@ -51,15 +51,15 @@ app.config(['$routeProvider',
                 //redirectTo: '/error'
             });
   }])
-    .run(function ($rootScope, $location, Data) {
+    .run(function ($cookies, $rootScope, $location, Data) {
         $rootScope.$on("$routeChangeStart", function (event, next, current) {
             $rootScope.authenticated = false;
             Data.get('session').then(function (results) {
                 if (results.userID) {
                     $rootScope.authenticated = true;
-                    $rootScope.userID = results.userID;
-                    $rootScope.name = results.name;
-                    $rootScope.email = results.email;
+                    $cookies.userID = results.userID;
+                    $cookies.name = results.name;
+                    $cookies.email = results.email;
                 } else {
                     var nextUrl = next.$$route.originalPath;
                     if (nextUrl == '/signup' || nextUrl == '/login') {

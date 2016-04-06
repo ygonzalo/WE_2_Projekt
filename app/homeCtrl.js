@@ -4,8 +4,6 @@ app.controller('homeCtrl', ['$scope', '$rootScope', '$routeParams', '$location',
 
 	$controller('friendsCtrl', {$scope: $scope});
 	
-	$scope.hello = "test";
-
 	$scope.init = function () {
 
 		$scope.getWatchlist();
