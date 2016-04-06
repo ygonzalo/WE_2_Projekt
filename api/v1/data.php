@@ -446,11 +446,16 @@ $app->get('/friends/search/:query', function($query) use ($app) {
 			$user = array();
 			while ($sel_user->fetch()) {
 				//user who is logged in doesn't appear in the list
-				if($db_userID!=$userID){
+				if($db_userID!=$userID && !isFriend($userID,$db_userID) && !requestSent($db_userID,$userID)){
 					$user['userID'] = $db_userID;
 					$user['name'] = $db_name;
 					$user['email'] = $db_email;
 					$user['points'] = $db_points;
+					if(requestSent($userID,$db_userID)){
+						$user['requested'] = true;
+					}else {
+						$user['requested'] = false;
+					}
 					array_push($response['users'], $user);
 				}
 			}
@@ -710,7 +715,7 @@ $app->get('/friends', function() use ($app) {
 		$userID=$session['userID'];
 		$response['friends'] = array();
 
-		$sel_friends = $db->preparedStmt("SELECT f.userID,f.friendID,f.since FROM friends AS f WHERE f.userID = ? OR f.friendID = ? AND f.status = 'accepted'");
+		$sel_friends = $db->preparedStmt("SELECT f.userID,f.friendID,f.since FROM friends AS f WHERE (f.userID = ? OR f.friendID = ?) AND f.status = 'accepted'");
 		$sel_friends->bind_param('ii', $userID, $userID);
 		$sel_friends->execute();
 
@@ -753,9 +758,9 @@ $app->get('/friends', function() use ($app) {
 			$response['status'] = "success";
 			echoResponse(200, $response);
 		}else {
-			$response['status'] = "error";
+			$response['status'] = "success";
 			$response['message'] = "No friends found";
-			echoResponse(201, $response);
+			echoResponse(200, $response);
 		}
 
 		$sel_friends->free_result();

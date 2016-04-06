@@ -1,8 +1,11 @@
-<div class="default_container">
-	<div class="wrap_box">
+<div data-ng-init="init()" class="default_container">
+	<div  class="wrap_box">
 		<div class="wrap_box_content">
 			<div class="wrap_box_header">
 				<h2>Meine Watchlist</h2>
+			</div>
+			<div data-ng-repeat="movie in watchlist">
+				{{movie.title}}
 			</div>
 		</div>
 	</div>
@@ -11,6 +14,10 @@
 			<div class="wrap_box_header">
 				<h2>Meine Freunde</h2>
 			</div>
+			<div data-ng-repeat="friend in friends">
+				{{friend.name}}
+				<button name="delete_friend" data-ng-click="deleteFriend(friend.userID)">Löschen</button>
+			</div>
 		</div>
 	</div>
 	<div class="wrap_box">
@@ -18,9 +25,12 @@
 			<div class="wrap_box_header">
 				<h2>Freunde suchen</h2>
 			</div>
-			<form data-ng-submit="" role="form">
-				<input type="text" name="search_friends" placeholder="Suche nach Name, Email..." data-ng-model="friend_name"></input>
+			<form data-ng-submit="searchFriend(friend_query)" role="form">
+				<input type="text" name="search_friends" placeholder="Suche nach Name, Email..." data-ng-model="friend_query"/>
 			</form>
+			<div data-ng-repeat="user in users">
+				{{user.name}} {{user.email}}<button data-ng-click="sendFriendRequest(user)" data-ng-hide="user.requested">Anfrage senden</button>
+			</div>
 		</div>
 	</div>
 </div>

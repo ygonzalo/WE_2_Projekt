@@ -36,7 +36,7 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$location'
 	$scope.getWatchlist = function () {
 		Data.get('movies/watchlist').then(function (results) {
 			if(results.status == "success") {
-				$scope.result = results;
+				$scope.watchlist = results.matches;
 			}
 		})
 	};

@@ -1,4 +1,4 @@
-<div class="default_container">
+<div data-ng-init="init()" class="default_container">
 	<!--div>
 	 UserID: {{userID}}
 	 <br/>NAME: {{name}}
@@ -15,8 +15,8 @@
 				<table>
 					<tr>
 						<td>Name:</td>
-						<td><textarea class="profile_input">{{name}}</textarea></td>
-						<td><button class="profile_input" disabled>ändern</button></td>
+						<td><textarea class="profile_input" placeholder="{{name}}"></textarea></td>
+						<td><button class="profile_input" data-ng-disabled="!changed" data-ng-click="changeName(name)">ändern</button></td>
 					</tr>
 					<tr>
 						<td>Mail:</td>
@@ -80,6 +80,11 @@
 		<div class="wrap_box_content">
 			<div class="wrap_box_header">
 				<h2>Freundschaftsanfragen</h2>
+			</div>
+			<div data-ng-repeat="request in requests">
+				{{request.name}}
+				<button name="accept_request" data-ng-click="acceptFriendRequest(request.userID)">Annehmen</button>
+				<button name="deny_request" data-ng-click="denyFriendRequest(request.userID)">Ablehnen</button>
 			</div>
 		</div>
 	</div>

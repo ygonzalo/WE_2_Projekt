@@ -1,19 +1,24 @@
 app.controller('friendsCtrl', ['$scope', '$rootScope', '$routeParams', '$location', 'Data',
 	function ($scope, $rootScope, $routeParams, $location, Data) {
 
-		$scope.sendFriendRequest = function(userID){
-			Data.post('friends/'+userID+'/request').then(function (results) {
+		$scope.sendFriendRequest = function(user){
+			Data.post('friends/'+user.userID+'/request').then(function (results) {
 				if (results.status == "success") {
-					$scope.requestSent = true;
+					user.requested = true;
 				}
 			});
 		};
 		
 		$scope.acceptFriendRequest = function(userID){
+
 			Data.put('friends/'+userID+'/request',{
 				status : "accepted"	
 		}).then(function (results) {
-				
+				if (results.status == "success") {
+					$scope.getRequests();
+				}else{
+					console.log(results.message);
+				}
 			});
 		};
 
@@ -21,7 +26,9 @@ app.controller('friendsCtrl', ['$scope', '$rootScope', '$routeParams', '$locatio
 			Data.put('friends/'+userID+'/request',{
 				status : "denied"
 			}).then(function (results) {
-				
+				if (results.status == "success") {
+					$scope.getRequests();
+				}
 			});
 		};
 		
@@ -36,7 +43,7 @@ app.controller('friendsCtrl', ['$scope', '$rootScope', '$routeParams', '$locatio
 		$scope.deleteFriend = function(userID) {
 			Data.delete('friends/'+userID).then(function (results) {
 				if (results.status == "success") {
-					
+					$scope.getFriends();
 				}
 			});
 		};
@@ -45,8 +52,18 @@ app.controller('friendsCtrl', ['$scope', '$rootScope', '$routeParams', '$locatio
 			Data.get('friends').then(function (results) {
 				if (results.status == "success") {
 					$scope.friends = results.friends;
+				}else{
+					console.log(results.message);
 				}
 			});
 		};
+
+		$scope.searchFriend = function(query) {
+			Data.get('friends/search/'+query).then(function (results) {
+				if (results.status == "success") {
+					$scope.users = results.users;
+				}
+			});
+		}
 		
 	}]);

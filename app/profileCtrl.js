@@ -3,5 +3,20 @@ app.controller('profileCtrl', ['$scope', '$rootScope', '$routeParams', '$locatio
 	$controller('movieCtrl', {$scope: $scope});
 
 	$controller('friendsCtrl', {$scope: $scope});
+
+
+	$scope.compareName = function(name) {
+		console.log("got in");
+
+		if(name==$rootScope.name){
+			return $scope.changed = false;
+		} else {
+			console.log("changed");
+			return $scope.changed = true;
+		}
+	};
 	
+	$scope.init = function() {
+		$scope.getRequests();
+	}
 }]);

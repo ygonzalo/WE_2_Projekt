@@ -29,6 +29,9 @@
   <script src="app/data.js"></script>
   <script src="app/authCtrl.js"></script>
   <script src="app/movieCtrl.js"></script>
+  <script src="app/friendsCtrl.js"></script>
+  <script src="app/homeCtrl.js"></script>
+  <script src="app/profileCtrl.js"></script>
   <script src="app/mainCtrl.js"></script>
 </html>
 

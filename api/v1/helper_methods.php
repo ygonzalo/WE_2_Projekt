@@ -26,8 +26,29 @@ function isFriend($userID, $friendID) {
 	$db = new DB();
 
 	//check if user is a friend
-	$stmt_friends = $db->preparedStmt("SELECT 1 FROM friends WHERE friendID = ? AND userID = ? OR friendID = ? AND userID = ?");
+	$stmt_friends = $db->preparedStmt("SELECT 1 FROM friends WHERE ((friendID = ? AND userID = ?) OR (friendID = ? AND userID = ?)) AND status = 'accepted'");
 	$stmt_friends->bind_param('iiii',$friendID,$userID,$userID,$friendID);
+
+	$stmt_friends->execute();
+	$stmt_friends->store_result();
+
+	if($stmt_friends->num_rows>0) {
+		$stmt_friends->free_result();
+		$stmt_friends->close();
+		return true;
+	} else {
+		$stmt_friends->free_result();
+		$stmt_friends->close();
+		return false;
+	}
+}
+
+function requestSent($userID, $friendID){
+	$db = new DB();
+
+	//check if user is a friend
+	$stmt_friends = $db->preparedStmt("SELECT 1 FROM friends WHERE userID = ? AND friendID = ? AND status = 'requested'");
+	$stmt_friends->bind_param('ii',$userID,$friendID);
 
 	$stmt_friends->execute();
 	$stmt_friends->store_result();

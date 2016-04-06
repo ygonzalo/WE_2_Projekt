@@ -21,7 +21,7 @@ app.config(['$routeProvider',
             .when('/home', {
                 title: 'Home',
                 templateUrl: 'partials/home.html',
-                controller: 'authCtrl'
+                controller: 'homeCtrl'
             })
             .when('/results', {
                 title: 'Search',
@@ -32,13 +32,13 @@ app.config(['$routeProvider',
             .when('/profile', {
                 title: 'Profil',
                 templateUrl: 'partials/profile.html',
-                controller: 'authCtrl',
+                controller: 'profileCtrl',
                 role: '0'
             })
             .when('/', {
                 title: 'Home',
                 templateUrl: 'partials/home.html',
-                controller: 'authCtrl',
+                controller: 'homeCtrl',
                 role: '0'
             })
             .when('/error', {
