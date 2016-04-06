@@ -13,10 +13,10 @@ VALUES (293660, 2, 2, 5);
 
 
 -- movieinfo TESTDATA
-INSERT INTO `movieinfo`(`movieID`,`movieID`,`movieID`,`movieID`,`movieID`,`poster`)
+INSERT INTO `movieinfo`(`movieID`,`language`,`plot`,`title`,`release_date`,`poster`)
 VALUES (177572, 'de', 'Hiro Hamada ist ein brillanter Teenager und lebt in der futuristischen Stadt San Fransokyo ein relativ normales Leben. Zumindest solange, bis ihm sein Bruder Tadashi den aufblasbaren Roboter Baymax baut, zu dem Hiro schnell eine ganz besondere Beziehung entwickelt. Baymax'' tatkräftige Unterstützung kann der aufgeweckte Junge definitiv gut gebrauchen, droht doch schon bald eine kriminelle Organisation damit, seine Heimatstadt zu zerstören. Mit der Hilfe von Baymax und seinen Freunden Go Go Tomago, Wasabi, Honey Lemon und Fred beschließt Hiro, alles zu tun, um die Katastrophe zu verhindern.',
 'Baymax - Riesiges Robowabohu', '2014-10-22','https://image.tmdb.org/t/p/w185/16g5Yqa1PpgoMU4Uzvmy6zSJv0W.jpg');
-INSERT INTO `movieinfo`(`movieID`,`movieID`,`movieID`,`movieID`,`movieID`,`poster`)
+INSERT INTO `movieinfo`(`movieID`,`language`,`plot`,`title`,`release_date`,`poster`)
 VALUES (293660, 'de', 'Basierend auf Marvels unkonventionellstem Anti-Helden, erzählt DEADPOOL die Geschichte des ehemaligen Special Forces Soldaten und Söldners Wade Wilson, der - nachdem er sich einem skrupellosen Experiment unterzieht - unglaubliche Selbstheilungskräfte erlangt und sein Alter Ego Deadpool annimmt.  Mit schwarzem, schrägen Sinn für Humor und ausgestattet mit neuen Fähigkeiten begibt sich Deadpool auf die unerbittliche Jagd nach seinen Peinigern, die beinahe sein Leben zerstörten.',
 'Deadpool', '2016-02-09','https://image.tmdb.org/t/p/w185/inVq3FRqcYIRl2la8iZikYYxFNR.jpg');
 
