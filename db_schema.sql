@@ -3,8 +3,8 @@ CREATE SCHEMA IF NOT EXISTS `watchedthatmovie`;
 USE `watchedthatmovie`;
 
 SET FOREIGN_KEY_CHECKS=0;
-DROP TABLE IF EXISTS `movieInfo`;
-DROP TABLE IF EXISTS `movieList`;
+DROP TABLE IF EXISTS `movieinfo`;
+DROP TABLE IF EXISTS `movielist`;
 DROP TABLE IF EXISTS `friends`;
 DROP TABLE IF EXISTS `recommendations`;
 DROP TABLE IF EXISTS `user`;
