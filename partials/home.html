@@ -34,7 +34,9 @@
 			</form>
 			<div class="default_list_box">
 				<div data-ng-repeat="user in users" class="default_list_item">
-					{{user.name}} {{user.email}}<button data-ng-click="sendFriendRequest(user)" data-ng-hide="user.requested">Anfrage senden</button>
+					{{user.name}} {{user.email}}
+					<button data-ng-click="sendFriendRequest(user)" data-ng-hide="user.requested">Anfrage senden</button>
+					<button data-ng-click="cancelFriendRequest(user)" data-ng-hide="!user.requested">Anfrage abbrechen</button>
 				</div>
 			</div>
 		</div>

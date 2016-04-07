@@ -8,6 +8,14 @@ app.controller('friendsCtrl', ['$scope', '$rootScope', '$routeParams', '$locatio
 				}
 			});
 		};
+
+		$scope.cancelFriendRequest = function(user){
+			Data.delete('friends/'+user.userID+'/request').then(function (results) {
+				if (results.status == "success") {
+					user.requested = false;
+				}
+			});
+		};
 		
 		$scope.acceptFriendRequest = function(userID){
 

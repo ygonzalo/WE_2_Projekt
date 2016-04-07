@@ -547,6 +547,35 @@ $app->post('/friends/:friendID/request', function($friendID) use ($app) {
 
 });
 
+//Cancel friend request
+$app->delete('/friends/:friendID/request', function($friendID) use ($app) {
+	//REST-Service Response
+	$response = array();
+	$db = new DB();
+	$session = $db->getSession();
+
+	//check if user is logged in
+	if($session['userID']!='') {
+		$userID = $session['userID'];
+		if(requestSent($userID, $friendID)){
+			$del_request = $db->preparedStmt("DELETE FROM friends WHERE userID=? AND friendID=?");
+			$del_request->bind_param('ii',$userID,$friendID);
+			$del_request->execute();
+			$del_request->close();
+			$response['status'] = "success";
+			$response['code'] = 214;
+			echoResponse(200, $response);
+		} else{
+			//TODO Error code
+		}
+		
+	} else {
+		$response['status'] = "error";
+		$response['code'] = 501;
+		echoResponse(201, $response);
+	}
+});
+
 //PUT Accept or deny friend request
 $app->put('/friends/:friendID/request', function($friendID) use ($app) {
 	//REST-Service Response
