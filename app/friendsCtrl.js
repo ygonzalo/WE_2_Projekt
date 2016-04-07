@@ -39,11 +39,20 @@ app.controller('friendsCtrl', ['$scope', '$rootScope', '$routeParams', '$locatio
 				}
 			});
 		};
-		
+
+		$scope.empty_requests = false;
+		$scope.empty_requests_msg = "";
 		$scope.getRequests = function() {
 			Data.get('friends/requests').then(function (results) {
 				if (results.status == "success") {
-					$scope.requests = results.requests;
+					switch(results.code){
+						case 216: 	$scope.requests = results.requests;
+									break;
+						case 217:	$scope.empty_requests = true;
+									$scope.empty_requests_msg = "Keine neue Freundschaftsanfragen";
+									break;
+						default:	break;
+					}
 				}
 			});
 		};
@@ -56,22 +65,45 @@ app.controller('friendsCtrl', ['$scope', '$rootScope', '$routeParams', '$locatio
 			});
 		};
 
+		$scope.empty_friendlist = false;
+		$scope.empty_friendlist_msg = "";
 		$scope.getFriends = function() {
 			Data.get('friends').then(function (results) {
 				if (results.status == "success") {
-					$scope.friends = results.friends;
+					switch(results.code){
+						case 219: 	$scope.friends = results.friends;
+							break;
+						case 220:	$scope.empty_friendlist = true;
+									$scope.empty_friendlist_msg = "Keine Freunde in deiner Freundeliste";
+							break;
+						default:	break;
+					}
 				}else{
 					console.log(results.message);
 				}
 			});
 		};
 
+		$scope.friend_query = "";
+		$scope.empty_friendsearch = false;
+		$scope.empty_friendsearch_msg = "";
 		$scope.searchFriend = function(query) {
-			Data.get('friends/search/'+query).then(function (results) {
-				if (results.status == "success") {
-					$scope.users = results.users;
-				}
-			});
+			if(query.length>0){
+				Data.get('friends/search/'+query).then(function (results) {
+					if (results.status == "success") {
+						switch(results.code){
+							case 211: 	$scope.users = results.users;
+								break;
+							case 212:	$scope.empty_friendsearch = true;
+								$scope.empty_friendsearch_msg = "Keine Treffer";
+								break;
+							default:	break;
+						}
+					}
+				});
+			} else {
+				$scope.empty_friendsearch_msg = "";
+			}
 		}
 		
 	}]);

@@ -7,6 +7,7 @@ app.controller('homeCtrl', ['$scope', '$rootScope', '$routeParams', '$location',
 	$scope.init = function () {
 
 		$scope.getWatchlist();
+		$scope.getWatched();
 		
 		$scope.getFriends();
 

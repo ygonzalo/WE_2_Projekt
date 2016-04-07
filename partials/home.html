@@ -4,6 +4,7 @@
 			<div class="wrap_box_header">
 				<h2>Meine Watchlist</h2>
 			</div>
+			<div data-ng-show="empty_watchlist">{{empty_watchlist_msg}}</div>
 			<div class="default_list_box">
 				<div data-ng-repeat="movie in watchlist" class="default_list_item">
 					{{movie.title}}
@@ -16,6 +17,7 @@
 			<div class="wrap_box_header">
 				<h2>Meine Freunde</h2>
 			</div>
+			<div data-ng-show="empty_friendlist">{{empty_friendlist_msg}}</div>
 			<div class="default_list_box">
 				<div data-ng-repeat="friend in friends" class="default_list_item">
 					{{friend.name}}
@@ -32,6 +34,7 @@
 			<form data-ng-submit="searchFriend(friend_query)" role="form">
 				<input type="text" name="search_friends" placeholder="Suche nach Name, Email..." data-ng-model="friend_query"/>
 			</form>
+			<div data-ng-show="empty_friendsearch">{{empty_friendsearch_msg}}</div>
 			<div class="default_list_box">
 				<div data-ng-repeat="user in users" class="default_list_item">
 					{{user.name}} {{user.email}}
@@ -46,6 +49,7 @@
 			<div class="wrap_box_header">
 				<h2>Gesehene Filme</h2>
 			</div>
+			<div data-ng-show="empty_watched">{{empty_watched_msg}}</div>
 			<div class="default_list_box">
 				
 			</div>
