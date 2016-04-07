@@ -81,10 +81,12 @@
 			<div class="wrap_box_header">
 				<h2>Freundschaftsanfragen</h2>
 			</div>
-			<div data-ng-repeat="request in requests">
-				{{request.name}}
-				<button name="accept_request" data-ng-click="acceptFriendRequest(request.userID)">Annehmen</button>
-				<button name="deny_request" data-ng-click="denyFriendRequest(request.userID)">Ablehnen</button>
+			<div class="default_list_box">
+				<div data-ng-repeat="request in requests" class="default_list_item">
+					{{request.name}}
+					<button name="accept_request" data-ng-click="acceptFriendRequest(request.userID)">Annehmen</button>
+					<button name="deny_request" data-ng-click="denyFriendRequest(request.userID)">Ablehnen</button>
+				</div>
 			</div>
 		</div>
 	</div>

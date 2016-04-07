@@ -188,3 +188,23 @@
 .profile_input:hover, .profile_input:focus {
 	background-color:rgb(222,222,222);
 }
+
+.default_list_item {
+	position:relative;
+	padding:0.5em;
+}
+
+.default_list_item:nth-child(2)  {
+	background-color:rgb(233,233,233);
+}
+
+.default_list_item button {
+	border:none;
+	outline:none;
+	background-color:rgba(0,0,0,0);
+	float:right;
+	cursor:pointer;
+}
+.default_list_item button:hover{
+	text-decoration:underline;
+}
