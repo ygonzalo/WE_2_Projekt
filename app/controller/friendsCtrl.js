@@ -13,6 +13,9 @@ app.controller('friendsCtrl', ['$scope', '$rootScope', '$routeParams', '$locatio
 			Data.delete('friends/'+user.userID+'/request').then(function (results) {
 				if (results.status == "success") {
 					user.requested = false;
+					if($location.path == '/profile'){
+						$scope.getSentRequests();
+					}
 				}
 			});
 		};
@@ -24,8 +27,6 @@ app.controller('friendsCtrl', ['$scope', '$rootScope', '$routeParams', '$locatio
 		}).then(function (results) {
 				if (results.status == "success") {
 					$scope.getRequests();
-				}else{
-					console.log(results.message);
 				}
 			});
 		};
@@ -43,14 +44,34 @@ app.controller('friendsCtrl', ['$scope', '$rootScope', '$routeParams', '$locatio
 		$scope.empty_requests = false;
 		$scope.empty_requests_msg = "";
 		$scope.getRequests = function() {
-			Data.get('friends/requests').then(function (results) {
+			Data.get('friends/requests/pending').then(function (results) {
 				if (results.status == "success") {
 					switch(results.code){
-						case 216: 	$scope.requests = results.requests;
+						case 216: 	$scope.pending_requests = results.requests;
 									break;
-						case 217:	$scope.empty_requests = true;
+						case 217:	$scope.pending_requests = {};
+									$scope.empty_requests = true;
 									$scope.empty_requests_msg = "Keine neue Freundschaftsanfragen";
 									break;
+						default:	break;
+					}
+				}
+			});
+		};
+
+		$scope.empty_sent_requests = false;
+		$scope.empty_sent_requests_msg = "";
+		$scope.getSentRequests = function() {
+			Data.get('friends/requests/sent').then(function (results) {
+				if (results.status == "success") {
+					switch(results.code){
+						case 230: 	
+							$scope.sent_requests = results.requests;
+							break;
+						case 231:	$scope.requests = {};
+							$scope.empty_sent_requests = true;
+							$scope.empty_sent_requests_msg = "Keine gesendete Freundschaftsanfragen";
+							break;
 						default:	break;
 					}
 				}
@@ -73,7 +94,8 @@ app.controller('friendsCtrl', ['$scope', '$rootScope', '$routeParams', '$locatio
 					switch(results.code){
 						case 219: 	$scope.friends = results.friends;
 							break;
-						case 220:	$scope.empty_friendlist = true;
+						case 220:	$scope.friends = {};
+									$scope.empty_friendlist = true;
 									$scope.empty_friendlist_msg = "Keine Freunde in deiner Freundeliste";
 							break;
 						default:	break;

@@ -79,14 +79,28 @@
 	<div class="wrap_box">
 		<div class="wrap_box_content">
 			<div class="wrap_box_header">
-				<h2>Freundschaftsanfragen</h2>
+				<h2>Offene Freundschaftsanfragen</h2>
 			</div>
 			<div data-ng-show="empty_requests">{{empty_requests_msg}}</div>
 			<div class="default_list_box">
-				<div data-ng-repeat="request in requests" class="default_list_item">
+				<div data-ng-repeat="request in pending_requests" class="default_list_item">
 					{{request.name}}
 					<button name="accept_request" data-ng-click="acceptFriendRequest(request.userID)">Annehmen</button>
 					<button name="deny_request" data-ng-click="denyFriendRequest(request.userID)">Ablehnen</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="wrap_box">
+		<div class="wrap_box_content">
+			<div class="wrap_box_header">
+				<h2>Gesendete Freundschaftsanfragen</h2>
+			</div>
+			<div data-ng-show="empty_sent_requests">{{empty_sent_requests_msg}}</div>
+			<div class="default_list_box">
+				<div data-ng-repeat="request in sent_requests" class="default_list_item">
+					{{request.name}}
+					<button name="cancel_request" data-ng-click="cancelFriendRequest(request.userID)">Abbrechen</button>
 				</div>
 			</div>
 		</div>

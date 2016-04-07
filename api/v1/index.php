@@ -6,9 +6,11 @@ require(".././libs/Slim/Slim.php");
 
 $app = new \Slim\Slim();
 
-require_once("authentication.php");
-require_once("data.php");
-require_once("documentation.php");
+$routeFiles = (array) glob('routes/*.php');
+foreach($routeFiles as $routeFile) {
+	require_once($routeFile);
+}
+//require_once("documentation.php");
 
 /*
 Encodes response to JSON
