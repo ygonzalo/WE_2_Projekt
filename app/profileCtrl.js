@@ -32,7 +32,8 @@ app.controller('profileCtrl', ['$scope', '$rootScope','$routeParams', '$cookies'
 			new_pwd : new_pwd
 		}).then(function (results) {
 			if (results.status == "success") {
-				console.log("yai");
+				$scope.old_pwd = "";
+				$scope.new_pwd = "";
 			} else {
 				console.log(results.message);
 			}

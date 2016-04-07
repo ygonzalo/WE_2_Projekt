@@ -683,7 +683,6 @@ $app->delete('/friends/:friendID', function($friendID) use ($app) {
 			$del_friends = $db->preparedStmt("DELETE FROM friends WHERE userID = ? AND friendID = ? OR userID = ? AND friendID = ?");
 			$del_friends->bind_param('iiii', $userID, $friendID ,$friendID ,$userID);
 			$del_friends->execute();
-			$del_friends->store_result();
 			$response['status'] = "success";
 			$response['message'] = "Friend deleted";
 			echoResponse(200, $response);
@@ -997,26 +996,27 @@ $app->put('/user/password', function() use ($app) {
 		$old_pwd = $req->old_pwd;
 		$new_pwd = $req->new_pwd;
 
-		$sel_pwd = $db->preparedStmt("SELECT `password` FROM user WHERE `userID` = ?");
+		$sel_pwd = $db->preparedStmt("SELECT password FROM user WHERE userID = ?");
 		$sel_pwd->bind_param('i',$userID);
 		$sel_pwd->execute();
 		$sel_pwd->bind_result($db_password);
 		$sel_pwd->fetch();
+		$sel_pwd->close();
 
 		if(password_verify($old_pwd,$db_password)){
 
-			$hashedPassword = password_hash($new_pwd, PASSWORD_DEFAULT);
-			$changePw = $db->preparedStmt("UPDATE `user` SET `password` = ? WHERE `userID` = ?");
-			$changePw->bind_param('si', $hashedPassword,$userID);
-			$changePw->execute();
-			$changePw->close();
+			$hashedPassword = password_hash($new_pwd,PASSWORD_DEFAULT);
 
-			$sel_pwd->close();
+			$upd_pwd = $db->preparedStmt("UPDATE user SET password = ? WHERE userID = ?");
+			$upd_pwd->bind_param('si', $hashedPassword,$userID);
+			$upd_pwd->execute();
+			$upd_pwd->close();
+
 			$response['status'] = "success";
 			$response['message'] = "Password changed";
 			echoResponse(200, $response);
 		} else {
-			$sel_pwd->close();
+
 			$response['status'] = "error";
 			$response['message'] = "Old password wrong";
 			echoResponse(201, $response);
