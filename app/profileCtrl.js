@@ -23,7 +23,7 @@ app.controller('profileCtrl', ['$scope', '$rootScope','$routeParams', '$cookies'
 		}
 	};
 
-
+	$scope.old_pwd_wrong = false;
 	$scope.old_pwd = "";
 	$scope.new_pwd = "";
 	$scope.changePassword = function(old_pwd,new_pwd) {
@@ -35,7 +35,9 @@ app.controller('profileCtrl', ['$scope', '$rootScope','$routeParams', '$cookies'
 				$scope.old_pwd = "";
 				$scope.new_pwd = "";
 			} else {
-				console.log(results.message);
+				if(results.code == 518){
+					$scope.old_pwd_wrong = true;
+				}
 			}
 		});
 	};

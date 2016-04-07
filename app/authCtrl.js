@@ -3,7 +3,7 @@ app.controller('authCtrl', function ($scope, $rootScope, $routeParams, $location
     $scope.login = {};
     $scope.signup = {};
     $scope.doLogin = function (user) {
-        Data.post('login', {
+        Data.post('user/login', {
             user: user
         }).then(function (results) {
             if (results.status == "success") {
@@ -13,7 +13,7 @@ app.controller('authCtrl', function ($scope, $rootScope, $routeParams, $location
     };
     $scope.signup = {email:'',password:'',name:''};
     $scope.signUp = function (user) {
-        Data.post('signUp', {
+        Data.post('user/signUp', {
             user: user
         }).then(function (results) {
     
@@ -25,7 +25,7 @@ app.controller('authCtrl', function ($scope, $rootScope, $routeParams, $location
         });
     };
     $scope.logout = function () {
-        Data.get('logout').then(function (results) {
+        Data.get('user/logout').then(function (results) {
             $location.path('login');
         });
     }

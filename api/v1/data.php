@@ -31,69 +31,76 @@ $app->get('/movies/search/:title', function($title) use ($app) {
 
 			$matches = $response_decoded['results'];
 
-			//add each movie to array in response
-			foreach ($matches as $item){
+			//Check is result of search is empty
+			if(!empty($matches)){
+				//add each movie to array in response
+				foreach ($matches as $item){
 
-				//build poster path with size configuration
-				$poster = "https://image.tmdb.org/t/p/w185". $item['poster_path'];
+					//build poster path with size configuration
+					$poster = "https://image.tmdb.org/t/p/w185". $item['poster_path'];
 
-				$movie['movieID'] = $item['id'];
-				$movie['title'] = $item['title'];
-				$movie['plot'] = $item['overview'];
-				$movie['release_date'] = $item['release_date'];
-				$movie['original_title'] = $item['original_title'];
-				$movie['poster'] = $poster;
-				$movie['status'] = null;
-				$movie['user_rating'] = null;
-				$movie['watched_date'] = null;
-				$movie['watchers'] = 0;
-				$movie['rating_points'] = 0;
+					$movie['movieID'] = $item['id'];
+					$movie['title'] = $item['title'];
+					$movie['plot'] = $item['overview'];
+					$movie['release_date'] = $item['release_date'];
+					$movie['original_title'] = $item['original_title'];
+					$movie['poster'] = $poster;
+					$movie['status'] = null;
+					$movie['user_rating'] = null;
+					$movie['watched_date'] = null;
+					$movie['watchers'] = 0;
+					$movie['rating_points'] = 0;
 
-				//prepare sql statements and bind parameters
-				$sel_movielist = $db->preparedStmt("SELECT status,user_rating,watched_date FROM movielist WHERE movieID = ? AND userID = ?");
-				$sel_movielist->bind_param('ii', $movie['movieID'], $session['userID']);
+					//prepare sql statements and bind parameters
+					$sel_movielist = $db->preparedStmt("SELECT status,user_rating,watched_date FROM movielist WHERE movieID = ? AND userID = ?");
+					$sel_movielist->bind_param('ii', $movie['movieID'], $session['userID']);
 
-				$sel_movie = $db->preparedStmt("SELECT watchers,rating_points FROM movie WHERE movieID = ?");
-				$sel_movie->bind_param('i', $movie['movieID']);
+					$sel_movie = $db->preparedStmt("SELECT watchers,rating_points FROM movie WHERE movieID = ?");
+					$sel_movie->bind_param('i', $movie['movieID']);
 
-				//execute query
-				$sel_movielist->execute();
-				$sel_movielist->store_result();
-				$sel_movielist->bind_result($db_status,$db_user_rating,$db_watched_date);
-				if($sel_movielist->num_rows>0){
-					while($sel_movielist->fetch()) {
-						$movie['status'] = $db_status;
-						$movie['user_rating'] = $db_user_rating;
-						$movie['watched_date'] = $db_watched_date;
+					//execute query
+					$sel_movielist->execute();
+					$sel_movielist->store_result();
+					$sel_movielist->bind_result($db_status,$db_user_rating,$db_watched_date);
+					if($sel_movielist->num_rows>0){
+						while($sel_movielist->fetch()) {
+							$movie['status'] = $db_status;
+							$movie['user_rating'] = $db_user_rating;
+							$movie['watched_date'] = $db_watched_date;
+						}
 					}
-				}
-				$sel_movielist->free_result();
-				$sel_movielist->close();
+					$sel_movielist->free_result();
+					$sel_movielist->close();
 
-				$sel_movie->execute();
-				$sel_movie->store_result();
-				$sel_movie->bind_result($db_watchers,$db_rating_points);
-				if($sel_movie->num_rows>0){
-					while ($sel_movie->fetch()) {
-						$movie['watchers'] = $db_watchers;
-						$movie['rating_points'] = $db_rating_points;
+					$sel_movie->execute();
+					$sel_movie->store_result();
+					$sel_movie->bind_result($db_watchers,$db_rating_points);
+					if($sel_movie->num_rows>0){
+						while ($sel_movie->fetch()) {
+							$movie['watchers'] = $db_watchers;
+							$movie['rating_points'] = $db_rating_points;
+						}
 					}
-				}
-				$sel_movie->free_result();
-				$sel_movie->close();
+					$sel_movie->free_result();
+					$sel_movie->close();
 
-				array_push($response['matches'], $movie);
+					array_push($response['matches'], $movie);
+				}
+
+				//copy matches array into session
+				$_SESSION['matches'] = $response['matches'];
+				$response['code'] = 204;
+				$response['status'] = "success";
+				echoResponse(200, $response);
+			} else {
+				$response['status'] = "success";
+				$response['code'] = 205;
+				echoResponse(200, $response);
 			}
-
-			//copy matches array into session
-			$_SESSION['matches'] = $response['matches'];
-
-			$response['status'] = "success";
-			echoResponse(200, $response);
 		}
 	} else {
 		$response['status'] = "error";
-		$response['message'] = "Not logged in";
+		$response['code'] = 501;
 		echoResponse(201, $response);
 	}
 });
@@ -219,27 +226,28 @@ $app->post('/movies/:movieID/status', function($movieID) use ($app) {
 					}
 
 					$response['status'] = "success";
+					$response['code'] = 206;
 					echoResponse(200, $response);
 				} else {
 					$response['status'] = "error";
-					$response['message'] = "Movie not found";
+					$response['code'] = 506;
 					echoResponse(201, $response);
 				}
 
 			}else{
 				$response['status'] = "error";
-				$response['message'] = "No movie data";
+				$response['code'] = 507;
 				echoResponse(201, $response);
 			}
 		} else {
 			$response['status'] = "error";
-			$response['message'] = "Wrong status";
+			$response['code'] = 508;
 			echoResponse(201, $response);
 		}
 
 	}else{
 		$response['status'] = "error";
-		$response['message'] = "Not logged in";
+		$response['code'] = 501;
 		echoResponse(201, $response);
 	}
 });
@@ -282,10 +290,11 @@ JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID= ? AND status= 'watc
 				array_push($response['matches'], $movie);
 			}
 			$response['status'] = "success";
+			$response['code'] = 207;
 			echoResponse(200, $response);
 		} else {
 			$response['status'] = "success";
-			$response['message'] = "No movies in watchlist";
+			$response['code'] = 208;
 			echoResponse(200, $response);
 		}
 		$movielist_stmt->free_result();
@@ -293,7 +302,7 @@ JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID= ? AND status= 'watc
 
 	}else{
 		$response['status'] = "error";
-		$response['message'] = "Not logged in";
+		$response['code'] = 501;
 		echoResponse(201, $response);
 	}
 });
@@ -337,10 +346,11 @@ JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID= ? AND status= 'watc
 				array_push($response['matches'], $movie);
 			}
 			$response['status'] = "success";
+			$response['code'] = 209;
 			echoResponse(200, $response);
 		} else {
 			$response['status'] = "success";
-			$response['message'] = "No movies marked as watched";
+			$response['code'] = 210;
 			echoResponse(200, $response);
 		}
 		$movielist_stmt->free_result();
@@ -348,7 +358,7 @@ JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID= ? AND status= 'watc
 
 	}else{
 		$response['status'] = "error";
-		$response['message'] = "Not logged in";
+		$response['code'] = 501;
 		echoResponse(201, $response);
 	}
 });
@@ -412,12 +422,12 @@ $app->put('/movies/:movieID/rating', function($movieID) use ($app) {
 			echoResponse(200, $response);
 		}else {
 			$response['status'] = "error";
-			$response['message'] = "Cannot give rating for unwatched movies";
+			$response['code'] = 509;
 			echoResponse(201, $response);
 		}
 	} else {
 		$response['status'] = "error";
-		$response['message'] = "Not logged in";
+		$response['code'] = 501;
 		echoResponse(201, $response);
 	}
 
@@ -461,19 +471,19 @@ $app->get('/friends/search/:query', function($query) use ($app) {
 				}
 			}
 			$response['status'] = "success";
+			$response['code'] = 211;
 			echoResponse(200, $response);
 		} else {
 			$response['status'] = "success";
-			$response['message'] = "No user found";
+			$response['code'] = 212;
 			echoResponse(200, $response);
 		}
 		$sel_user->free_result();
 		$sel_user->close();
 
-
 	} else {
 		$response['status'] = "error";
-		$response['message'] = "Not logged in";
+		$response['code'] = 501;
 		echoResponse(201, $response);
 	}
 
@@ -511,27 +521,27 @@ $app->post('/friends/:friendID/request', function($friendID) use ($app) {
 					sendMail($friend_email,$subject,$message);
 
 					$response['status'] = "success";
-					$response['message'] = "Request sent";
+					$response['code'] = 213;
 					echoResponse(200, $response);
 				} else {
 					$response['status'] = "error";
-					$response['message'] = "Relationship already exists";
+					$response['code'] = 510;
 					echoResponse(201, $response);
 				}
 
 			} else {
 				$response['status'] = "error";
-				$response['message'] = "User not found";
+				$response['code'] = 511;
 				echoResponse(201, $response);
 			}
 		}else{
 			$response['status'] = "error";
-			$response['message'] = "It is only possible to send requests to other users";
+			$response['code'] = 511;
 			echoResponse(201, $response);
 		}
 	} else {
 		$response['status'] = "error";
-		$response['message'] = "Not logged in";
+		$response['code'] = 501;
 		echoResponse(201, $response);
 	}
 
@@ -568,7 +578,7 @@ $app->put('/friends/:friendID/request', function($friendID) use ($app) {
 				if($db_status==$status){
 					//status already set
 					$response['status'] = "error";
-					$response['message'] = "Status already set";
+					$response['code'] = "Status already set";
 					echoResponse(201, $response);
 
 				}else if($db_status=="requested"){
@@ -585,7 +595,7 @@ $app->put('/friends/:friendID/request', function($friendID) use ($app) {
 							$upd_friend->execute();
 							$upd_friend->close();
 							$response['status'] = "success";
-							$response['message'] = "Status changed to accepted";
+							$response['code'] = 214;
 							echoResponse(200, $response);
 							break;
 
@@ -596,32 +606,34 @@ $app->put('/friends/:friendID/request', function($friendID) use ($app) {
 							$upd_friend->execute();
 							$upd_friend->close();
 							$response['status'] = "success";
-							$response['message'] = "Status changed to denied";
+							$response['code'] = 215;
 							echoResponse(200, $response);
 							break;
 						default:
 							$response['status'] = "error";
-							$response['message'] = "Invalid status";
+							$response['code'] = 513;
 							echoResponse(201, $response);
 							break;
 					}
 				}
 			}else {
 				$response['status'] = "error";
-				$response['message'] = "No relationship found in DB";
+				$response['code'] = 514;
 				echoResponse(201, $response);
 			}
 
 
 		} else {
 			$response['status'] = "error";
-			$response['message'] = "Requests cannot be accepted/denied by the user who sent it";
+			$response['code'] = 515;
 			echoResponse(201, $response);
 		}
+	}else {
+		$response['status'] = "error";
+		$response['code'] = 501;
+		echoResponse(201, $response);
 	}
 });
-
-
 
 //GET Friend requests
 $app->get('/friends/requests', function() use ($app) {
@@ -649,13 +661,17 @@ $app->get('/friends/requests', function() use ($app) {
 				$user['name'] = $db_name;
 				array_push($response['requests'],$user);
 			}
+			$response['status'] = "success";
+			$response['code'] = 216;
+			echoResponse(200, $response);
+		} else {
+			$response['status'] = "success";
+			$response['code'] = 217;
+			echoResponse(200, $response);
 		}
-		$response['status'] = "success";
-		echoResponse(200, $response);
-
-	}else {
+	} else {
 		$response['status'] = "error";
-		$response['message'] = "Not logged in";
+		$response['code'] = 501;
 		echoResponse(201, $response);
 	}
 });
@@ -684,22 +700,19 @@ $app->delete('/friends/:friendID', function($friendID) use ($app) {
 			$del_friends->bind_param('iiii', $userID, $friendID ,$friendID ,$userID);
 			$del_friends->execute();
 			$response['status'] = "success";
-			$response['message'] = "Friend deleted";
+			$response['code'] = 218;
 			echoResponse(200, $response);
 
 		}else{
 			$response['status'] = "error";
-			$response['message'] = "Not a friend";
+			$response['code'] = 516;
 			echoResponse(201, $response);
-
 		}
-
 	}else {
 		$response['status'] = "error";
-		$response['message'] = "Not logged in";
+		$response['code'] = 501;
 		echoResponse(201, $response);
 	}
-
 });
 
 //GET Friends
@@ -756,10 +769,11 @@ $app->get('/friends', function() use ($app) {
 
 			$sel_name->close();
 			$response['status'] = "success";
+			$response['code'] = 219;
 			echoResponse(200, $response);
 		}else {
 			$response['status'] = "success";
-			$response['message'] = "No friends found";
+			$response['code'] = 220;
 			echoResponse(200, $response);
 		}
 
@@ -768,7 +782,7 @@ $app->get('/friends', function() use ($app) {
 
 	} else {
 		$response['status'] = "error";
-		$response['message'] = "Not logged in";
+		$response['code'] = 501;
 		echoResponse(201, $response);
 	}
 
@@ -799,21 +813,22 @@ $app->post('/friends/:friendID/recommend', function($friendID) use ($app) {
 				$stmt_recommendations->close();
 
 				$response['status'] = "success";
+				$response['code'] = 221;
 				echoResponse(200, $response);
 			}else{
 				$response['status'] = "error";
-				$response['message'] = "Cannot recommend a movie that has not been watched";
+				$response['code'] = 517;
 				echoResponse(201, $response);
 			}
 		} else{
 			$response['status'] = "error";
-			$response['message'] = "Friend not added";
+			$response['code'] = 516;
 			echoResponse(201, $response);
 		}
 
 	} else {
 		$response['status'] = "error";
-		$response['message'] = "Not logged in";
+		$response['code'] = 501;
 		echoResponse(201, $response);
 	}
 
@@ -892,11 +907,12 @@ FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID= 
 			}
 
 			$response['status'] = "success";
+			$response['code'] = 222;
 			echoResponse(200, $response);
 
 		} else{
 			$response['status'] = "success";
-			$response['message'] = "No new recommendations";
+			$response['code'] = 223;
 			echoResponse(200, $response);
 		}
 
@@ -905,7 +921,7 @@ FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID= 
 
 	} else {
 		$response['status'] = "error";
-		$response['message'] = "Not logged in";
+		$response['code'] = 501;
 		echoResponse(201, $response);
 	}
 });
@@ -959,22 +975,23 @@ FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID= 
 				$sel_movielist->free_result();
 				$sel_movielist->close();
 				$response['status'] = "success";
+				$response['code'] = 224;
 				echoResponse(200, $response);
 			}else {
 				$response['status'] = "success";
-				$response['message'] = "No movies in common";
+				$response['code'] = 225;
 				echoResponse(200, $response);
 			}
 
 		} else {
 			$response['status'] = "error";
-			$response['message'] = "Not a friend";
+			$response['code'] = 516;
 			echoResponse(201, $response);
 		}
 
 	} else {
 		$response['status'] = "error";
-		$response['message'] = "Not logged in";
+		$response['code'] = 501;
 		echoResponse(201, $response);
 	}
 
@@ -1013,18 +1030,18 @@ $app->put('/user/password', function() use ($app) {
 			$upd_pwd->close();
 
 			$response['status'] = "success";
-			$response['message'] = "Password changed";
+			$response['code'] = 226;
 			echoResponse(200, $response);
 		} else {
 
 			$response['status'] = "error";
-			$response['message'] = "Old password wrong";
+			$response['code'] = intval('518');
 			echoResponse(201, $response);
 		}
 
 	} else {
 		$response['status'] = "error";
-		$response['message'] = "Not logged in";
+		$response['code'] = 501;
 		echoResponse(201, $response);
 	}
 
@@ -1061,13 +1078,13 @@ $app->put('/user/email', function() use ($app) {
 		$db->changeSessionEmail($db_email);
 
 		$response['status'] = "success";
-		$response['message'] = "Email changed";
+		$response['code'] = 227;
 		echoResponse(200, $response);
 
 
 	} else {
 		$response['status'] = "error";
-		$response['message'] = "Not logged in";
+		$response['code'] = 501;
 		echoResponse(201, $response);
 	}
 });
@@ -1103,13 +1120,13 @@ $app->put('/user/name', function() use ($app) {
 		$db->changeSessionName($db_name);
 
 		$response['status'] = "success";
-		$response['message'] = "Name changed";
+		$response['code'] = 228;
 		echoResponse(200, $response);
 
 
 	} else {
 		$response['status'] = "error";
-		$response['message'] = "Not logged in";
+		$response['code'] = 501;
 		echoResponse(201, $response);
 	}
 });
@@ -1133,6 +1150,7 @@ $app->get('/user/color', function() use ($app) {
 
 		$response['color'] = $db_color;;
 		$response['status'] = "success";
+		$response['code'] = 229;
 		echoResponse(200, $response);
 
 		$sel_col->free_result();
@@ -1140,7 +1158,7 @@ $app->get('/user/color', function() use ($app) {
 
 	} else {
 		$response['status'] = "error";
-		$response['message'] = "Not logged in";
+		$response['code'] = 501;
 		echoResponse(201, $response);
 	}
 

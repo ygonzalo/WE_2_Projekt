@@ -11,40 +11,48 @@ $app->get('/session', function() {
 });
 
 //POST Login
-$app->post('/login', function() use ($app) {
+$app->post('/user/login', function() use ($app) {
 
 	$req = json_decode($app->request->getBody());
 	$db = new DB();
 
 	$password = $req->user->password;
 	$email = $req->user->email;
-	$user = $db->getSingleRecord("SELECT `userID`,`name`,`password`,`email` FROM `user` WHERE `email`='".$email."'");
-	if($user) {
-		if(password_verify($password,$user['password'])){
-			$response['status'] = "success";
-			$response['message'] = 'Logged in successfully.';
-			$response['name'] = $user['name'];
-			$response['userID'] = $user['userID'];
-			$response['email'] = $user['email'];
+	$user_stmt = $db->preparedStmt("SELECT `userID`,`name`,`password`,`email` FROM `user` WHERE `email`= ?");
+	$user_stmt->bind_param('s',$email);
+	$user_stmt->execute();
+	$user_stmt->bind_result($db_userID,$db_name,$db_password,$db_email);
+	$user_stmt->store_result();
+	$user_stmt->fetch();
+	if($user_stmt->num_rows>0) {
+		if(password_verify($password,$db_password)){
 			if(!isset($_SESSION)){
 				session_start();
 			}
-			$_SESSION['userID'] = $user['userID'];
-			$_SESSION['email'] = $email;
-			$_SESSION['name'] = $user['name'];
+			$_SESSION['userID'] = $db_userID;
+			$_SESSION['email'] = $db_email;
+			$_SESSION['name'] = $db_name;
+			
+			$response['status'] = 'success';
+			$response['code'] = 202;
+			echoResponse(200, $response);
 		} else {
 			$response['status'] = "error";
-			$response['message'] = 'Login failed. Incorrect credentials';
+			$response['code'] = 502;
+			echoResponse(201, $response);
 		}
 	}else {
 		$response['status'] = "error";
-		$response['message'] = 'No such user is registered';
+		$response['code'] = 503;
+		echoResponse(201, $response);
 	}
-	echoResponse(200, $response);
+	$user_stmt->free_result();
+	$user_stmt->close();
+
 });
 
 //POST Signup
-$app->post('/signUp', function() use ($app) {
+$app->post('/user/signUp', function() use ($app) {
 	$req = json_decode($app->request->getBody());
 	$response = array();
 	$db = new DB();
@@ -52,42 +60,51 @@ $app->post('/signUp', function() use ($app) {
 	$name = $req->user->name;
 	$email = $req->user->email;
 	$password = $req->user->password;
-	$dbUser = $db->getSingleRecord("SELECT 1 FROM user where email='".$email."'");
-	if(!$dbUser) {
-		$req->user->password = password_hash($password, PASSWORD_DEFAULT);
-		$table_name = 'user';
-		$column_names = array('name', 'email', 'password');
-		$result = $db->insertIntoTable($req->user, $column_names, $table_name);
-		if($result != NULL) {
-			$response["status"] = "success";
-			$response["message"] = "User account created successfully";
-			$response["userID"] = $result;
+	$user_stmt = $db->preparedStmt("SELECT 1 FROM user where email=?");
+	$user_stmt->bind_param('s',$email);
+	$user_stmt->execute();
+	$user_stmt->store_result();
+	$user_stmt->fetch();
+	
+	if($user_stmt->num_rows==0) {
+		$hashed_password = password_hash($password, PASSWORD_DEFAULT);
+		$ins_stmt = $db->preparedStmt("INSERT INTO user(name,email,password) VALUES (?,?,?)");
+		$ins_stmt->bind_param('sss',$name,$email,$hashed_password);
+		$insert_status = $ins_stmt->execute();
+		$ins_stmt->store_result();
+
+		if($insert_status != false) {
+			$response['status'] = "success";
 			if (!isset($_SESSION)) {
 				session_start();
 			}
-			$_SESSION['userID'] = $response["userID"];
+			$_SESSION['userID'] = $ins_stmt->insert_id;
 			$_SESSION['name'] = $name;
 			$_SESSION['email'] = $email;
+			$response['code'] = 202;
 			echoResponse(200, $response);
 		} else {
-			$response["status"] = "error";
-			$response["message"] = "Failed to create user. Please try again";
+			$response['status'] = "error";
+			$response['code'] = 504;
 			echoResponse(201, $response);
 		}
+		$ins_stmt->free_result();
+		$ins_stmt->close();
 	}else{
-		$response["status"] = "error";
-		$response["message"] = "An user with the provided email exists!";
+		$response['status'] = "error";
+		$response['code'] = 505;
 		echoResponse(201, $response);
 	}
-
+	$user_stmt->free_result();
+	$user_stmt->close();
 });
 
 //GET Logout
-$app->get('/logout', function() {
+$app->get('/user/logout', function() {
 	$db = new DB();
 	$msg = $db->destroySession();
 	$response["status"] = "success";
-	$response["message"] = $msg ;
+	$response["code"] = 203 ;
 	echoResponse(200, $response);
 });
 

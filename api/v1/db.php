@@ -32,50 +32,6 @@ class DB {
 		$this->conn->rollback();
 	}
 
-	public function getRecords($query) {
-		return mysqli_query($this->conn, $query);
-	}
-
-	public function getSingleRecord($query) {
-	   $result = mysqli_query($this->conn, $query.' LIMIT 1');
-		if(mysqli_num_rows($result)>0){
-			
-			return mysqli_fetch_assoc($result);
-		} else {
-			return null;
-		}
-	}
-
-	public function insertIntoTable($object, $column_names, $table_name) {
-		$arr = (array) $object;
-		$keys = array_keys($arr);
-		$columns = '';
-		$values = '';
-
-		//Fills columns and their respective values strings for the db query
-		foreach($column_names as $key) {
-			if(!in_array($key, $keys)) {
-				$$key = '';
-			} else{
-				$$key = $arr[$key];
-			}
-			$columns = $columns.$key.',';
-			$values = $values.'"'.mysqli_real_escape_string($this->conn,$$key).'",';
-		}
-
-		$query = "INSERT INTO ".$table_name."(".trim($columns,',').") VALUES(".trim($values,',').")";
-		mysqli_query($this->conn,$query);
-		return mysqli_insert_id($this->conn);
-	}
-	
-	public function dbQuery($query) {
-		return mysqli_query($this->conn,$query);
-	}
-
-	public function updateRecord($table_name, $values, $condition) {
-		return mysqli_query($this->conn,"UPDATE ".$table_name." SET ".$values." WHERE ".$condition);
-	}
-
 	public function getSession(){
 		if (!isset($_SESSION)) {
 			session_start();
