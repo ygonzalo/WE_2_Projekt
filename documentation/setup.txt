@@ -4,6 +4,11 @@ Datenbank:
 		PW: "weilbaum"
 
 FTP:
-	"mywatchlist.ixdee.de"
-	User: "zug"
+	„watchedthatmovie.ixdee.de"
+	User: „toll“
 	PW: "weilbaum"
+
+Email:
+
+	noreply@watchedthatmovie.ixdee.de
+	PW: „weilbaum1“
