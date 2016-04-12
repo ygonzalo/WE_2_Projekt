@@ -1,235 +1,89 @@
 <head>
 	<title>Profilbild render</title>
 	<script>	
-	//render bild in bunt(zu rechenintensiv bei größeren bildern)
-			function render(){
-				
-				var can = document.getElementById("cvs");
-				var ctx = can.getContext("2d");
-				var input = document.getElementById("inputTxt").value;
-				
-				ctx.canvas.width  = 120;
-				ctx.canvas.height = 120;
-				ctx.clearRect(0,0,120,120);
-				
-				input2=input.split('-');
-								
-				ctx.moveTo(0,0);
-				for(i = 0; i < 120; i++){
-					for(j = 0; j < 120; j++){
-						
-						ctx.fillStyle = "rgba("+(input2[0]-i)+","+(input2[1]-j)+","+(i+j)+",1)";
-						ctx.fillRect(i,j,120-i,120-j)
-						
-					}
-				}
-				
-					ctx.stroke();
-				
-			}
-			
-	//kreise zeichnen
-			function render2(){
-			
-				var can = document.getElementById("cvs2");
-				var ctx = can.getContext("2d");
-				var input = document.getElementById("inputTxt").value;
-				
-				ctx.canvas.width  = 320;
-				ctx.canvas.height = 400;
-				ctx.clearRect(0,0,320,400);
-				
-				input2=input.split('-');
-				
-				
-				for(i = 0; i < 160; i++){
-					ctx.moveTo(0,0);
-					r = input2[0]-(i*2);
-					g = input2[1]-(i*2);
-					b = i*5;
-					a = 1;
-					col = "rgba("+r+","+g+","+b+","+a+")";
-					
-					drawCircle1(i,col,ctx);
-					
-				}
-				for(i = 0; i < 160; i++){
-					ctx.moveTo(320,0);
-					r = input2[2]-(i*2);
-					g = input2[3]-(i*2);
-					b = i*5;
-					a = 1;
-					col = "rgba("+r+","+g+","+b+","+a+")";
-					
-					drawCircle2(i,col,ctx);
-					
-				}
-				for(i = 0; i < 160; i++){
-					ctx.moveTo(0,400);
-					r = input2[4]-(i*2);
-					g = input2[5]-(i*2);
-					b = i*5;
-					a = 1;
-					col = "rgba("+r+","+g+","+b+","+a+")";
-					
-					drawCircle3(i,col,ctx);
-					
-				}
-				
-				for(i = 0; i < 160; i++){
-					ctx.moveTo(320,400);
-					r = input2[6]-(i*2);
-					g = input2[7]-(i*2);
-					b = i*5;
-					a = 1;
-					col = "rgba("+r+","+g+","+b+","+a+")";
-					
-					drawCircle4(i,col,ctx);
-					
-				}
-			
-				
-			}
-	
-	//KREISE
-			function drawCircle1(i,color,ctx){
-                ctx.beginPath();
-				ctx.strokeStyle=color;
-                ctx.arc(0,0,i,1.5*Math.PI,0.5*Math.PI);
-                ctx.closePath();
-               
-                ctx.stroke();
-			}
-			function drawCircle2(i,color,ctx){
-                ctx.beginPath();
-				ctx.strokeStyle=color;
-                ctx.arc(320,0,i,0.5 * Math.PI , 1 * Math.PI);
-                ctx.closePath();
-               
-                ctx.stroke();
-			}
-			function drawCircle3(i,color,ctx){
-                ctx.beginPath();
-				ctx.strokeStyle=color;
-                ctx.arc(0,400,i,1.5 * Math.PI , 2 * Math.PI);
-                ctx.closePath();
-               
-                ctx.stroke();
-			}
-			function drawCircle4(i,color,ctx){
-                ctx.beginPath();
-				ctx.strokeStyle=color;
-                ctx.arc(320,400,i,1 * Math.PI , 1.5 * Math.PI);
-                ctx.closePath();
-               
-                ctx.stroke();
-			}
-			
-	//render canvas mit bunten vierecken
+
+			//render canvas mit bunten vierecken
 			function render3(){
 			
 				var can = document.getElementById("cvs3");
 				var ctx = can.getContext("2d");
 				var input = document.getElementById("inputTxt").value;
-				var input2=input.split('-');
-				
-				
+				var input2 = input.split('-');
+							
 				ctx.canvas.width  = 320;
 				ctx.canvas.height = 400;
 				ctx.clearRect(0,0,320,400);
-				
-				if(typeof input2[14] == 'undefined' && input2[14] == null){
-					color1 = getRandomColorDark();
-					color2 = getRandomColorDark();
-					color3 = getRandomColorDark();
-					color4 = getRandomColorDark();
-					color5 = getRandomColorRGB();
+			
+				if(typeof input2[4] == 'undefined' && input2[4] == null){
+					color1 = getRandomColor(0);
+					color2 = getRandomColor(0);
+					color3 = getRandomColor(0);
+					color4 = getRandomColor(0)
+					color5 = getRandomColor(0);
 				}else{
-					
-					color1 = "rgba("+input2[0]+","+input2[1]+","+input2[2]+",1)";
-					color2 = "rgba("+input2[3]+","+input2[4]+","+input2[5]+",1)";
-					color3 = "rgba("+input2[6]+","+input2[7]+","+input2[8]+",1)";
-					color4 = "rgba("+input2[9]+","+input2[10]+","+input2[11]+",1)";
-					color5 = "rgba("+input2[12]+","+input2[13]+","+input2[14]+",1)";
+					color1 = getRandomColor(input2[0]);
+					color2 = getRandomColor(input2[1]);
+					color3 = getRandomColor(input2[2]);
+					color4 = getRandomColor(input2[3]);
+					color5 = getRandomColor(input2[4]);
 				}
+				
 				//erzeugen vierecke
 				ctx.fillStyle = color1;
-				ctx.fillRect(0,0,120,280);
+				ctx.fillRect(0,0,100,300);
 				ctx.fillStyle = color2;
-				ctx.fillRect(0,280,200,120);
+				ctx.fillRect(0,300,220,100);
 				ctx.fillStyle = color3;
-				ctx.fillRect(120,0,200,120);
+				ctx.fillRect(100,0,220,100);
 				ctx.fillStyle = color4;
-				ctx.fillRect(200,120,120,280);
+				ctx.fillRect(220,100,100,300);
 				ctx.fillStyle = color5;
-				ctx.fillRect(120,120,80,160);				
+				ctx.fillRect(100,100,120,200);				
 				
 			}
 			
-			function getRandomColor() {
-				//hexs werte mit allen farben
-				var letters = '0123456789ABCDEF'.split('');
-				var color = '#';
-				for (var i = 0; i < 6; i++ ) {
-					color += letters[Math.floor(Math.random() * 16)];
+				
+			function getRandomColor(i){
+			
+				zzahl = Math.floor(i);
+				
+				if(zzahl == 0){
+					var zzahl = Math.floor(Math.random() * 4)+1;
+				}			
+				
+				switch(zzahl) {
+					case 1:
+						color= "rgba(149,211,28,1)";
+						break;
+					case 2:
+						color= "rgba(239,231,16,1)";
+						break;
+					case 3:
+						color= "rgba(234,53,143,1)";
+						break;
+					case 4:
+						color= "rgba(105,22,233,1)";
+						break;
 				}
 				return color;
 			}
 			
-			function getRandomColorRGB() {
-				
-				var color = 'rgba(';
-				for (var i = 0; i < 3; i++ ) {
-					//rgbs mit wert größer als 180 -> helle farben
-					val = 180+Math.floor(Math.random() * 70);
-					color += val;
-					color += ",";
-				}
-				color += "1)";
-				console.log(color);
-				return color;
-			}
+		
 			
-			function getRandomColorDark() {
-				
-				var color = 'rgba(';
-				for (var i = 0; i < 3; i++ ) {
-					//rgbs mit wert zwischen 50 und 150 -> dunkle farben
-					val = 50+Math.floor(Math.random() * 100);
-					color += val;
-					color += ",";
-				}
-				color += "1)";
-				console.log(color);
-				return color;
-			}
-				
+			
+			
+	
 	</script>
 </head>
 <body>
 <h1>Profilbild Rendern Testseite</h1>
 	<input type="text" id="inputTxt"></input>
-	<input type="button" value="Render" onclick="render();">
-	<input type="button" value="Render2" onclick="render2();">
+
 	<input type="button" value="Render3" onclick="render3();">
 	<br><br>
-	<span>Render eins erwartet zwei Werte in dem Input Feld mit - getrennt</span>
-	<br><br>
-	<span>Render zwei erwartet 8 Werte in dem Input Feld(hat ein bug und steht eig nicht zur Auswahl)</span>
-	<br><br>
-	<span>Render drei geht ohne Input oder erwartet 15 Werte min - getrennt(rgbs der Vierecke)</span>
-	<br><br>
 	
-	<div id="pic" style="float:left">
-		<canvas id='cvs'></canvas>
-	</div>
-	
-	<div id="pic" style="float:left">
-		<canvas id='cvs2'></canvas>
-	</div>
-	
-	<div id="pic" style="float:left">
-		<canvas id='cvs3'></canvas>
+	<div id="pic" style="float:left; overflow:hidden">
+		<canvas id='cvs3' style="-webkit-filter:blur(50px);"></canvas>
 	</div>
 </body>
 </html>
