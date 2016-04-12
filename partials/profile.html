@@ -15,12 +15,12 @@
 				<table>
 					<tr>
 						<td>Name:</td>
-						<td><textarea class="profile_input" data-ng-model="profile_name" data-ng-change="compareName(profile_name)"></textarea></td>
+						<td><textarea class="profile_input" data-ng-model="profile_name" data-ng-change="compareName(profile_name)" onkeypress="if(event.keyCode==13){return false;}"></textarea></td>
 						<td><button class="profile_input" data-ng-disabled="!name_changed" data-ng-click="changeName(profile_name)">ändern</button></td>
 					</tr>
 					<tr>
 						<td>Mail:</td>
-						<td><textarea class="profile_input" data-ng-model="profile_email" data-ng-change="compareEmail(profile_email)"></textarea></td>
+						<td><textarea class="profile_input" data-ng-model="profile_email" data-ng-change="compareEmail(profile_email)" onkeypress="if(event.keyCode==13){return false;}"></textarea></td>
 						<td><button class="profile_input" data-ng-disabled="!email_changed" data-ng-click="changeEmail(profile_email)">ändern</button></td>
 					</tr>
 					<tr>
@@ -100,7 +100,7 @@
 			<div class="default_list_box">
 				<div data-ng-repeat="request in sent_requests" class="default_list_item">
 					{{request.name}}
-					<button name="cancel_request" data-ng-click="cancelFriendRequest(request.userID)">Abbrechen</button>
+					<button name="cancel_request" data-ng-click="cancelFriendRequest(request)">Abbrechen</button>
 				</div>
 			</div>
 		</div>

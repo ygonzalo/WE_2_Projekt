@@ -70,6 +70,7 @@ app.controller('profileCtrl', ['$scope', '$rootScope','$routeParams', '$cookies'
 
 	};
 	
+	
 	$scope.init = function() {
 		$scope.getRequests();
 		$scope.getSentRequests();

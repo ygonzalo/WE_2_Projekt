@@ -4,7 +4,7 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$location'
 
 	$scope.searchMovie = function (title) {
 
-		if($location.path == '/results'){
+		if($location.path() == '/results'){
 			$location.search('title', title.replace(/ /g, '+'));
 		} else {
 			$location.path('/results').search('title', title.replace(/ /g, '+'));
