@@ -6,11 +6,12 @@ require(".././libs/Slim/Slim.php");
 
 $app = new \Slim\Slim();
 
-$routeFiles = (array) glob('routes/*.php');
-foreach($routeFiles as $routeFile) {
-	require_once($routeFile);
-}
-//require_once("documentation.php");
+//Routes
+require_once("routes/friends.php");
+require_once("routes/movies.php");
+require_once("routes/user.php");
+
+require_once("documentation.php");
 
 /*
 Encodes response to JSON
