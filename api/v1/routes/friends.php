@@ -135,7 +135,9 @@ $app->delete('/friends/:friendID/request', function($friendID) use ($app) {
 			$response['code'] = 214;
 			echoResponse(200, $response);
 		} else{
-			//TODO Error code
+			$response['status'] = "error";
+			$response['code'] = 521;
+			echoResponse(201, $response);
 		}
 
 	} else {
@@ -298,6 +300,7 @@ $app->get('/friends/requests/sent', function() use ($app) {
 			while($sel_requests->fetch()){
 				$user['userID'] = $db_userID;
 				$user['name'] = $db_name;
+				$user['requested'] = true;
 				array_push($response['requests'],$user);
 			}
 			$response['status'] = "success";

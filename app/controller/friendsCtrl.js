@@ -10,12 +10,19 @@ app.controller('friendsCtrl', ['$scope', '$rootScope', '$routeParams', '$locatio
 		};
 
 		$scope.cancelFriendRequest = function(user){
+
+
 			Data.delete('friends/'+user.userID+'/request').then(function (results) {
 				if (results.status == "success") {
-					user.requested = false;
-					if($location.path == '/profile'){
+
+					if($location.path() == '/profile'){
 						$scope.getSentRequests();
+					}else if($location.path() == '/home'){
+						user.requested = false;
 					}
+
+				}else {
+					console.log(results.code);
 				}
 			});
 		};
@@ -65,13 +72,12 @@ app.controller('friendsCtrl', ['$scope', '$rootScope', '$routeParams', '$locatio
 			Data.get('friends/requests/sent').then(function (results) {
 				if (results.status == "success") {
 					switch(results.code){
-						case 230: 	
-							$scope.sent_requests = results.requests;
-							break;
-						case 231:	$scope.requests = {};
-							$scope.empty_sent_requests = true;
-							$scope.empty_sent_requests_msg = "Keine gesendete Freundschaftsanfragen";
-							break;
+						case 230:	$scope.sent_requests = results.requests;
+									break;
+						case 231:	$scope.sent_requests = {};
+									$scope.empty_sent_requests = true;
+									$scope.empty_sent_requests_msg = "Keine gesendete Freundschaftsanfragen";
+									break;
 						default:	break;
 					}
 				}
