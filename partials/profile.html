@@ -15,17 +15,17 @@
 				<table>
 					<tr>
 						<td>Name:</td>
-						<td><textarea class="profile_input" data-ng-model="profile_name" data-ng-change="compareName(profile_name)"></textarea></td>
+						<td><input class="profile_input" data-ng-model="profile_name" data-ng-change="compareName(profile_name)"/></td>
 						<td><button class="profile_input" data-ng-disabled="!name_changed" data-ng-click="changeName(profile_name)">ändern</button></td>
 					</tr>
 					<tr>
 						<td>Mail:</td>
-						<td><textarea class="profile_input" data-ng-model="profile_email" data-ng-change="compareEmail(profile_email)"></textarea></td>
+						<td><input class="profile_input" data-ng-model="profile_email" data-ng-change="compareEmail(profile_email)"/></td>
 						<td><button class="profile_input" data-ng-disabled="!email_changed" data-ng-click="changeEmail(profile_email)">ändern</button></td>
 					</tr>
 					<tr>
-						<td>Passwort (alt):</td>
-						<td><input type="password" class="profile_input" placeholder="********" data-ng-model="old_pwd"/></td>
+						<td>Passwort (aktuell):</td>
+						<td><input type="password" name="old_pw" class="profile_input" placeholder="********" data-ng-model="old_pwd"/></td>
 						<td></td>
 					</tr>
 					<tr>

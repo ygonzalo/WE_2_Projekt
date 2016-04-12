@@ -82,7 +82,7 @@
 	float:left;
 }
 
-#profile_info textarea{
+#profile_info input{
     font-family: Open Sans, Segoe UI, sans-serif;
 	overflow:auto;
 	resize:none;
@@ -194,8 +194,9 @@
 	padding:0.5em;
 }
 
-.default_list_item:nth-child(2)  {
-	background-color:rgb(233,233,233);
+.default_list_item:hover  {
+	background-color:rgb(244,244,244);
+	cursor:default;
 }
 
 .default_list_item button {
