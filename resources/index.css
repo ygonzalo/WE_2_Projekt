@@ -143,3 +143,11 @@ input:focus{
 	font-size:1.4em;
 	line-height:1em;
 }
+
+/* error message */
+.error-message {
+	color: rgb(153, 0, 0);
+	background-color: rgb(255, 204, 204);
+	padding: 0.8em;
+	margin: 0.5em 0 0.5em 0;
+}

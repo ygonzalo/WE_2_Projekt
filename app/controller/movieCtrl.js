@@ -1,7 +1,8 @@
-app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies', '$location', '$http', 'Data', function ($scope, $rootScope, $routeParams,$cookies, $location, $http, Data){
+app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies', '$location', 'ngDialog', '$controller','Data', function ($scope, $rootScope, $routeParams,$cookies, $location, ngDialog,$controller, Data){
+
+	$controller('friendsCtrl', {$scope: $scope});
 
 	$scope.title = "";
-
 	$scope.searchMovie = function (title) {
 
 		if($location.path() == '/results'){
@@ -26,7 +27,6 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies',
 			status: status
 		}).then(function (results){
 			if(results.status == "success") {
-				console.log("lol");
 			}
 		});
 	};
@@ -48,7 +48,7 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies',
 					default:	break;
 				}
 			}
-		})
+		});
 	};
 
 	$scope.empty_watched = false;
@@ -70,7 +70,6 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies',
 			}
 		})
 	};
-
 	
 	$scope.includeFilmTemplate = function() {
 		if($rootScope.authenticated){
@@ -88,10 +87,50 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies',
 	};
 
 	$scope.openMovie = function(movie){
-		$rootScope.movie = movie;
+		$cookies.movie_details = JSON.stringify(movie);
 		$location.path("/details").search('');
 	};
 
+	$scope.rec_movie = {};
+	$scope.friends = {};
+	$scope.openRecommendDialog = function (movie) {
+		$scope.rec_movie = movie;
+		$scope.friends = $scope.getFriends();
+		$scope.recommendDialog = ngDialog.open({ template: 'partials/recommend_dialog.html', scope: $scope, closeByEscape: true, className: 'ngdialog-theme-plain' });
+	};
+
+	$scope.error = "";
+	$scope.rec_error = false;
+	$scope.recommendMovie = function (userID,movieID) {
+		Data.post('/friends/'+userID+'/recommend', {
+			movieID: movieID
+		}).then(function (results) {
+			if(results.status == "success") {
+				switch(results.code){
+					case 221: 	$scope.recommendDialog.close();
+						break;
+					default:	break;
+				}
+			}else{
+				$scope.rec_error = true;
+				switch(results.code){
+					case 522: 	$scope.error="Freund hat den Film bereits gesehen";
+								break;
+					case 523:	$scope.error="Film schon empfohlen";
+								break;
+					case 517:  	$scope.error="Nur gesehene Filme können empfohlen werden";
+								break;
+					default:	break;
+				}
+
+			}
+		});
+	};
+
+	$scope.initMovieDetails = function () {
+		$scope.movie = JSON.parse($cookies.movie_details);
+	};
+	
 	$scope.initResults = function () {
 
 		var title = $location.search().title;

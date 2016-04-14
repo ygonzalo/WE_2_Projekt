@@ -11,6 +11,9 @@
     <link rel="stylesheet" href="resources/header.css">
     <link rel="stylesheet" href="resources/partials.css">
     <link rel="stylesheet" href="resources/overrides.css">
+    <link rel="stylesheet" href="resources/modals.css">
+    <link rel="stylesheet" href="resources/ngDialog-theme-plain.css">
+    <link rel="stylesheet" href="resources/ngDialog.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
     <link rel="icon" href="resources/images/wtm_logo_circle.ico" type="image/ico" />
 	
@@ -26,6 +29,7 @@
   <script src="js/angular-route.min.js"></script>
   <script src="js/angular-cookies.min.js"></script>
   <script src="js/angular-animate.min.js" ></script>
+  <script src="js/ngDialog.min.js" ></script>
   <script src="app/app.js"></script>
   <script src="app/data.js"></script>
   <script src="app/controller/authCtrl.js"></script>

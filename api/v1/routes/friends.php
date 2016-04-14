@@ -447,24 +447,45 @@ $app->post('/friends/:friendID/recommend', function($friendID) use ($app) {
 
 		if(isFriend($userID,$friendID)){
 
-			if(isMovieWatched($movieID,$userID)){
-				//Insert new recommendation
-				$stmt_recommendations = $db->preparedStmt("INSERT INTO recommendations(fromID,toID,movieID) VALUES(?,?,?)");
-				$stmt_recommendations->bind_param('iii',$userID,$friendID,$movieID);
-				$stmt_recommendations->execute();
-				$stmt_recommendations->close();
+			$sel_recommendation = $db->preparedStmt("SELECT 1 FROM recommendations WHERE fromID= ? AND toID=? AND movieID=?");
+			$sel_recommendation->bind_param('iii',$userID,$friendID,$movieID);
+			$sel_recommendation->execute();
+			$sel_recommendation->store_result();
 
-				$response['status'] = "success";
-				$response['code'] = 221;
-				echoResponse(200, $response);
+			if($sel_recommendation->num_rows==0){
+				if(isMovieWatched($movieID,$userID)){
+					if(!isMovieWatched($movieID,$friendID)) {
+						//Insert new recommendation
+						$stmt_recommendations = $db->preparedStmt("INSERT INTO recommendations(fromID,toID,movieID) VALUES(?,?,?)");
+						$stmt_recommendations->bind_param('iii', $userID, $friendID, $movieID);
+						$stmt_recommendations->execute();
+						$stmt_recommendations->close();
+
+						$response['status'] = "success";
+						$response['code'] = 221;
+						echoResponse(200, $response);
+					} else {
+						$response['status'] = "error";
+						$response['code'] = 522;
+						echoResponse(201, $response);
+					}
+				}else{
+					$response['status'] = "error";
+					$response['code'] = 517;
+					echoResponse(201, $response);
+				}
 			}else{
 				$response['status'] = "error";
-				$response['code'] = 517;
+				$response['code'] = 523;
 				echoResponse(201, $response);
 			}
+
+			$sel_recommendation->free_result();
+			$sel_recommendation->close();
+
 		} else{
 			$response['status'] = "error";
-			$response['code'] = 516;
+				$response['code'] = 516;
 			echoResponse(201, $response);
 		}
 

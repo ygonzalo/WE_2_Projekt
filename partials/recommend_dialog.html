@@ -1,0 +1,13 @@
+<h2 class="dialog-header">Film empfehlen</h2>
+<div class="dialog-content">
+	<div class="error-message" data-ng-show="rec_error">{{error}}</div>
+<form data-ng-submit="recommendMovie(rec_friendID,rec_movie.movieID)">
+	Name: <input type="text" data-ng-model="rec_name" />
+	<div data-ng-repeat="friend in (filteredFriends = (friends | filter:{'name': rec_name}))">
+		<div data-ng-hide="rec_name == null || rec_name == ''" >
+		<input type="radio" name="rec_friend" data-ng-model="$parent.rec_friendID" data-ng-value="friend.userID" /> {{friend.name}}
+		</div>
+	</div>
+	<button>Empfehlung senden</button>
+</form>
+</div>

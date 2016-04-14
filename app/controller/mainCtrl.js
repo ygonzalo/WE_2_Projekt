@@ -23,5 +23,6 @@ app.controller('mainCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies','
            
 			})
 		};
+
 		
 }]);

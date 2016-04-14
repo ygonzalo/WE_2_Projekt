@@ -1,4 +1,4 @@
-var app = angular.module('wtmApp', ['ngRoute', 'ngCookies']);
+var app = angular.module('wtmApp', ['ngRoute', 'ngCookies', 'ngDialog']);
 
 app.config(['$routeProvider',
   function ($routeProvider) {
