@@ -29,10 +29,22 @@ app.config(['$routeProvider',
                 controller: 'movieCtrl',
                 role: '0'
             })
+            .when('/details', {
+                title: 'Movie details',
+                templateUrl: 'partials/movie_template.html',
+                controller: 'movieCtrl',
+                role: '0'
+            })
             .when('/profile', {
                 title: 'Profil',
                 templateUrl: 'partials/profile.html',
                 controller: 'profileCtrl',
+                role: '0'
+            })
+            .when('/friend/:id', {
+                title: 'Friend profile',
+                templateUrl: 'partials/friend_profile.html',
+                controller: 'friendProfileCtrl',
                 role: '0'
             })
             .when('/', {
@@ -55,13 +67,19 @@ app.config(['$routeProvider',
         $rootScope.$on("$routeChangeStart", function (event, next, current) {
             $rootScope.authenticated = false;
             Data.get('session').then(function (results) {
+                var nextUrl = next.$$route.originalPath;
+
                 if (results.userID) {
                     $rootScope.authenticated = true;
                     $cookies.userID = results.userID;
                     $cookies.name = results.name;
                     $cookies.email = results.email;
+
+                    if (nextUrl == '/signup' || nextUrl == '/login') {
+                        $location.path("/home");
+                    }
+
                 } else {
-                    var nextUrl = next.$$route.originalPath;
                     if (nextUrl == '/signup' || nextUrl == '/login') {
 
                     } else {

@@ -1,0 +1,40 @@
+<div data-ng-init="friendProfileInit()">
+	<div class="wrap_box">
+		<div class="wrap_box_content">
+			<div id="profile_info">
+				<div class="wrap_box_header">
+					<h2>{{friend.name}}</h2>
+				</div>
+				<div class="profile_image"></div>
+			</div>
+		</div>
+	</div>
+
+	<div  class="wrap_box">
+		<div class="wrap_box_content">
+			<div class="wrap_box_header">
+				<h2>Watchlist</h2>
+			</div>
+			<div data-ng-show="empty_watchlist">{{empty_watchlist_msg}}</div>
+			<div class="default_list_box">
+				<div data-ng-repeat="watchlist_movie in watchlist" class="default_list_item">
+					{{watchlist_movie.title}}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="wrap_box">
+		<div class="wrap_box_content">
+			<div class="wrap_box_header">
+				<h2>Gesehene Filme</h2>
+			</div>
+			<div data-ng-show="empty_watched">{{empty_watched_msg}}</div>
+			<div class="default_list_box">
+				<div data-ng-repeat="watched_movie in watched" class="default_list_item">
+					{{watched_movie.title}}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

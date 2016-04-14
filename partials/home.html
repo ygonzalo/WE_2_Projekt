@@ -6,8 +6,8 @@
 			</div>
 			<div data-ng-show="empty_watchlist">{{empty_watchlist_msg}}</div>
 			<div class="default_list_box">
-				<div data-ng-repeat="movie in watchlist" class="default_list_item">
-					{{movie.title}}
+				<div data-ng-repeat="watchlist_movie in watchlist" class="default_list_item">
+					{{watchlist_movie.title}}
 				</div>
 			</div>
 		</div>
@@ -20,7 +20,7 @@
 			<div data-ng-show="empty_friendlist">{{empty_friendlist_msg}}</div>
 			<div class="default_list_box">
 				<div data-ng-repeat="friend in friends" class="default_list_item">
-					{{friend.name}}
+					<a href="#/friend/{{friend.userID}}">{{friend.name}}</a>
 					<button name="delete_friend" data-ng-click="deleteFriend(friend.userID)">Löschen</button>
 				</div>
 			</div>
@@ -51,6 +51,9 @@
 			</div>
 			<div data-ng-show="empty_watched">{{empty_watched_msg}}</div>
 			<div class="default_list_box">
+				<div data-ng-repeat="watched_movie in watched" class="default_list_item">
+					{{watched_movie.title}}
+				</div>
 			</div>
 		</div>
 	</div>

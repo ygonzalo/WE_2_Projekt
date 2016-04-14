@@ -1,9 +1,9 @@
 <div data-ng-controller="movieCtrl" class="poster_box">
-	<div data-ng-repeat="m in results.matches" class="poster">
+	<div data-ng-repeat="m in results.matches" class="poster" data-ng-model="movie">
 		<div style="display:flex;">
 			<div class="poster_imgbox"><img data-ng-src="{{checkPoster(m.poster)}}" class="poster_img"/></div>
 			<div class="poster_content">
-				<b>{{m.title}}</b>
+				<a data-ng-click="openMovie(m)">{{m.title}}</a>
 				<br />
 				{{m.release_date}}
 				<br />

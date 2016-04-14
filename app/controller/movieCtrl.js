@@ -1,4 +1,4 @@
-app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$location', '$http', 'Data', function ($scope, $rootScope, $routeParams, $location, $http, Data){
+app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies', '$location', '$http', 'Data', function ($scope, $rootScope, $routeParams,$cookies, $location, $http, Data){
 
 	$scope.title = "";
 
@@ -16,9 +16,6 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$location'
 			if(results.status == "success") {
 				$scope.results = results;
 			}
-			else {
-				console.log("failed");
-			}
 		});
 	};
 
@@ -29,14 +26,18 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$location'
 			status: status
 		}).then(function (results){
 			if(results.status == "success") {
+				console.log("lol");
 			}
 		});
 	};
 
 	$scope.empty_watchlist = false;
 	$scope.empty_watchlist_msg = "";
-	$scope.getWatchlist = function () {
-		Data.get('movies/watchlist').then(function (results) {
+	$scope.getWatchlist = function (userID) {
+
+		userID = typeof userID !== 'undefined' ? userID : $cookies.userID;
+
+		Data.get('movies/watchlist/'+userID).then(function (results) {
 			if(results.status == "success") {
 				switch(results.code){
 					case 207: 	$scope.watchlist = results.matches;
@@ -52,12 +53,15 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$location'
 
 	$scope.empty_watched = false;
 	$scope.empty_watched_msg = "";
-	$scope.getWatched = function () {
-		Data.get('movies/watched').then(function (results) {
+	$scope.getWatched = function (userID) {
+
+		userID = typeof userID !== 'undefined' ? userID : $cookies.userID;
+		
+		Data.get('movies/watched/'+userID).then(function (results) {
 			if(results.status == "success") {
 				switch(results.code){
 					case 209: 	$scope.watched = results.matches;
-						break;
+								break;
 					case 210:	$scope.empty_watched = true;
 								$scope.empty_watched_msg = "Keine Filme als 'gesehen' markiert";
 								break;
@@ -83,7 +87,12 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$location'
 		return "resources/images/default_poster.jpg";
 	};
 
-	$scope.init = function () {
+	$scope.openMovie = function(movie){
+		$rootScope.movie = movie;
+		$location.path("/details").search('');
+	};
+
+	$scope.initResults = function () {
 
 		var title = $location.search().title;
 
@@ -92,5 +101,4 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$location'
 		}
 
 	};
-
 }]);

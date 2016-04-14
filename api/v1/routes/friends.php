@@ -638,3 +638,67 @@ FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID= 
 	}
 
 });
+
+//GET Friend profile data
+$app->get('/friends/:friendID', function($friendID) use ($app) {
+	//REST-Service Response
+	$response = array();
+	$db = new DB();
+	$session = $db->getSession();
+
+	//check if user is logged in
+	if($session['userID']!='') {
+		$userID = $session['userID'];
+
+		if($userID!=$friendID){
+			if(isFriend($userID,$friendID)){
+				$sel_friend = $db->preparedStmt("SELECT u.userID, u.name, u.points FROM user AS u WHERE u.userID= ?");
+				$sel_friend->bind_param('i',$friendID);
+				$sel_friend->execute();
+				$sel_friend->bind_result($db_userID,$db_name,$db_points);
+				$sel_friend->store_result();
+				$sel_friend->fetch();
+
+				$friend = array();
+
+				if($sel_friend->num_rows>0){
+
+					$friend['userID'] = $db_userID;
+					$friend['name'] = $db_name;
+					$friend['points'] = $db_points;
+
+					$sel_since = $db->preparedStmt("SELECT f.since FROM friends AS f WHERE (f.userID = ? AND f.friendID = ?) OR (f.userID = ? AND f.friendID = ?)");
+					$sel_since->bind_param('iiii',$userID,$friendID,$friendID,$userID);
+					$sel_since->execute();
+					$sel_since->bind_result($db_since);
+					$sel_since->fetch();
+
+					$friend['since'] = $db_since;
+
+					$sel_since->free_result();
+					$sel_since->close();
+
+					$response = array('friend' => $friend);
+				}
+
+				//array_push($response,$friend);
+
+				$sel_friend->free_result();
+				$sel_friend->close();
+
+				$response['status'] = "success";
+				$response['code'] = 232;
+				echoResponse(200, $response);
+
+			}else{
+				$response['status'] = "error";
+				$response['code'] = 522;
+				echoResponse(201, $response);
+			}
+		}
+	} else {
+		$response['status'] = "error";
+		$response['code'] = 501;
+		echoResponse(201, $response);
+	}
+});

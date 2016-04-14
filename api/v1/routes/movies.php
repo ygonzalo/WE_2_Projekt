@@ -249,7 +249,7 @@ $app->post('/movies/:movieID/status', function($movieID) use ($app) {
 });
 
 //GET Watchlist
-$app->get('/movies/watchlist', function() use ($app) {
+$app->get('/movies/watchlist(/:id)', function($id='') use ($app) {
 
 	//REST-Service Response
 	$response = array();
@@ -260,19 +260,30 @@ $app->get('/movies/watchlist', function() use ($app) {
 	if(!empty($session['userID'])) {
 		$userID = $session['userID'];
 
+		if($id == null){
+			$id = $userID;
+		}
+
 		//prepare sql statement and bind parameters
-		$movielist_stmt = $db->preparedStmt("SELECT m.movieID, m.original_title, m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, mi.poster, ml.status, ml.user_rating 
+		$movie_stmt = $db->preparedStmt("SELECT m.movieID, m.original_title, m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, mi.poster
 FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID 
 JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID= ? AND status= 'watchlist'");
-		$movielist_stmt->bind_param('i', $userID);
-		$movielist_stmt->execute();
-		$movielist_stmt->store_result();
-		$movielist_stmt->bind_result($db_movieID,$db_original_title,$db_ratings,$db_rating_points,$db_watchers, $db_title, $db_plot, $db_release_date, $db_poster, $db_status, $db_user_rating);
+		$movie_stmt->bind_param('i', $id);
+		$movie_stmt->execute();
+		$movie_stmt->store_result();
+		$movie_stmt->bind_result($db_movieID,$db_original_title,$db_ratings,$db_rating_points,$db_watchers, $db_title, $db_plot, $db_release_date, $db_poster);
 
-		if($movielist_stmt->num_rows>0){
+		if($movie_stmt->num_rows>0){
 			$response['matches'] = array();
 			$movie = array();
-			while ($movielist_stmt->fetch()) {
+			while ($movie_stmt->fetch()) {
+
+				$movielist_stmt = $db->preparedStmt("SELECT ml.status, ml.user_rating FROM movielist AS ml WHERE userID= ? AND movieID= ?");
+				$movielist_stmt->bind_param('ii', $userID,$db_movieID);
+				$movielist_stmt->execute();
+				$movielist_stmt->bind_result($db_status, $db_user_rating);
+				$movielist_stmt->fetch();
+
 				$movie['movieID'] = $db_movieID;
 				$movie['title'] = $db_title;
 				$movie['plot'] = $db_plot;
@@ -284,6 +295,8 @@ JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID= ? AND status= 'watc
 				$movie['watchers'] = $db_watchers;
 				$movie['rating_points'] = $db_rating_points;
 				array_push($response['matches'], $movie);
+
+				$movielist_stmt->close();
 			}
 			$response['status'] = "success";
 			$response['code'] = 207;
@@ -293,8 +306,8 @@ JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID= ? AND status= 'watc
 			$response['code'] = 208;
 			echoResponse(200, $response);
 		}
-		$movielist_stmt->free_result();
-		$movielist_stmt->close();
+		$movie_stmt->free_result();
+		$movie_stmt->close();
 
 	}else{
 		$response['status'] = "error";
@@ -304,7 +317,7 @@ JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID= ? AND status= 'watc
 });
 
 //GET Watched
-$app->get('/movies/watched', function() use ($app) {
+$app->get('/movies/watched(/:id)', function($id='') use ($app) {
 
 	//REST-Service Response
 	$response = array();
@@ -315,20 +328,30 @@ $app->get('/movies/watched', function() use ($app) {
 	if(!empty($session['userID'])) {
 		$userID = $session['userID'];
 
+		if($id == null){
+			$id = $userID;
+		}
+
 		$response['matches'] = array();
 
 		//prepare sql statement and bind parameters
-		$movielist_stmt = $db->preparedStmt("SELECT m.movieID, m.original_title, m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, mi.poster, ml.status, ml.user_rating 
+		$movie_stmt = $db->preparedStmt("SELECT m.movieID, m.original_title, m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, mi.poster
 FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID 
 JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID= ? AND status= 'watched'");
-		$movielist_stmt->bind_param('i', $userID);
-		$movielist_stmt->execute();
-		$movielist_stmt->store_result();
-		$movielist_stmt->bind_result($db_movieID,$db_original_title,$db_ratings,$db_rating_points,$db_watchers, $db_title, $db_plot, $db_release_date, $db_poster, $db_status, $db_user_rating);
+		$movie_stmt->bind_param('i', $id);
+		$movie_stmt->execute();
+		$movie_stmt->store_result();
+		$movie_stmt->bind_result($db_movieID,$db_original_title,$db_ratings,$db_rating_points,$db_watchers, $db_title, $db_plot, $db_release_date, $db_poster);
 
-		if($movielist_stmt->num_rows>0){
+		if($movie_stmt->num_rows>0){
 			$movie = array();
-			while ($movielist_stmt->fetch()) {
+			while ($movie_stmt->fetch()) {
+				$movielist_stmt = $db->preparedStmt("SELECT ml.status, ml.user_rating FROM movielist AS ml WHERE userID= ? AND movieID= ?");
+				$movielist_stmt->bind_param('ii', $userID,$db_movieID);
+				$movielist_stmt->execute();
+				$movielist_stmt->bind_result($db_status, $db_user_rating);
+				$movielist_stmt->fetch();
+
 				$movie['movieID'] = $db_movieID;
 				$movie['title'] = $db_title;
 				$movie['plot'] = $db_plot;
@@ -340,6 +363,8 @@ JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID= ? AND status= 'watc
 				$movie['watchers'] = $db_watchers;
 				$movie['rating_points'] = $db_rating_points;
 				array_push($response['matches'], $movie);
+
+				$movielist_stmt->close();
 			}
 			$response['status'] = "success";
 			$response['code'] = 209;
@@ -349,8 +374,8 @@ JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID= ? AND status= 'watc
 			$response['code'] = 210;
 			echoResponse(200, $response);
 		}
-		$movielist_stmt->free_result();
-		$movielist_stmt->close();
+		$movie_stmt->free_result();
+		$movie_stmt->close();
 
 	}else{
 		$response['status'] = "error";
