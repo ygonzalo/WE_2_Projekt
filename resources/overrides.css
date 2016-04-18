@@ -16,6 +16,11 @@
 		-webkit-flex:1 1 auto;
 		flex:1 1 auto;
 	}
+	.footer_left, .footer_right
+	{
+		-webkit-flex:1 1 auto;
+		flex:1 1 auto;
+	}
 
 }
 /* smartphone landscape */

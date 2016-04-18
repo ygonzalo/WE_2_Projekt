@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="resources/search.css">
     <link rel="stylesheet" href="resources/index.css">
     <link rel="stylesheet" href="resources/header.css">
+	<link rel="stylesheet" href="resources/footer.css">
     <link rel="stylesheet" href="resources/partials.css">
     <link rel="stylesheet" href="resources/overrides.css">
     <link rel="stylesheet" href="resources/modals.css">
@@ -24,6 +25,7 @@
     <div data-ng-include="includeHeader()" id="header"></div>
     <div data-ng-include="includeSearch()" id="search_box"></div>
     <div data-ng-view="" id="ng-view"></div>
+	<div data-ng-include="includeFooter()" id="footer"></div>
   </body>
   <script src="js/angular.min.js"></script>
   <script src="js/angular-route.min.js"></script>

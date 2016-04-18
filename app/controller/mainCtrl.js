@@ -12,6 +12,10 @@ app.controller('mainCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies','
 			return "partials/header.html";
 		};
 		
+		$scope.includeFooter = function(){
+			return "partials/footer.html";
+		};
+		
 		$scope.getColor = function (user) {
 			Data.get('user/color').then(function (results) {
     
