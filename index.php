@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="resources/modals.css">
     <link rel="stylesheet" href="resources/ngDialog-theme-plain.css">
     <link rel="stylesheet" href="resources/ngDialog.css">
+    <link rel="stylesheet" href="resources/font-awesome-4.6.1/css/font-awesome.min.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
     <link rel="icon" href="resources/images/wtm_logo_circle.ico" type="image/ico" />
 	
