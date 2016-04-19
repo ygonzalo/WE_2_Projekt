@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `password` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `points` INT UNSIGNED DEFAULT 0,
   `color` ENUM('default','banana','apple','raspberry','plum') COLLATE utf8_unicode_ci DEFAULT 'default',
+  `image` VARCHAR(128) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `notifications` BOOLEAN DEFAULT FALSE,
   PRIMARY KEY (`userID`))
   ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
