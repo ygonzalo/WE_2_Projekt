@@ -278,3 +278,35 @@ $app->get('/user/color', function() use ($app) {
 
 });
 
+//GET Image
+$app->get('/user/image', function() use ($app) {
+	//REST-Service Response
+	$response = array();
+	$db = new DB();
+	$session = $db->getSession();
+
+	//check if user is logged in
+	if($session['userID']!='') {
+		$userID = $session['userID'];
+
+		$sel_col= $db->preparedStmt("SELECT image FROM user WHERE userID = ?");
+		$sel_col->bind_param('i', $userID);
+		$sel_col->execute();
+		$sel_col->bind_result($db_image);
+		$sel_col->fetch();
+
+		$response['image'] = $db_image;
+		$response['status'] = "success";
+		$response['code'] = 229;
+		echoResponse(200, $response);
+
+		$sel_col->close();
+
+	} else {
+		$response['status'] = "error";
+		$response['code'] = 501;
+		echoResponse(201, $response);
+	}
+
+});
+
