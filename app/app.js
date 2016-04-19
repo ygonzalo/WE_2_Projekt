@@ -53,14 +53,11 @@ app.config(['$routeProvider',
                 controller: 'homeCtrl',
                 role: '0'
             })
-            .when('/error', {
+            .otherwise ({
                 title: 'Error 404',
                 templateUrl: 'partials/error.html',
                 controller: 'authCtrl',
                 role: '0'
-            })
-            .otherwise({
-                //redirectTo: '/error'
             });
   }])
     .run(function ($cookies, $rootScope, $location, Data) {

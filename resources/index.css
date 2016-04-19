@@ -7,6 +7,10 @@ body {
 	min-height:100%;
     font-family: Open Sans, Segoe UI, sans-serif;
     font-size: 100%;
+	display:-webkit-flex;
+	display:flex;
+	-webkit-flex-direction:column;
+	flex-direction:column;
 }
 
 a {
@@ -29,6 +33,8 @@ input:focus{
 	position:relative;
 	width:100%;
 	padding:0;
+	-webkit-flex:1;
+	flex:1;
 }
 
 /* .box class: this container overrides all other visible content, excpet for the header. used for signup and login*/
