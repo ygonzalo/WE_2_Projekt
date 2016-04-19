@@ -75,6 +75,17 @@ app.controller('profileCtrl', ['$scope', '$rootScope','$routeParams', '$cookies'
 		return "partials/profile_img_template.html";
 	};
 	
+	$scope.getProfileImage = function(){
+		Data.get('user/image').then(function (results) {
+    
+				if(results.status == "success") {
+					$scope.profileImage = results;
+				}else{
+					$scope.profileImage = '1-2-3-2-1';
+				}
+			})
+	};
+	
 	$scope.init = function() {
 		$scope.getRequests();
 		$scope.getSentRequests();
