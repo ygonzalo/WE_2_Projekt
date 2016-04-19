@@ -378,38 +378,42 @@ $app->get('/friends', function() use ($app) {
 		$sel_friends->bind_result($db_userID,$db_friendID,$db_since);
 
 		if($sel_friends->num_rows>0){
-			$sel_name = $db->preparedStmt("SELECT u.name FROM user AS u WHERE u.userID = ?");
+			$sel_user = $db->preparedStmt("SELECT name, image FROM user WHERE userID = ?");
 
 			while($sel_friends->fetch()){
 				$user = array();
 				if($db_userID==$userID){
-					$sel_name->bind_param('i',$db_friendID);
-					$sel_name->execute();
-					$sel_name->bind_result($db_name);
-					$sel_name->fetch();
+					$sel_user->bind_param('i',$db_friendID);
+					$sel_user->execute();
+					$sel_user->bind_result($db_name,$db_image);
+					$sel_user->fetch();
+
+					var_dump($sel_user);
 
 					$user['userID'] = $db_friendID;
 					$user['name'] = $db_name;
+					$user['image'] = $db_image;
 					$user['since'] = $db_since;
 
 					array_push($response['friends'], $user);
 
 				}else if($db_friendID==$userID){
 					$user['userID'] = $db_userID;
-					$sel_name->bind_param('i',$db_userID);
-					$sel_name->execute();
-					$sel_name->bind_result($db_name);
-					$sel_name->fetch();
+					$sel_user->bind_param('i',$db_userID);
+					$sel_user->execute();
+					$sel_user->bind_result($db_name,$db_image);
+					$sel_user->fetch();
 
 					$user['userID'] = $db_userID;
 					$user['name'] = $db_name;
+					$user['image'] = $db_image;
 					$user['since'] = $db_since;
 
 					array_push($response['friends'], $user);
 				}
 			}
 
-			$sel_name->close();
+			$sel_user->close();
 			$response['status'] = "success";
 			$response['code'] = 219;
 			echoResponse(200, $response);
@@ -702,8 +706,6 @@ $app->get('/friends/:friendID', function($friendID) use ($app) {
 
 					$response = array('friend' => $friend);
 				}
-
-				//array_push($response,$friend);
 
 				$sel_friend->free_result();
 				$sel_friend->close();
