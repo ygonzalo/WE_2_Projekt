@@ -673,10 +673,10 @@ $app->get('/friends/:friendID', function($friendID) use ($app) {
 
 		if($userID!=$friendID){
 			if(isFriend($userID,$friendID)){
-				$sel_friend = $db->preparedStmt("SELECT u.userID, u.name, u.points FROM user AS u WHERE u.userID= ?");
+				$sel_friend = $db->preparedStmt("SELECT u.userID, u.name, u.points, u.image FROM user AS u WHERE u.userID= ?");
 				$sel_friend->bind_param('i',$friendID);
 				$sel_friend->execute();
-				$sel_friend->bind_result($db_userID,$db_name,$db_points);
+				$sel_friend->bind_result($db_userID,$db_name,$db_points,$db_image);
 				$sel_friend->store_result();
 				$sel_friend->fetch();
 
@@ -687,6 +687,7 @@ $app->get('/friends/:friendID', function($friendID) use ($app) {
 					$friend['userID'] = $db_userID;
 					$friend['name'] = $db_name;
 					$friend['points'] = $db_points;
+					$friend['image'] = $db_image;
 
 					$sel_since = $db->preparedStmt("SELECT f.since FROM friends AS f WHERE (f.userID = ? AND f.friendID = ?) OR (f.userID = ? AND f.friendID = ?)");
 					$sel_since->bind_param('iiii',$userID,$friendID,$friendID,$userID);
