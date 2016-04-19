@@ -254,20 +254,20 @@ $app->get('/user/color', function() use ($app) {
 
 	//check if user is logged in
 	if($session['userID']!='') {
+		$userID = $session['userID'];
+
 
 		$sel_col= $db->preparedStmt("SELECT color FROM user WHERE userID = ?");
 		$sel_col->bind_param('i', $userID);
 		$sel_col->execute();
-
 		$sel_col->bind_result($db_color);
 		$sel_col->fetch();
 
-		$response['color'] = $db_color;;
+		$response['color'] = $db_color;
 		$response['status'] = "success";
 		$response['code'] = 229;
 		echoResponse(200, $response);
 
-		$sel_col->free_result();
 		$sel_col->close();
 
 	} else {
