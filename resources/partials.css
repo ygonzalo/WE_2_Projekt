@@ -209,3 +209,17 @@
 .default_list_item button:hover{
 	text-decoration:underline;
 }
+
+.profile_img {
+	position:relative;
+	width:100%;
+	height:100%;
+	overflow:hidden;
+}
+.profile_img  canvas {
+	position:relative;
+	width:100%;
+	height:100%;
+	-webkit-filter:blur(2em);
+	filter:blur(2em);
+}

@@ -71,6 +71,10 @@ app.controller('profileCtrl', ['$scope', '$rootScope','$routeParams', '$cookies'
 	};
 	
 	
+	$scope.includeProfileImg = function(){
+		return "partials/profile_img_template.html";
+	};
+	
 	$scope.init = function() {
 		$scope.getRequests();
 		$scope.getSentRequests();
