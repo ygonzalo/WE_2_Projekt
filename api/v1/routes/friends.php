@@ -387,9 +387,7 @@ $app->get('/friends', function() use ($app) {
 					$sel_user->execute();
 					$sel_user->bind_result($db_name,$db_image);
 					$sel_user->fetch();
-
-					var_dump($sel_user);
-
+					
 					$user['userID'] = $db_friendID;
 					$user['name'] = $db_name;
 					$user['image'] = $db_image;
