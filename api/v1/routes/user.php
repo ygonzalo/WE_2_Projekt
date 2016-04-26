@@ -60,6 +60,9 @@ $app->post('/user/signUp', function() use ($app) {
 	$response = array();
 	$db = new DB();
 
+
+	
+	
 	$name = $req->user->name;
 	$email = $req->user->email;
 	$password = $req->user->password;
@@ -70,12 +73,21 @@ $app->post('/user/signUp', function() use ($app) {
 	$user_stmt->fetch();
 
 	if($user_stmt->num_rows==0) {
+		
+		//Profilbild
+		$color1= rand(1,4);
+		$color2= rand(1,4);
+		$color3= rand(1,4);
+		$color4= rand(1,4);
+		$color5= rand(1,4);
+		$image_string= $color1."-".$color2."-".$color3."-".$color4."-".$color5;
+		
 		$hashed_password = password_hash($password, PASSWORD_DEFAULT);
-		$ins_stmt = $db->preparedStmt("INSERT INTO user(name,email,password) VALUES (?,?,?)");
-		$ins_stmt->bind_param('sss',$name,$email,$hashed_password);
+		$ins_stmt = $db->preparedStmt("INSERT INTO user(name,email,password,image) VALUES (?,?,?,?)");
+		$ins_stmt->bind_param('ssss',$name,$email,$hashed_password,$image_string);
 		$insert_status = $ins_stmt->execute();
 		$ins_stmt->store_result();
-
+		
 		if($insert_status != false) {
 			$response['status'] = "success";
 			if (!isset($_SESSION)) {
