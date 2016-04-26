@@ -18,15 +18,18 @@ app.controller('mainCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies','
 		
 		$scope.getColor = function (user) {
 			Data.get('user/color').then(function (results) {
-    
 				if(results.status == "success") {
-					$cookies.color = results;
+					$cookies.put('color',results.color);
 				}else{
-					$cookies.color = 'default';
+					$cookies.put('color','default');
 				}
            
 			})
 		};
 
+		$scope.initMain = function()
+		{
+			$scope.getColor();
+		}
 		
 }]);

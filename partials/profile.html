@@ -1,10 +1,4 @@
 <div data-ng-init="init()" class="default_container">
-	<!--div>
-	 UserID: {{userID}}
-	 <br/>NAME: {{name}}
-	 <br/>E-MAIL: {{email}}
-	 <br/>
-	</div-->
 	<div class="wrap_box">
 		<div class="wrap_box_content">
 			<div id="profile_info">
@@ -46,33 +40,35 @@
 				<label><input type="checkbox" name="mail_notifications" />Nachrichten via Mail erhalten</label><br />
 				<label><input type="checkbox" name="friend_requests" />Andere Nutzer können mich finden</label><br />
 				<br />
+				<div data-ng-init="color" >
 				<table>
 					<tr>
 						<td width="1">
 							Farbschema:
 						</td>
 						<td>
-							<input type="radio" name="color" value="apple" id="color_apple"/>
+							<input type="radio" data-ng-model="color" data-ng-change='changeColor(color)' value="apple" id="color_apple"/>
 								<label class="profile_color_radio" for="color_apple"></label>
 						</td>
 						<td>
-							<input type="radio" name="color" value="banana" id="color_banana"/>
+							<input type="radio" data-ng-model="color" data-ng-change='changeColor(color)' value="banana" id="color_banana"/>
 								<label class="profile_color_radio" for="color_banana"></label>
 						</td>
 						<td>
-							<input type="radio" name="color" value="cherry" id="color_raspberry"/>
+							<input type="radio" data-ng-model="color" data-ng-change='changeColor(color)' value="raspberry" id="color_raspberry"/>
 								<label class="profile_color_radio" for="color_raspberry"></label>
 						</td>
 						<td>
-							<input type="radio" name="color" value="blueberry" id="color_blueberry"/>
-								<label class="profile_color_radio" for="color_blueberry"></label>
+							<input type="radio" data-ng-model="color" data-ng-change='changeColor(color)' value="plum" id="color_plum"/>
+								<label class="profile_color_radio" for="color_plum"></label>
 						</td>
 						<td>
-							<input type="radio" name="color" value="default" id="color_default"/>
+							<input type="radio" data-ng-model="color" data-ng-change='changeColor(color)' value="default" id="color_default"/>
 								<label class="profile_color_radio" for="color_default"></label>
 						</td>
 					</tr>
 				</table>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -87,6 +83,19 @@
 					{{request.name}}
 					<button name="accept_request" data-ng-click="acceptFriendRequest(request.userID)">Annehmen</button>
 					<button name="deny_request" data-ng-click="denyFriendRequest(request.userID)">Ablehnen</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="wrap_box">
+		<div class="wrap_box_content">
+			<div class="wrap_box_header">
+				<h2>Empfehlungen</h2>
+			</div>
+			<div data-ng-show="empty_recommendations">{{empty_rec_msg}}</div>
+			<div class="default_list_box">
+				<div data-ng-repeat="rec in recommendations" class="default_list_item">
+					{{rec.name}} {{rec.title}}
 				</div>
 			</div>
 		</div>

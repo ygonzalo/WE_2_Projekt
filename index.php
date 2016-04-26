@@ -22,7 +22,7 @@
 	<title>Watched That Movie</title>
   </head>
 
-  <body data-ng-controller="mainCtrl">
+  <body data-ng-controller="mainCtrl" data-ng-init="initMain()">
     <div data-ng-include="includeHeader()" id="header"></div>
     <div data-ng-include="includeSearch()" id="search_box"></div>
     <div data-ng-view="" id="ng-view"></div>

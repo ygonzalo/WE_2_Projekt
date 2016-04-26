@@ -1,4 +1,4 @@
-app.controller('authCtrl', function ($scope, $rootScope, $routeParams, $location, $http, Data) {
+app.controller('authCtrl', function ($scope, $rootScope, $routeParams, $location, $http, $cookies, Data) {
     //initially set those objects to null to avoid undefined error
     $scope.login = {};
     $scope.signup = {};
@@ -16,7 +16,6 @@ app.controller('authCtrl', function ($scope, $rootScope, $routeParams, $location
         Data.post('user/signUp', {
             user: user
         }).then(function (results) {
-    
             if (results.status == "success") {
                 $location.path('/home');
             }else{
@@ -26,7 +25,14 @@ app.controller('authCtrl', function ($scope, $rootScope, $routeParams, $location
     };
     $scope.logout = function () {
         Data.get('user/logout').then(function (results) {
-            $location.path('login');
+			if(results.status == "success"){
+				$cookies.remove('userID');
+				$cookies.remove('email');
+				$cookies.remove('name');
+				$cookies.remove('color');
+				$location.path('login');
+			}
+
         });
     }
 });

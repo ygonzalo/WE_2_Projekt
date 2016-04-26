@@ -87,7 +87,7 @@ $app->post('/user/signUp', function() use ($app) {
 			$response['code'] = 202;
 			echoResponse(200, $response);
 		} else {
-			$response['status'] = "error";
+			$response['status'] = $hashed_password;
 			$response['code'] = 504;
 			echoResponse(201, $response);
 		}
@@ -245,6 +245,8 @@ $app->put('/user/name', function() use ($app) {
 	}
 });
 
+
+
 //GET Color
 $app->get('/user/color', function() use ($app) {
 	//REST-Service Response
@@ -276,6 +278,46 @@ $app->get('/user/color', function() use ($app) {
 		echoResponse(201, $response);
 	}
 
+});
+
+//PUT Color (Farbe ändern)
+$app->put('/user/color', function() use ($app) {
+
+	//REST-Service Response
+	$response = array();
+	$db = new DB();
+	$session = $db->getSession();
+	$req = json_decode($app->request->getBody());
+
+	//check if user is logged in
+	if($session['userID']!='') {
+		$color = $req->color;
+
+		$changeColor = $db->preparedStmt("UPDATE user SET color = ? WHERE userID = ?");
+		$changeColor->bind_param('si', $color, $session['userID']);
+		$changeColor->execute();
+		$changeColor->close();
+
+		$sel_color = $db->preparedStmt("SELECT color FROM user WHERE userID = ?");
+		$sel_color->bind_param('i',$session['userID']);
+		$sel_color->execute();
+		$sel_color->bind_result($db_color);
+		$sel_color->fetch();
+
+		$response['color'] = $db_color;
+
+		$sel_color->close();
+		
+		$response['status'] = "success";
+		$response['code'] = 233;
+		echoResponse(200, $response);
+
+
+	} else {
+		$response['status'] = "error";
+		$response['code'] = 501;
+		echoResponse(201, $response);
+	}
 });
 
 //GET Image

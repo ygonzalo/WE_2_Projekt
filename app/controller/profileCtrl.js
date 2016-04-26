@@ -4,8 +4,9 @@ app.controller('profileCtrl', ['$scope', '$rootScope','$routeParams', '$cookies'
 
 	$controller('friendsCtrl', {$scope: $scope});
 
-	$scope.profile_name = $cookies.name;
-	$scope.profile_email = $cookies.email;
+	$scope.profile_name = $cookies.get('name');
+	$scope.profile_email = $cookies.get('email');
+	$scope.color = $cookies.get('color');
 
 	$scope.compareName = function(name) {
 		if(name==$cookies.name){
@@ -47,10 +48,8 @@ app.controller('profileCtrl', ['$scope', '$rootScope','$routeParams', '$cookies'
 			name : name
 		}).then(function (results) {
 			if (results.status == "success") {
-				$cookies.name = results.name;
+				$cookies.put('name',results.name);
 				$scope.name_changed = false;
-			} else {
-				console.log(results.message);
 			}
 		});
 
@@ -61,11 +60,20 @@ app.controller('profileCtrl', ['$scope', '$rootScope','$routeParams', '$cookies'
 			email : email
 		}).then(function (results) {
 			if (results.status == "success") {
-				$cookies.email = results.email;
+				$cookies.put('email',results.email);
 				$scope.email_changed = false;
-			} else {
-				console.log(results.message);
 			}
+		});
+
+	};
+
+	$scope.changeColor = function(color) {
+		Data.put('user/color', {
+			color : color
+		}).then(function (results) {
+			if (results.status == "success") {
+				$cookies.put('color',results.color);
+			} 
 		});
 
 	};
@@ -85,10 +93,30 @@ app.controller('profileCtrl', ['$scope', '$rootScope','$routeParams', '$cookies'
 				}
 			})
 	};
+
+	$scope.empty_recommendations = false;
+	$scope.empty_rec_msg = "";
+	$scope.getRecommendations = function(){
+		Data.get('/friends/recommendations').then(function (results) {
+			if(results.status == "success") {
+				switch(results.code){
+					case 222: 	$scope.recommendations = results.recommendations;
+						break;
+					case 223:	$scope.empty_recommendations = true;
+								$scope.empty_rec_msg = "Keine neue Empfehlungen";
+								break;
+					default:	break;
+				}
+			}else{
+				
+			}
+		})
+	};
 	
 	$scope.init = function() {
 		$scope.getRequests();
 		$scope.getSentRequests();
+		$scope.getRecommendations();
 
 	}
 }]);

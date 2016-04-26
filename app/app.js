@@ -74,9 +74,9 @@ app.config(['$routeProvider',
 
                 if (results.userID) {
                     $rootScope.authenticated = true;
-                    $cookies.userID = results.userID;
-                    $cookies.name = results.name;
-                    $cookies.email = results.email;
+                    $cookies.put('userID', results.userID);
+                    $cookies.put('name', results.name);
+                    $cookies.put('email', results.email);
 
                     if (nextUrl == '/signup' || nextUrl == '/login') {
                         $location.path("/home");
