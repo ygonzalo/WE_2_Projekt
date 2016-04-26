@@ -26,7 +26,7 @@ app.controller('mainCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies','
            
 			})
 		};
-
+		
 		$scope.initMain = function()
 		{
 			$scope.getColor();

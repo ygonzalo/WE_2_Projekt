@@ -29,7 +29,7 @@ app.config(['$routeProvider',
                 controller: 'movieCtrl',
                 role: '0'
             })
-            .when('/details', {
+            .when('/movie/:movieID', {
                 title: 'Movie details',
                 templateUrl: 'partials/movie_template.html',
                 controller: 'movieCtrl',

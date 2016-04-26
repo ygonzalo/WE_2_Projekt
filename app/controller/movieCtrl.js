@@ -2,6 +2,8 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies',
 
 	$controller('friendsCtrl', {$scope: $scope});
 
+	$scope.loading = false;
+
 	$scope.title = "";
 	$scope.searchMovie = function (title) {
 
@@ -11,10 +13,12 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies',
 			$location.path('/results').search('title', title.replace(/ /g, '+'));
 
 		}
-		
+
+		$scope.loading = true;
 		Data.get('movies/search/'+$location.search().title).then(function (results) {
 
 			if(results.status == "success") {
+				$scope.loading = false;
 				$scope.results = results;
 			}
 		});
@@ -87,8 +91,7 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies',
 	};
 
 	$scope.openMovie = function(movie){
-		$cookies.movie_details = JSON.stringify(movie);
-		$location.path("/details").search('');
+		
 	};
 
 	$scope.rec_movie = {};
@@ -96,7 +99,16 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies',
 	$scope.openRecommendDialog = function (movie) {
 		$scope.rec_movie = movie;
 		$scope.friends = $scope.getFriends();
-		$scope.recommendDialog = ngDialog.open({ template: 'partials/recommend_dialog.html', scope: $scope, closeByEscape: true, className: 'ngdialog-theme-plain' });
+		$scope.recommendDialog = ngDialog.open({
+			template: 'partials/recommend_dialog.html',
+			scope: $scope,
+			closeByEscape: true,
+			className: 'ngdialog-theme-plain',
+			preCloseCallback:function(){
+				$scope.error = "";
+				$scope.rec_error = false;
+			}
+		});
 	};
 
 	$scope.error = "";
@@ -126,9 +138,13 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies',
 			}
 		});
 	};
-
+	
 	$scope.initMovieDetails = function () {
-		$scope.movie = JSON.parse($cookies.movie_details);
+		Data.get('movies/'+$routeParams.movieID).then(function (results) {
+			if(results.status == "success") {
+				$scope.movie = results.movie;
+			}
+		});
 	};
 	
 	$scope.initResults = function () {

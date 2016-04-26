@@ -21,10 +21,6 @@ $app->get('/movies/search/:title', function($title) use ($app) {
 			$search_response = file_get_contents('https://api.themoviedb.org/3/search/movie?api_key=fc6230097457cdf6f547373206e12a5d&language=de&query='.$title_url);
 			$response_decoded = json_decode($search_response, true);
 
-			//get tmdb configuration needed to build poster path
-			//$config_response = file_get_contents('http://api.themoviedb.org/3/configuration?api_key=fc6230097457cdf6f547373206e12a5d');
-			//$config = json_decode($config_response);
-
 			$matches = $response_decoded['results'];
 
 			//Check is result of search is empty
@@ -99,6 +95,102 @@ $app->get('/movies/search/:title', function($title) use ($app) {
 		$response['code'] = 501;
 		echoResponse(201, $response);
 	}
+});
+
+//GET Film by ID
+$app->get('/movies/:movieID', function($movieID) use ($app) {
+	$db = new DB();
+	$session = $db->getSession();
+	$response = array();
+
+	//check if user is authenticated
+	if($session['userID'] != '') {
+		$userID = $session['userID'];
+		$movie = array();
+
+		$sel_movie = $db->preparedStmt('SELECT m.movieID, m.original_title, m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, mi.poster
+FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID = ?');
+		$sel_movie->bind_param('i',$movieID);
+		$sel_movie->execute();
+		$sel_movie->store_result();
+
+		if($sel_movie->num_rows>0) {
+
+			$sel_movie->bind_result($db_movieID,$db_original_title,$db_ratings,$db_rating_points,$db_watchers, $db_title, $db_plot, $db_release_date, $db_poster);
+			$sel_movie->fetch();
+
+			$movie['movieID'] = $db_movieID;
+			$movie['title'] = $db_title;
+			$movie['plot'] = $db_plot;
+			$movie['release_date'] = $db_release_date;
+			$movie['original_title'] = $db_original_title;
+			$movie['poster'] = $db_poster;
+			$movie['watchers'] = $db_watchers;
+			if($db_ratings>0){
+				$movie['rating'] = calculateRating($db_ratings,$db_rating_points);
+			} else {
+				$movie['rating'] = 0;
+			}
+			
+
+			$movie['status'] = null;
+			$movie['user_rating'] = 0;
+			$movie['watched_date'] = null;
+
+
+			$sel_status = $db->preparedStmt('SELECT status, user_rating, watched_date FROM movielist WHERE movieID = ? AND userID = ?');
+			$sel_status->bind_param('ii',$movieID,$userID);
+			$sel_status->execute();
+			$sel_status->store_result();
+			if($sel_status->num_rows>0){
+				$sel_status->bind_result($db_status,$db_user_rating,$db_watched_date);
+				$sel_status->fetch();
+
+				$movie['status'] = $db_status;
+				$movie['user_rating'] = $db_user_rating;
+				$movie['watched_date'] = $db_watched_date;
+			}
+
+			$sel_status->free_result();
+			$sel_status->close();
+
+			$response = array('movie' => $movie);
+			$response['status'] = "success";
+			echoResponse(200, $response);
+		} else {
+			$search_response = file_get_contents('https://api.themoviedb.org/3/movie/'.$movieID.'?api_key=fc6230097457cdf6f547373206e12a5d&language=de');
+			$response_decoded = json_decode($search_response, true);
+
+			//build poster path with size configuration
+			$poster = "https://image.tmdb.org/t/p/w185". $response_decoded['poster_path'];
+
+			$movie['movieID'] = $response_decoded['id'];
+			$movie['title'] = $response_decoded['title'];
+			$movie['plot'] = $response_decoded['overview'];
+			$movie['release_date'] = $response_decoded['release_date'];
+			$movie['original_title'] = $response_decoded['original_title'];
+			$movie['poster'] = $poster;
+			$movie['rating'] = 0;
+
+			$movie['status'] = null;
+			$movie['user_rating'] = 0;
+			$movie['watched_date'] = null;
+
+			$response = array('movie' => $movie);
+
+			$response['status'] = "success";
+			echoResponse(200, $response);
+		}
+
+		$sel_movie->free_result();
+		$sel_movie->close();
+
+	} else {
+		$response['status'] = "error";
+		$response['code'] = 501;
+		echoResponse(201, $response);
+	}
+
 });
 
 //POST Status flag
