@@ -14,55 +14,68 @@
 
 .poster{
 	position:relative;
-	margin:0.5em;
-	border:1px solid rgb(61,61,61);
 	width:24em;
-	height:12em;	
-	background-color:rgba(61,61,61,0.1);
+	height:12em;
+	padding:0.5em;	
+	margin:0.5em;
+	background-color:rgba(61,61,61,0.08);
 }
 
-.poster_img {
+.poster:hover {
+	background-color:rgba(61,61,61,0.16);
+	cursor:pointer;
+}
+
+.poster a {
+	color:inherit;
+	text-decoration:none;
+}
+
+.poster_img{
+	width:8em;
 	height:12em;
 	position:relative;
+	float:left;
 }
 
 .poster_content {
-	-webkit-flex:1;
-	flex:1;
-	padding:1em;
+	position:relative;
+	float:right;
+	width:14em;
+	height:8em;
+	padding:0.3em;
+	overflow:hidden;
+}
+
+.poster_content h2 {
+	font-size:1.1em;
 }
 
 .poster_menu {
-	width:3em;
-	height:12em;	
+	position:absolute;
+	bottom:0;
+	right:0;
+	text-align:center;
+	width:16em;
+	height:3em;
+	z-index:100;
 }
-
+ 
 .poster_menu button {
 	position:relative;
-	margin:0px;
-	padding:0px;
-	width:100%;
-	height:33.3%;
+	background-color:transparent;
+	width:4em;
 	border:none;
 	outline:none;
-	background-color:rgba(61,61,61,1);
+	cursor:pointer;
+	color:rgb(200,200,200);
+	z-index:100;
+	height:3em;
 }
 
 .poster_menu button:hover, .poster_menu button:active {
-	background-color:rgba(61,61,61,0.6);
-	border:none;
-	outline:none;
+	color:gray;
 }
-
-.poster_menu button img{
-	max-height:100%;
-	max-width:100%;
-	width:100%;
-	margin:0;
-	padding:0;
-	border:none;
-}
-
 
 /* partial: profile */
 
@@ -166,7 +179,7 @@
 #profile_settings label[for=color_raspberry]:before{
 	background-color:rgb(234,53,143);
 }
-#profile_settings label[for=color_blueberry]:before{
+#profile_settings label[for=color_plum]:before{
 	background-color:rgb(105,22,233);
 }
 #profile_settings label[for=color_default]:before{

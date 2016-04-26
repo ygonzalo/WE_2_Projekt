@@ -1,18 +1,26 @@
 <div data-ng-controller="movieCtrl" class="poster_box">
 	<div data-ng-repeat="m in results.matches" class="poster" data-ng-model="movie">
-		<div style="display:flex;">
-			<div class="poster_imgbox"><img data-ng-src="{{checkPoster(m.poster)}}" class="poster_img"/></div>
+	<a href="#/movie/{{m.movieID}}">
+		<div style="width:100%; height:100%;">
+			<img data-ng-src="{{checkPoster(m.poster)}}" class="poster_img"/>
 			<div class="poster_content">
-				<a data-ng-click="openMovie(m)">{{m.title}}</a>
+				<h2>{{m.title}}</h2>
+				<small>
+					<span style="float:left"><i class="fa fa-heart fa-2x" aria-hidden="true" style="font-size:1em;"></i> 12</span>
+					<span style="float:right">Veröffentlicht: 2008</span>
+				</small>
 				<br />
-				{{m.release_date}}
-				<br />
-			</div>
-			<div class="poster_menu">
-				<button data-ng-click="changeStatus('watchlist',m.movieID)"><i class="fa fa-bookmark fa-2x" style="color:white" aria-hidden="true"></i></button>
-				<button data-ng-click="changeStatus('watched',m.movieID)"><i class="fa fa-eye fa-2x" style="color:white" aria-hidden="true"></i></button>
-				<button data-ng-click="openRecommendDialog(m)"><i class="fa fa-share fa-2x" style="color:white" aria-hidden="true"></i></button>
+				<p>
+				{{m.plot}}
+				</p>
 			</div>
 		</div>
+	</a>
+	<div class="poster_menu">
+		<button data-ng-click="changeStatus('watchlist',m.movieID)"><i class="fa fa-bookmark fa-2x" aria-hidden="true"></i></button>
+		<button data-ng-click="changeStatus('watched',m.movieID)"><i class="fa fa-eye fa-2x" aria-hidden="true"></i></button>
+		<button data-ng-click="openRecommendDialog(m)"><i class="fa fa-share fa-2x" aria-hidden="true"></i></button>
+		<button data-ng-click="openRecommendDialog(m)"><i class="fa fa-heart-o fa-2x" aria-hidden="true"></i></button>
+	</div>
 	</div>
 </div>
