@@ -47,6 +47,12 @@ app.config(['$routeProvider',
                 controller: 'friendProfileCtrl',
                 role: '0'
             })
+			.when('/imprint', {
+                title: 'Imprint',
+                templateUrl: 'partials/imprint.html',
+                controller: 'imprintCtrl',
+                role: '0'
+            })
             .when('/', {
                 title: 'Home',
                 templateUrl: 'partials/home.html',

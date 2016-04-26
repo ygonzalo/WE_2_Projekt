@@ -40,6 +40,7 @@
   <script src="app/controller/friendsCtrl.js"></script>
   <script src="app/controller/homeCtrl.js"></script>
   <script src="app/controller/profileCtrl.js"></script>
+   <script src="app/controller/imprintCtrl.js"></script>
   <script src="app/controller/friendProfileCtrl.js"></script>
   <script src="app/controller/mainCtrl.js"></script>
   <script src="js/render_profile_img.js"></script>
