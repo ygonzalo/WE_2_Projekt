@@ -33,6 +33,8 @@
   <script src="js/angular-cookies.min.js"></script>
   <script src="js/angular-animate.min.js" ></script>
   <script src="js/ngDialog.min.js" ></script>
+  <script src="js/render_profile_img.js"></script>
+  <script src="js/zxcvbn.js"></script>
   <script src="app/app.js"></script>
   <script src="app/data.js"></script>
   <script src="app/controller/authCtrl.js"></script>
@@ -43,6 +45,7 @@
    <script src="app/controller/imprintCtrl.js"></script>
   <script src="app/controller/friendProfileCtrl.js"></script>
   <script src="app/controller/mainCtrl.js"></script>
-  <script src="js/render_profile_img.js"></script>
+
+    
 </html>
 

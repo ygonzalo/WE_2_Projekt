@@ -4,11 +4,17 @@
 		<form name="signupForm" >
 			<input type="email" placeholder="Email" name="email" data-ng-model="signup.email" required focus/>
 			<br />
-			<input type="password" placeholder="Password" name="password" data-ng-model="signup.password" required focus/>
+			<input type="password" placeholder="Password" id="password" name="password" data-ng-model="signup.password" required focus data-ng-change="ratePassword(signup.password)"/>
 			<br />
+			<table class="scoreDivContainer" data-ng-show="showScore">
+				<tr>
+					<td><div id="scoreDiv"></div></td>
+					
+					<td style="width:50%"><div id="scoreValue"></div></td>
+				</tr>
+			</table>
+			
 			<input type="text" placeholder="Name" name="name" data-ng-model="signup.name" required focus/>
-			<br />
-			<input type="checkbox" value="robotcheck" placeholder="asf">Ich bin kein Roboter</input>
 			<br />
 			<button type="submit" data-ng-click="signUp(signup)" data-ng-disabled="signupForm.$invalid">Registrieren</button>
 			<br />

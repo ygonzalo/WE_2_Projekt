@@ -249,3 +249,22 @@
 	-webkit-filter:blur(2em);
 	filter:blur(2em);
 }
+
+
+.scoreDivContainer{
+	
+	min-width:100%;
+	-moz-box-sizing: border-box;
+	box-sizing:border-box;
+	text-align: center;
+    border: none;
+	position:relative;
+	table-layout:fixed;
+
+	
+}
+#scoreDiv{
+	height:1em;
+	margin-left: 0.5em; 
+	border-radius: 2px;
+}
