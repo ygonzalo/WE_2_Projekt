@@ -22,11 +22,6 @@ function isMovieWatched($movieID,$userID) {
 	}
 }
 
-function calculateRating($ratings,$rating_points){
-	$rating =  $rating_points / $ratings;
-	return round($rating, 2);
-}
-
 function isFriend($userID, $friendID) {
 	$db = new DB();
 

@@ -45,15 +45,14 @@ CREATE TABLE IF NOT EXISTS `movie` (
   `movieID` INT UNSIGNED NOT NULL,
   `original_title` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
   `watchers` INT UNSIGNED NOT NULL DEFAULT 0,
-  `ratings` INT UNSIGNED NOT NULL DEFAULT 0,
-  `rating_points` INT UNSIGNED NOT NULL DEFAULT 0,
+  `likes` INT UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (`movieID`))
   ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `movielist` (
   `movieID` INT UNSIGNED NOT NULL,
   `userID` INT UNSIGNED NOT NULL,
-  `user_rating` INT UNSIGNED DEFAULT NULL,
+  `liked` BOOLEAN DEFAULT FALSE,
   `status` ENUM('watched','watchlist', 'deleted') NOT NULL,
   `watched_date` DATE DEFAULT NULL,
   PRIMARY KEY (`movieID`,`userID`),

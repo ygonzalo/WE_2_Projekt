@@ -38,26 +38,26 @@ $app->get('/movies/search/:title', function($title) use ($app) {
 					$movie['original_title'] = $item['original_title'];
 					$movie['poster'] = $poster;
 					$movie['status'] = null;
-					$movie['user_rating'] = null;
+					$movie['liked'] = null;
 					$movie['watched_date'] = null;
 					$movie['watchers'] = 0;
-					$movie['rating_points'] = 0;
+					$movie['likes'] = 0;
 
 					//prepare sql statements and bind parameters
-					$sel_movielist = $db->preparedStmt("SELECT status,user_rating,watched_date FROM movielist WHERE movieID = ? AND userID = ?");
+					$sel_movielist = $db->preparedStmt("SELECT status,liked,watched_date FROM movielist WHERE movieID = ? AND userID = ?");
 					$sel_movielist->bind_param('ii', $movie['movieID'], $session['userID']);
 
-					$sel_movie = $db->preparedStmt("SELECT watchers,rating_points FROM movie WHERE movieID = ?");
+					$sel_movie = $db->preparedStmt("SELECT watchers,likes FROM movie WHERE movieID = ?");
 					$sel_movie->bind_param('i', $movie['movieID']);
 
 					//execute query
 					$sel_movielist->execute();
 					$sel_movielist->store_result();
-					$sel_movielist->bind_result($db_status,$db_user_rating,$db_watched_date);
+					$sel_movielist->bind_result($db_status,$db_liked,$db_watched_date);
 					if($sel_movielist->num_rows>0){
 						while($sel_movielist->fetch()) {
 							$movie['status'] = $db_status;
-							$movie['user_rating'] = $db_user_rating;
+							$movie['liked'] = (bool)$db_liked;
 							$movie['watched_date'] = $db_watched_date;
 						}
 					}
@@ -66,11 +66,11 @@ $app->get('/movies/search/:title', function($title) use ($app) {
 
 					$sel_movie->execute();
 					$sel_movie->store_result();
-					$sel_movie->bind_result($db_watchers,$db_rating_points);
+					$sel_movie->bind_result($db_watchers,$db_likes);
 					if($sel_movie->num_rows>0){
 						while ($sel_movie->fetch()) {
 							$movie['watchers'] = $db_watchers;
-							$movie['rating_points'] = $db_rating_points;
+							$movie['likes'] = $db_likes;
 						}
 					}
 					$sel_movie->free_result();
@@ -108,7 +108,7 @@ $app->get('/movies/:movieID', function($movieID) use ($app) {
 		$userID = $session['userID'];
 		$movie = array();
 
-		$sel_movie = $db->preparedStmt('SELECT m.movieID, m.original_title, m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, mi.poster
+		$sel_movie = $db->preparedStmt('SELECT m.movieID, m.original_title, m.likes, m.watchers, mi.title, mi.plot, mi.release_date, mi.poster
 FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID = ?');
 		$sel_movie->bind_param('i',$movieID);
 		$sel_movie->execute();
@@ -116,7 +116,7 @@ FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID =
 
 		if($sel_movie->num_rows>0) {
 
-			$sel_movie->bind_result($db_movieID,$db_original_title,$db_ratings,$db_rating_points,$db_watchers, $db_title, $db_plot, $db_release_date, $db_poster);
+			$sel_movie->bind_result($db_movieID,$db_original_title,$db_likes,$db_watchers, $db_title, $db_plot, $db_release_date, $db_poster);
 			$sel_movie->fetch();
 
 			$movie['movieID'] = $db_movieID;
@@ -126,28 +126,22 @@ FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID =
 			$movie['original_title'] = $db_original_title;
 			$movie['poster'] = $db_poster;
 			$movie['watchers'] = $db_watchers;
-			if($db_ratings>0){
-				$movie['rating'] = calculateRating($db_ratings,$db_rating_points);
-			} else {
-				$movie['rating'] = 0;
-			}
-			
+			$movie['likes'] = $db_likes;
 
 			$movie['status'] = null;
-			$movie['user_rating'] = 0;
+			$movie['liked'] = false;
 			$movie['watched_date'] = null;
 
-
-			$sel_status = $db->preparedStmt('SELECT status, user_rating, watched_date FROM movielist WHERE movieID = ? AND userID = ?');
+			$sel_status = $db->preparedStmt('SELECT status, liked, watched_date FROM movielist WHERE movieID = ? AND userID = ?');
 			$sel_status->bind_param('ii',$movieID,$userID);
 			$sel_status->execute();
 			$sel_status->store_result();
 			if($sel_status->num_rows>0){
-				$sel_status->bind_result($db_status,$db_user_rating,$db_watched_date);
+				$sel_status->bind_result($db_status,$db_liked,$db_watched_date);
 				$sel_status->fetch();
 
 				$movie['status'] = $db_status;
-				$movie['user_rating'] = $db_user_rating;
+				$movie['liked'] = (bool)$db_liked;
 				$movie['watched_date'] = $db_watched_date;
 			}
 
@@ -170,10 +164,10 @@ FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID =
 			$movie['release_date'] = $response_decoded['release_date'];
 			$movie['original_title'] = $response_decoded['original_title'];
 			$movie['poster'] = $poster;
-			$movie['rating'] = 0;
+			$movie['likes'] = 0;
 
 			$movie['status'] = null;
-			$movie['user_rating'] = 0;
+			$movie['liked'] = false;
 			$movie['watched_date'] = null;
 
 			$response = array('movie' => $movie);
@@ -357,23 +351,23 @@ $app->get('/movies/watchlist(/:id)', function($id='') use ($app) {
 		}
 
 		//prepare sql statement and bind parameters
-		$movie_stmt = $db->preparedStmt("SELECT m.movieID, m.original_title, m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, mi.poster
+		$movie_stmt = $db->preparedStmt("SELECT m.movieID, m.original_title, m.likes, m.watchers, mi.title, mi.plot, mi.release_date, mi.poster
 FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID 
 JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID= ? AND status= 'watchlist'");
 		$movie_stmt->bind_param('i', $id);
 		$movie_stmt->execute();
 		$movie_stmt->store_result();
-		$movie_stmt->bind_result($db_movieID,$db_original_title,$db_ratings,$db_rating_points,$db_watchers, $db_title, $db_plot, $db_release_date, $db_poster);
+		$movie_stmt->bind_result($db_movieID,$db_original_title,$db_likes,$db_watchers, $db_title, $db_plot, $db_release_date, $db_poster);
 
 		if($movie_stmt->num_rows>0){
 			$response['matches'] = array();
 			$movie = array();
 			while ($movie_stmt->fetch()) {
 
-				$movielist_stmt = $db->preparedStmt("SELECT ml.status, ml.user_rating FROM movielist AS ml WHERE userID= ? AND movieID= ?");
+				$movielist_stmt = $db->preparedStmt("SELECT ml.status, ml.liked FROM movielist AS ml WHERE userID= ? AND movieID= ?");
 				$movielist_stmt->bind_param('ii', $userID,$db_movieID);
 				$movielist_stmt->execute();
-				$movielist_stmt->bind_result($db_status, $db_user_rating);
+				$movielist_stmt->bind_result($db_status, $db_liked);
 				$movielist_stmt->fetch();
 
 				$movie['movieID'] = $db_movieID;
@@ -383,9 +377,9 @@ JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID= ? AND status= 'watc
 				$movie['original_title'] = $db_original_title;
 				$movie['poster'] = $db_poster;
 				$movie['status'] = $db_status;
-				$movie['user_rating'] = $db_user_rating;
+				$movie['liked'] = (bool)$db_liked;
 				$movie['watchers'] = $db_watchers;
-				$movie['rating_points'] = $db_rating_points;
+				$movie['likes'] = $db_likes;
 				array_push($response['matches'], $movie);
 
 				$movielist_stmt->close();
@@ -427,21 +421,21 @@ $app->get('/movies/watched(/:id)', function($id='') use ($app) {
 		$response['matches'] = array();
 
 		//prepare sql statement and bind parameters
-		$movie_stmt = $db->preparedStmt("SELECT m.movieID, m.original_title, m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, mi.poster
+		$movie_stmt = $db->preparedStmt("SELECT m.movieID, m.original_title, m.likes, m.watchers, mi.title, mi.plot, mi.release_date, mi.poster
 FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID 
 JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID= ? AND status= 'watched'");
 		$movie_stmt->bind_param('i', $id);
 		$movie_stmt->execute();
 		$movie_stmt->store_result();
-		$movie_stmt->bind_result($db_movieID,$db_original_title,$db_ratings,$db_rating_points,$db_watchers, $db_title, $db_plot, $db_release_date, $db_poster);
+		$movie_stmt->bind_result($db_movieID,$db_original_title,$db_likes,$db_watchers, $db_title, $db_plot, $db_release_date, $db_poster);
 
 		if($movie_stmt->num_rows>0){
 			$movie = array();
 			while ($movie_stmt->fetch()) {
-				$movielist_stmt = $db->preparedStmt("SELECT ml.status, ml.user_rating FROM movielist AS ml WHERE userID= ? AND movieID= ?");
+				$movielist_stmt = $db->preparedStmt("SELECT ml.status, ml.liked FROM movielist AS ml WHERE userID= ? AND movieID= ?");
 				$movielist_stmt->bind_param('ii', $userID,$db_movieID);
 				$movielist_stmt->execute();
-				$movielist_stmt->bind_result($db_status, $db_user_rating);
+				$movielist_stmt->bind_result($db_status, $db_liked);
 				$movielist_stmt->fetch();
 
 				$movie['movieID'] = $db_movieID;
@@ -451,9 +445,9 @@ JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID= ? AND status= 'watc
 				$movie['original_title'] = $db_original_title;
 				$movie['poster'] = $db_poster;
 				$movie['status'] = $db_status;
-				$movie['user_rating'] = $db_user_rating;
+				$movie['liked'] = (bool)$db_liked;
 				$movie['watchers'] = $db_watchers;
-				$movie['rating_points'] = $db_rating_points;
+				$movie['likes'] = $db_likes;
 				array_push($response['matches'], $movie);
 
 				$movielist_stmt->close();
@@ -476,12 +470,12 @@ JOIN movielist AS ml ON ml.movieID = m.movieID WHERE userID= ? AND status= 'watc
 	}
 });
 
-//PUT Rating
-$app->put('/movies/:movieID/rating', function($movieID) use ($app) {
+//PUT Like/unlike
+$app->put('/movies/:movieID/like', function($movieID) use ($app) {
 
 	//get JSON body and parse to array
 	$req = json_decode($app->request->getBody());
-	$rating = $req->rating;
+	$like = $req->like;
 
 	//REST-Service Response
 	$response = array();
@@ -496,41 +490,36 @@ $app->put('/movies/:movieID/rating', function($movieID) use ($app) {
 
 		if(isMovieWatched($movieID,$userID)){
 
-			$sel_rating = $db->preparedStmt("SELECT user_rating FROM movielist WHERE movieID = ? AND userID = ?");
-			$sel_rating->bind_param("ii", $movieID,$userID);
-			$sel_rating->execute();
-			$sel_rating->bind_result($db_user_rating);
-			$sel_rating->fetch();
-			$sel_rating->close();
-
-			$sel_rating = $db->preparedStmt("SELECT rating_points, ratings FROM movie WHERE movieID = ?");
+			$sel_rating = $db->preparedStmt("SELECT likes FROM movie WHERE movieID = ?");
 			$sel_rating->bind_param("i", $movieID);
 			$sel_rating->execute();
-			$sel_rating->bind_result($db_rating_points, $db_ratings);
+			$sel_rating->bind_result($db_likes);
 			$sel_rating->fetch();
 			$sel_rating->close();
 
-			$ratings = $db_ratings + 1;
-			$rating_points = $db_rating_points + $rating;
+			$liked_int = (int)$like;
 
-			//Add one rating to ratings count if movie was not already rated by user
-			if(movieIsRated($userID,$movieID)){
-				$ratings = $db_ratings;
-				$rating_points = $db_rating_points - $db_user_rating + $rating;
+			//Update movie user like
+			$update_movielist = $db->preparedStmt("UPDATE movielist SET liked = ? WHERE movieID=? AND userID=?");
+			$update_movielist->bind_param("iii", $liked_int,$movieID,$userID);
+			$update_movielist->execute();
+			$update_movielist->close();
+
+			$likes = $db_likes;
+
+			if($like){
+				$likes += 1;
+			} else {
+				$likes -= 1;
 			}
 
-			//Update movie user rating
-			$update_movielist = $db->preparedStmt("UPDATE movielist SET user_rating = ? WHERE movieID=? AND userID=?");
-			$update_movielist->bind_param("iii", $rating,$movieID,$userID);
-			$update_movielist->execute();
-			$update_movielist->close();
+			$update_movie = $db->preparedStmt("UPDATE movie SET likes=? WHERE movieID=?");
+			$update_movie->bind_param("ii",$likes,$movieID);
+			$update_movie->execute();
+			$update_movie->close();
 
-
-			$update_movielist = $db->preparedStmt("UPDATE movie SET ratings = ?, rating_points = ? WHERE movieID=?");
-			$update_movielist->bind_param("iii", $ratings,$rating_points,$movieID);
-			$update_movielist->execute();
-			$update_movielist->close();
-
+			$response['liked'] = $like;
+			$response['likes'] = $likes;
 			$response['status'] = "success";
 			echoResponse(200, $response);
 		}else {

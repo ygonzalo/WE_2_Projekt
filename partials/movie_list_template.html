@@ -6,8 +6,8 @@
 			<div class="poster_content">
 				<h2>{{m.title}}</h2>
 				<small>
-					<span style="float:left"><i class="fa fa-heart fa-2x" aria-hidden="true" style="font-size:1em;"></i> 12</span>
 					<span style="float:right">Veröffentlicht: 2008</span>
+					<span data-ng-hide="m.likes==0" style="float:left"><i class="fa fa-heart fa-2x" aria-hidden="true" style="font-size:1em;"></i> {{m.likes}}</span>
 				</small>
 				<br />
 				<p>
@@ -20,7 +20,8 @@
 		<button data-ng-click="changeStatus('watchlist',m.movieID)"><i class="fa fa-bookmark fa-2x" aria-hidden="true"></i></button>
 		<button data-ng-click="changeStatus('watched',m.movieID)"><i class="fa fa-eye fa-2x" aria-hidden="true"></i></button>
 		<button data-ng-click="openRecommendDialog(m)"><i class="fa fa-share fa-2x" aria-hidden="true"></i></button>
-		<button data-ng-click="openRecommendDialog(m)"><i class="fa fa-heart-o fa-2x" aria-hidden="true"></i></button>
+		<button data-ng-show="m.liked" data-ng-click="likeMovie(m)"><i class="fa fa-heart fa-2x" aria-hidden="true"></i></button>
+		<button data-ng-hide="m.liked" data-ng-click="likeMovie(m)"><i class="fa fa-heart-o fa-2x" aria-hidden="true"></i></button>
 	</div>
 	</div>
 </div>

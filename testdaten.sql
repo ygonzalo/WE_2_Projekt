@@ -6,10 +6,10 @@ DELETE FROM `movielist`;
 DELETE FROM `friends`;
 
 -- movie TESTDATA
-INSERT INTO `movie`(`movieID`,`watchers`,`ratings`,`rating_points`)
-VALUES (177572, 3, 3, 6);
-INSERT INTO `movie`(`movieID`,`watchers`,`ratings`,`rating_points`)
-VALUES (293660, 2, 2, 5);
+INSERT INTO `movie`(`movieID`,`original_title`,`watchers`,`likes`)
+VALUES (177572,'Big Hero 6', 3, 2);
+INSERT INTO `movie`(`movieID`,`original_title`,`watchers`,`likes`)
+VALUES (293660, 'Deadpool',2, 2);
 
 
 -- movieinfo TESTDATA
@@ -31,24 +31,23 @@ VALUES (3,'test3', 'test3@t.de', '$2y$10$LV8cO6nmKku0bEVJ6IALQuMx.fFkAq2.Wvz15Vw
 INSERT INTO `user`(`userID`,`name`,`email`,`password`,`points`,`image`)
 VALUES (4,'test4', 'test4@t.de', '$2y$10$LV8cO6nmKku0bEVJ6IALQuMx.fFkAq2.Wvz15VwlbPx9usDg7ofWS', 4 ,'4-4-4-4-4');
 
-
 -- movielist TESTDATA
-INSERT INTO `movielist`(`movieID`,`userID`,`user_rating`,`status`,`watched_date`)
-VALUES (177572,1,1,'watched','2000-01-01');
-INSERT INTO `movielist`(`movieID`,`userID`,`user_rating`,`status`,`watched_date`)
-VALUES (177572,2,2,'watched','2000-01-01');
-INSERT INTO `movielist`(`movieID`,`userID`,`user_rating`,`status`,`watched_date`)
-VALUES (177572,3,3,'watched','2000-01-01');
-INSERT INTO `movielist`(`movieID`,`userID`,`user_rating`,`status`,`watched_date`)
-VALUES (177572,4,4,'watchlist','2000-01-01');
+INSERT INTO `movielist`(`movieID`,`userID`,`liked`,`status`,`watched_date`)
+VALUES (177572,1,true,'watched','2000-01-01');
+INSERT INTO `movielist`(`movieID`,`userID`,`liked`,`status`,`watched_date`)
+VALUES (177572,2,true,'watched','2000-01-01');
+INSERT INTO `movielist`(`movieID`,`userID`,`liked`,`status`,`watched_date`)
+VALUES (177572,3,false,'watched','2000-01-01');
+INSERT INTO `movielist`(`movieID`,`userID`,`liked`,`status`,`watched_date`)
+VALUES (177572,4,false,'watchlist',NULL);
 INSERT INTO `movielist`(`movieID`,`userID`,`status`,`watched_date`)
-VALUES (293660,1,'watchlist','2000-01-01');
+VALUES (293660,1,'watchlist',NULL);
 INSERT INTO `movielist`(`movieID`,`userID`,`status`,`watched_date`)
-VALUES (293660,2,'watchlist','2000-01-01');
-INSERT INTO `movielist`(`movieID`,`userID`,`user_rating`,`status`,`watched_date`)
-VALUES (293660,3,2,'watched','2000-01-01');
-INSERT INTO `movielist`(`movieID`,`userID`,`user_rating`,`status`,`watched_date`)
-VALUES (293660,4,3,'watched','2000-01-01');
+VALUES (293660,2,'watchlist',NULL);
+INSERT INTO `movielist`(`movieID`,`userID`,`liked`,`status`,`watched_date`)
+VALUES (293660,3,true,'watched','2000-01-01');
+INSERT INTO `movielist`(`movieID`,`userID`,`liked`,`status`,`watched_date`)
+VALUES (293660,4,true,'watched','2000-01-01');
 
 
 -- friends TESTDATA

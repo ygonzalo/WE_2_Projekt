@@ -111,6 +111,26 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies',
 		});
 	};
 
+
+	$scope.likeMovie = function (movie) {
+
+		Data.put('/movies/'+movie.movieID+'/like', {
+			like: !movie.liked
+		}).then(function (results) {
+			if(results.status == "success") {
+				if(results.liked){
+					movie.liked = results.liked;
+					movie.likes = results.likes;
+				}else {
+					movie.liked = results.liked;
+					movie.likes = results.likes;
+				}
+			}else{
+				console.log(results.code);
+			}
+		});
+	};
+
 	$scope.error = "";
 	$scope.rec_error = false;
 	$scope.recommendMovie = function (userID,movieID) {
