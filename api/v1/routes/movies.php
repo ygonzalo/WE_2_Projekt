@@ -34,7 +34,8 @@ $app->get('/movies/search/:title', function($title) use ($app) {
 					$movie['movieID'] = $item['id'];
 					$movie['title'] = $item['title'];
 					$movie['plot'] = $item['overview'];
-					$movie['release_date'] = $item['release_date'];
+					$date = explode('-', $item['release_date']);
+					$movie['release_date'] = $date[0];
 					$movie['original_title'] = $item['original_title'];
 					$movie['poster'] = $poster;
 					$movie['status'] = null;
@@ -307,9 +308,18 @@ $app->post('/movies/:movieID/status', function($movieID) use ($app) {
 						}
 					}
 
+					$sel_status = $db->preparedStmt("SELECT status FROM movielist WHERE movieID=? AND userID=?");
+					$sel_status->bind_param("ii", $movieID, $userID);
+					$sel_status->execute();
+					$sel_status->bind_result($db_status);
+					$sel_status->fetch();
+
+					$response['movie_status'] = $db_status;
 					$response['status'] = "success";
 					$response['code'] = 206;
 					echoResponse(200, $response);
+
+					$sel_status->close();
 				} else {
 					$response['status'] = "error";
 					$response['code'] = 506;

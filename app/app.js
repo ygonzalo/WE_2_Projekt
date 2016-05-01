@@ -78,6 +78,11 @@ app.config(['$routeProvider',
                     $cookies.put('name', results.name);
                     $cookies.put('email', results.email);
 
+                    Data.get('user/color').then(function (results) {
+                        $cookies.put('color', results.color);
+                    });
+                        
+
                     if (nextUrl == '/signup' || nextUrl == '/login') {
                         $location.path("/home");
                     }

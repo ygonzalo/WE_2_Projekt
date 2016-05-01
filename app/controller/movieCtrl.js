@@ -2,8 +2,6 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies',
 
 	$controller('friendsCtrl', {$scope: $scope});
 
-	$scope.loading = false;
-
 	$scope.title = "";
 	$scope.searchMovie = function (title) {
 
@@ -24,13 +22,20 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies',
 		});
 	};
 
-	$scope.status = "";
-	$scope.changeStatus = function (status, movieID) {
+	$scope.changeStatus = function (status, movie) {
 
-		Data.post('movies/'+ movieID +'/status', {
+		if(status==movie.status){
+			status = 'deleted';
+		}
+
+		Data.post('movies/'+ movie.movieID +'/status', {
 			status: status
 		}).then(function (results){
 			if(results.status == "success") {
+				movie.status = results.movie_status;
+			} else {
+				console.log(results.code);
+
 			}
 		});
 	};
@@ -167,7 +172,22 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies',
 		});
 	};
 	
+	$scope.buttonColor = {};
+	$scope.buttonColors = function(){
+		
+		switch($cookies.get('color')){
+			case 'banana': 		$scope.btnColor = {'color':'rgb(239,231,16)'}; break;
+			case 'apple':		$scope.btnColor = {'color':'rgb(149,211,28)'}; break;
+			case 'raspberry':	$scope.btnColor = {'color':'rgb(234,53,143)'}; break;
+			case 'plum':		$scope.btnColor = {'color':'rgb(105,22,233)'}; break;
+			default:			$scope.btnColor = {'color':'rgb(111,111,111)'};
+		}
+		
+	};
+	
 	$scope.initResults = function () {
+
+		$scope.buttonColors();
 
 		var title = $location.search().title;
 
