@@ -123,7 +123,7 @@ FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID =
 			$movie['movieID'] = $db_movieID;
 			$movie['title'] = $db_title;
 			$movie['plot'] = $db_plot;
-			$movie['release_date'] = $db_release_date;
+			$movie['release_date'] = date("d.m.Y", strtotime($db_release_date));
 			$movie['original_title'] = $db_original_title;
 			$movie['poster'] = $db_poster;
 			$movie['watchers'] = $db_watchers;
@@ -162,9 +162,10 @@ FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID =
 			$movie['movieID'] = $response_decoded['id'];
 			$movie['title'] = $response_decoded['title'];
 			$movie['plot'] = $response_decoded['overview'];
-			$movie['release_date'] = $response_decoded['release_date'];
+			$movie['release_date'] = date("d.m.Y", strtotime($response_decoded['release_date']));
 			$movie['original_title'] = $response_decoded['original_title'];
 			$movie['poster'] = $poster;
+			$movie['watchers'] = 0;
 			$movie['likes'] = 0;
 
 			$movie['status'] = null;

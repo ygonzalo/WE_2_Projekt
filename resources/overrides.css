@@ -10,6 +10,7 @@
 	.wrap_box {
 		min-width:100%;
 		padding:1em 0;
+		margin:0em;
 	}
 	.header_left, .header_right
 	{
@@ -22,6 +23,18 @@
 		flex:1 1 auto;
 	}
 
+/* iphone.... */
+@media screen and (orientation:portrait) and (max-device-width:360px) {
+	.wrap-box {
+		margin:1em 0;
+	}
+	.poster_img{
+		width:6em;
+		height:9em;
+	}
+	.poster_content_plot {
+		display:none;
+	}
 }
 /* smartphone landscape */
 

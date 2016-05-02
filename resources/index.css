@@ -32,7 +32,9 @@ input:focus{
 {
 	position:relative;
 	width:100%;
-	padding:0;
+	padding:1em;
+	-moz-box-sizing: border-box;
+	box-sizing:border-box;
 	-webkit-flex:1;
 	flex:1;
 }
@@ -98,7 +100,6 @@ input:focus{
 	width:100%;
 	max-width:100%;
 	overflow:hidden;
-	padding:1em;
 	
 	display:-webkit-flex;
 	display:flex;
@@ -106,6 +107,11 @@ input:focus{
 	flex-wrap:wrap;
 	-moz-box-sizing:border-box;
 	box-sizing:border-box;
+}
+
+.default_flex_item {
+	-webkit-flex:1 1 auto;
+	flex:1 1 auto;
 }
 
 .wrap_box {
@@ -139,7 +145,6 @@ input:focus{
 {
 	font-weight:lighter;
 	color:rgb(61,61,61);
-	
 }
 
 .default_container h2

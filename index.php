@@ -4,7 +4,8 @@
   <head>
     <meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no" >
-    
+	<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+	
 	<link rel="shortcut icon" href="">
     <link rel="stylesheet" href="resources/search.css">
     <link rel="stylesheet" href="resources/index.css">

@@ -1,14 +1,44 @@
 <div data-ng-init="initMovieDetails()" class="default_container">
 	<div class="wrap_box">
-		<div class="wrap_box_content" align="center">
-			<h1>{{movie.title}}</h1>
-			<img src="{{movie.poster}}" style="width:10em;"/>
+		<div class="wrap_box_content">
+			<div class="default_container">
+				<div class="default_flex_item" align="center">
+					<table><tr><td>
+					<img src="{{movie.poster}}" style="width:10em;"/></td>
+					<td style="line-height:3em; padding-top:1em; width:5em;">
+						<div class="movie_interaction_buttons" data-ng-controller="movieCtrl" data-ng-init="buttonColors()">
+							<button data-ng-click="changeStatus('watchlist',movie)">
+								<i data-ng-if="movie.status!='watchlist'" class="fa fa-bookmark fa-2x" aria-hidden="true"></i>
+								<i data-ng-if="movie.status=='watchlist'" data-ng-style="btnColor" class="fa fa-bookmark fa-2x" aria-hidden="true"></i>
+							<br /><small>Watchlist</small></button><br />
+							<button data-ng-click="changeStatus('watched',movie)">
+								<i data-ng-if="movie.status!='watched'" class="fa fa-eye fa-2x" aria-hidden="true"></i>
+								<i data-ng-if="movie.status=='watched'" data-ng-style="btnColor" class="fa fa-eye fa-2x" aria-hidden="true"></i>
+							<br /><small>gesehen</small></button><br />
+							<button data-ng-disabled="movie.status!='watched'" data-ng-click="openRecommendDialog(movie)">
+								<i class="fa fa-share fa-2x" aria-hidden="true"></i>
+							<br /><small>teilen</small></button><br />
+							<button data-ng-disabled="movie.status!='watched'" data-ng-click="likeMovie(movie)">
+								<i data-ng-if="movie.liked" data-ng-style="btnColor" class="fa fa-heart fa-2x" aria-hidden="true"></i>
+								<i data-ng-if="!movie.liked" class="fa fa-heart-o fa-2x" aria-hidden="true"></i>
+							<br /><small>like</small></button>
+						</div>
+					</td></tr></table>
+				</div>
+				<div class="default_flex_item" style="max-width:32em; padding-left:1em;">
+					<h2>{{movie.title}}</h2>
+					Erschienen am: <b>{{movie.release_date}}</b><br /><br />
+					Originaler Titel: <b>{{movie.original_title}}</b><br /><br />
+					Von <b>{{movie.watchers}}</b> Leuten gesehen<br /><br />
+					Von <b>{{movie.likes}}</b> Leuten positiv bewertet
+				</div>
+			</div>
 		</div>
 	</div>
 	<div class="wrap_box">
 		<div class="wrap_box_content">
-			<h1>Inhalt</h1>
-			<p style="max-width:40em;">{{movie.plot}}</p>
+			<h2>Inhalt</h2>
+			<p style="max-width:40em; line-height:1.5em;">{{movie.plot}}</p>
 		</div>
 	</div>
 </div>
