@@ -131,6 +131,8 @@ app.controller('friendsCtrl', ['$scope', '$rootScope', '$routeParams', '$locatio
 				});
 			} else {
 				$scope.empty_friendsearch_msg = "";
+				$scope.empty_friendsearch = false;
+				$scope.users = 0;
 			}
 		}
 		

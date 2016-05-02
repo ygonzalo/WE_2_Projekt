@@ -42,13 +42,32 @@
 	position:relative;
 	float:right;
 	width:14em;
-	height:8em;
+	max-height:9em;
 	padding:0.3em;
 	overflow:hidden;
+	display:-webkit-flex;
+	display:flex;
+	flex-direction:column;
+	-webkit-flex-direction:column;
 }
 
 .poster_content h2 {
 	font-size:1.1em;
+}
+
+.poster_content_header {
+	-webkit-flex:1;
+	flex:1;
+}
+
+.poster_content_info {
+	height:2em;
+}
+
+.poster_content_plot {
+	height:3em;
+	line-height:1.5em;
+	font-size:1em;
 }
 
 .poster_menu {
@@ -57,7 +76,7 @@
 	right:0;
 	text-align:center;
 	width:16em;
-	height:3em;
+	height:2.6em;
 	z-index:100;
 }
  
@@ -73,21 +92,12 @@
 	height:3em;
 }
 
-.poster_menu button:hover, .poster_menu button:active {
+.poster_menu button:hover {
 	color:gray;
-	animation: buttonPressEffect 0.5s ease-in-out;
 }
 
-@keyframes buttonPressEffect {
-	0% {
-		text-shadow:0 0 0 black;
-	}
-	50% {
-		text-shadow:0 0 6px rgba(0,0,0,0.5);
-	}
-	100% {
-		text-shadow:0 0 12px rgba(0,0,0,0);
-	}
+.poster_menu button:active {
+	color:inherit;
 }
 
 /* partial: profile */
@@ -250,6 +260,15 @@
 	filter:blur(2em);
 }
 
+.search_friends_input {
+	width:100%;
+	padding:0.5em;
+	border:2px solid gray;
+	border-radius:2px;
+	-moz-box-sizing: border-box;
+	box-sizing:border-box;
+	position:relative;
+}
 
 .scoreDivContainer{
 	

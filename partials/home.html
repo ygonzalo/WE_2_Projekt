@@ -31,11 +31,9 @@
 			<div class="wrap_box_header">
 				<h2>Freunde suchen</h2>
 			</div>
-			<form data-ng-submit="searchFriend(friend_query)" role="form">
-				<input type="text" name="search_friends" placeholder="Suche nach Name, Email..." data-ng-model="friend_query"/>
-			</form>
+			<input data-ng-change="searchFriend(friend_query)" type="text" name="search_friends" placeholder="Suche nach Name, Email..." autocomplete="off" data-ng-model="friend_query" class="search_friends_input"/>
 			<div data-ng-show="empty_friendsearch">{{empty_friendsearch_msg}}</div>
-			<div class="default_list_box">
+			<div class="default_list_box" data-ng-hide="empty_friendsearch">
 				<div data-ng-repeat="user in users" class="default_list_item">
 					{{user.name}} {{user.email}}
 					<button data-ng-click="sendFriendRequest(user)" data-ng-hide="user.requested">Anfrage senden</button>

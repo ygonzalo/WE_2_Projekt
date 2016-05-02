@@ -1,3 +1,14 @@
-<div data-ng-init="initMovieDetails()">
-	{{movie.title}}
+<div data-ng-init="initMovieDetails()" class="default_container">
+	<div class="wrap_box">
+		<div class="wrap_box_content" align="center">
+			<h1>{{movie.title}}</h1>
+			<img src="{{movie.poster}}" style="width:10em;"/>
+		</div>
+	</div>
+	<div class="wrap_box">
+		<div class="wrap_box_content">
+			<h1>Inhalt</h1>
+			<p style="max-width:40em;">{{movie.plot}}</p>
+		</div>
+	</div>
 </div>
