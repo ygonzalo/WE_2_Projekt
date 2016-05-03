@@ -99,10 +99,13 @@ $app->get('/movies/search/:title', function($title) use ($app) {
 });
 
 //GET Film by ID
-$app->get('/movies/:movieID', function($movieID) use ($app) {
+$app->get('/movies/details/:movieID', function($movieID) use ($app) {
 	$db = new DB();
 	$session = $db->getSession();
 	$response = array();
+	$matches = array();
+	$matches['matches'] = array();
+	$_SESSION['matches'] = array();
 
 	//check if user is authenticated
 	if($session['userID'] != '') {
@@ -150,6 +153,10 @@ FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID =
 			$sel_status->close();
 
 			$response = array('movie' => $movie);
+
+			array_push($matches['matches'],$movie);
+			$_SESSION['matches'] = $matches['matches'];
+
 			$response['status'] = "success";
 			echoResponse(200, $response);
 		} else {
@@ -162,7 +169,7 @@ FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID =
 			$movie['movieID'] = $response_decoded['id'];
 			$movie['title'] = $response_decoded['title'];
 			$movie['plot'] = $response_decoded['overview'];
-			$movie['release_date'] = date("d.m.Y", strtotime($response_decoded['release_date']));
+			$movie['release_date'] = $response_decoded['release_date'];
 			$movie['original_title'] = $response_decoded['original_title'];
 			$movie['poster'] = $poster;
 			$movie['watchers'] = 0;
@@ -173,6 +180,9 @@ FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID =
 			$movie['watched_date'] = null;
 
 			$response = array('movie' => $movie);
+
+			array_push($matches['matches'],$movie);
+			$_SESSION['matches'] = $matches['matches'];
 
 			$response['status'] = "success";
 			echoResponse(200, $response);
@@ -262,8 +272,8 @@ $app->post('/movies/:movieID/status', function($movieID) use ($app) {
 						$insert_movielist->execute();
 						$insert_movielist->close();
 
-						$insert_movieinfo = $db->preparedStmt("INSERT INTO movieinfo(movieID,language,plot,title,release_date,poster) VALUES (?,?,?,?,?,?)");
-						$insert_movieinfo->bind_param("isssss", $movieID, $movie['language'], $movie['plot'], $movie['title'], $movie['release_date'], $movie['poster']);
+						$insert_movieinfo = $db->preparedStmt("INSERT INTO movieinfo(movieID,plot,title,release_date,poster) VALUES (?,?,?,?,?)");
+						$insert_movieinfo->bind_param("issss", $movieID, $movie['plot'], $movie['title'], $movie['release_date'], $movie['poster']);
 
 						$insert_movieinfo->execute();
 						$insert_movieinfo->close();

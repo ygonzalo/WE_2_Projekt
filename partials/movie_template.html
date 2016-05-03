@@ -27,8 +27,8 @@
 				</div>
 				<div class="default_flex_item" style="max-width:32em; padding-left:1em;">
 					<h2>{{movie.title}}</h2>
-					Erschienen am: <b>{{movie.release_date}}</b><br /><br />
-					Originaler Titel: <b>{{movie.original_title}}</b><br /><br />
+					Erscheinungsdatum: <b>{{movie.release_date | date: yyyy.mm.dd}}</b><br /><br />
+					Originaltitel: <b>{{movie.original_title}}</b><br /><br />
 					Von <b>{{movie.watchers}}</b> Leuten gesehen<br /><br />
 					Von <b>{{movie.likes}}</b> Leuten positiv bewertet
 				</div>

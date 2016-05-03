@@ -165,7 +165,7 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies',
 	};
 	
 	$scope.initMovieDetails = function () {
-		Data.get('movies/'+$routeParams.movieID).then(function (results) {
+		Data.get('movies/details/'+$routeParams.movieID).then(function (results) {
 			if(results.status == "success") {
 				$scope.movie = results.movie;
 			}
