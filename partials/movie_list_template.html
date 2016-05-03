@@ -7,7 +7,7 @@
 						<img data-ng-src="{{checkPoster(m.poster)}}" class="poster_img"/>
 					</a>
 				</td>
-				<td style="vertical-align:top;">
+				<td style="vertical-align:top;" width="100%">
 					<a href="#/movie/{{m.movieID}}">
 					<div class="poster_content">
 						<div class="poster_content_header"><h2>{{m.title}}</h2></div>
@@ -24,7 +24,7 @@
 			</tr>
 			<tr>
 				<td>
-				<div class="movie_interaction_buttons" style="min-width:16em;">
+				<div class="movie_interaction_buttons">
 					<button data-ng-click="changeStatus('watchlist',m)">
 						<i data-ng-if="m.status!='watchlist'" class="fa fa-bookmark fa-2x" aria-hidden="true"></i>
 						<i data-ng-if="m.status=='watchlist'" data-ng-style="btnColor" class="fa fa-bookmark fa-2x" aria-hidden="true"></i>

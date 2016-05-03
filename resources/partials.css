@@ -79,14 +79,6 @@
 	font-size:1em;
 }
 
-.poster_menu {
-	position:absolute;
-	bottom:0;
-	right:0;
-	width:16em;
-	height:2.6em;
-}
-
 .movie_interaction_buttons {
 	z-index:100;
 	text-align:center;
@@ -101,6 +93,7 @@
 	color:rgb(61,61,61);
 	z-index:100;
 	height:3em;
+	width:4em;
 }
 
 .movie_interaction_buttons button:hover {
