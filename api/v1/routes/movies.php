@@ -99,10 +99,13 @@ $app->get('/movies/search/:title', function($title) use ($app) {
 });
 
 //GET Film by ID
-$app->get('/movies/:movieID', function($movieID) use ($app) {
+$app->get('/movies/details/:movieID', function($movieID) use ($app) {
 	$db = new DB();
 	$session = $db->getSession();
 	$response = array();
+	$matches = array();
+	$matches['matches'] = array();
+	$_SESSION['matches'] = array();
 
 	//check if user is authenticated
 	if($session['userID'] != '') {
@@ -150,6 +153,10 @@ FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID =
 			$sel_status->close();
 
 			$response = array('movie' => $movie);
+
+			array_push($matches['matches'],$movie);
+			$_SESSION['matches'] = $matches['matches'];
+
 			$response['status'] = "success";
 			echoResponse(200, $response);
 		} else {
@@ -173,6 +180,9 @@ FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID =
 			$movie['watched_date'] = null;
 
 			$response = array('movie' => $movie);
+
+			array_push($matches['matches'],$movie);
+			$_SESSION['matches'] = $matches['matches'];
 
 			$response['status'] = "success";
 			echoResponse(200, $response);
@@ -225,7 +235,6 @@ $app->post('/movies/:movieID/status', function($movieID) use ($app) {
 					if ($status == "watched") {
 
 						$watchers = $movie['watchers'] + 1;
-						date_default_timezone_set('Europe/Berlin');
 
 						$watched_date = date("Y-m-d");
 					} else {
@@ -321,6 +330,7 @@ $app->post('/movies/:movieID/status', function($movieID) use ($app) {
 					echoResponse(200, $response);
 
 					$sel_status->close();
+
 				} else {
 					$response['status'] = "error";
 					$response['code'] = 506;
