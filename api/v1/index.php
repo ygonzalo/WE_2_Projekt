@@ -1,6 +1,4 @@
 <?php
-date_default_timezone_set('Europe/Berlin');
-
 require_once("db.php");
 require(".././libs/Slim/Slim.php");
 
