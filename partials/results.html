@@ -1,4 +1,6 @@
 <div data-ng-init="initResults()" class="default_container">
 	<div style="width:100%; padding:0.5em;"><h1>Suchergebnisse</h1></div>
-	<div data-ng-include="includeFilmTemplate()"></div>
+	<div data-ng-if="!not_found" data-ng-include="includeFilmTemplate()"></div>
+	<div class="loading_spinner" data-ng-if="loading"><i class="fa fa-spinner fa-pulse fa-3x fa-fw margin-bottom"></i></div>
+	<div data-ng-if="not_found">Film wurde nicht gefunden</div>
 </div>

@@ -19,7 +19,10 @@
 		</div>
 		<div class="header_right">
 			<div data-ng-if="authenticated" data-ng-controller="authCtrl">
-				<a href="#/profile">Mein Profil</a> | <a data-ng-click="logout();">Abmelden</a>
+				<a href="#/profile">Mein Profil</a>
+				<div class="notification_icons" data-ng-if="friend_requests_ctr>0"><i class="fa fa-user-plus" aria-hidden="true"></i>{{friend_requests_ctr}}</div>
+				<div class="notification_icons" data-ng-if="recommendations_ctr>0"><i class="fa fa-envelope-o" aria-hidden="true"></i></i>{{recommendations_ctr}}</div>
+				| <a data-ng-click="logout();">Abmelden</a>
 			</div>
 		</div>
 	</div>

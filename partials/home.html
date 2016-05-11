@@ -2,12 +2,12 @@
 	<div  class="wrap_box">
 		<div class="wrap_box_content">
 			<div class="wrap_box_header">
-				<h2>Meine Watchlist</h2>
+				<a href="#/watchlist"><h2>Meine Watchlist</h2></a>
 			</div>
 			<div data-ng-show="empty_watchlist">{{empty_watchlist_msg}}</div>
 			<div class="default_list_box">
 				<div data-ng-repeat="watchlist_movie in watchlist" class="default_list_item">
-					{{watchlist_movie.title}}
+					<a href="#/movie/{{watchlist_movie.movieID}}">{{watchlist_movie.title}}</a>
 				</div>
 			</div>
 		</div>
@@ -19,7 +19,7 @@
 			</div>
 			<div data-ng-show="empty_friendlist">{{empty_friendlist_msg}}</div>
 			<div class="default_list_box">
-				<div data-ng-repeat="friend in friends" class="default_list_item">
+				<div data-ng-repeat="friend in friends " class="default_list_item">
 					<a href="#/friend/{{friend.userID}}">{{friend.name}}</a>
 					<button name="delete_friend" data-ng-click="deleteFriend(friend.userID)">Löschen</button>
 				</div>
@@ -29,7 +29,7 @@
 	<div class="wrap_box">
 		<div class="wrap_box_content">
 			<div class="wrap_box_header">
-				<h2>Freunde suchen</h2>
+				<h2>Freunde hinzufügen</h2>
 			</div>
 			<input data-ng-change="searchFriend(friend_query)" type="text" name="search_friends" placeholder="Suche nach Name, Email..." autocomplete="off" data-ng-model="friend_query" class="search_friends_input"/>
 			<div data-ng-show="empty_friendsearch">{{empty_friendsearch_msg}}</div>
@@ -46,12 +46,12 @@
 	<div class="wrap_box">
 		<div class="wrap_box_content">
 			<div class="wrap_box_header">
-				<h2>Gesehene Filme</h2>
+				<a href="#/watched"><h2>Gesehene Filme</h2></a>
 			</div>
 			<div data-ng-show="empty_watched">{{empty_watched_msg}}</div>
 			<div class="default_list_box">
 				<div data-ng-repeat="watched_movie in watched" class="default_list_item">
-					{{watched_movie.title}}
+					<a href="#/movie/{{watched_movie.movieID}}">{{watched_movie.title}}</a>
 				</div>
 			</div>
 		</div>

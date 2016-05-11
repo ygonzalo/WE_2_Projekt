@@ -526,12 +526,12 @@ $app->get('/friends/recommendations', function() use ($app) {
 				$reco['from'] = $db_fromID;
 				$reco['name'] = $db_name;
 
-				$movie_stmt = $db->preparedStmt("SELECT m.movieID, m.original_title, m.ratings, m.rating_points, m.watchers, mi.title, mi.plot, mi.release_date, mi.poster
+				$movie_stmt = $db->preparedStmt("SELECT m.movieID, mi.title
 FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID= ?");
 				$movie_stmt->bind_param('i',$db_movieID);
 				$movie_stmt->execute();
 				$movie_stmt->store_result();
-				$movie_stmt->bind_result($db_movieID,$db_original_title,$db_ratings,$db_rating_points,$db_watchers, $db_title, $db_plot, $db_release_date, $db_poster);
+				$movie_stmt->bind_result($db_movieID,$db_title);
 
 				if($movie_stmt->num_rows>0){
 
@@ -539,30 +539,6 @@ FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID= 
 
 					$reco['movieID'] = $db_movieID;
 					$reco['title'] = $db_title;
-					$reco['plot'] = $db_plot;
-					$reco['release_date'] = $db_release_date;
-					$reco['original_title'] = $db_original_title;
-					$reco['poster'] = $db_poster;
-					$reco['watchers'] = $db_watchers;
-					$reco['rating_points'] = $db_rating_points;
-
-					$movielist_stmt = $db->preparedStmt("SELECT user_rating, status FROM movielist WHERE movieID= ? AND userID = ?");
-					$movielist_stmt->bind_param('ii',$db_movieID, $userID);
-					$movielist_stmt->execute();
-					$movielist_stmt->store_result();
-					$movielist_stmt->bind_result($db_user_rating, $db_status);
-
-					if($movielist_stmt->num_rows>0){
-						$movielist_stmt->fetch();
-						$reco['status'] = $db_status;
-						$reco['user_rating'] = $db_user_rating;
-					} else{
-						$reco['status'] = null;
-						$reco['user_rating'] = null;
-					}
-
-					$movielist_stmt->free_result();
-					$movielist_stmt->close();
 
 				}
 
@@ -663,7 +639,7 @@ FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID= 
 });
 
 //GET Friend profile data
-$app->get('/friends/:friendID', function($friendID) use ($app) {
+$app->get('/friends/profile/:friendID', function($friendID) use ($app) {
 	//REST-Service Response
 	$response = array();
 	$db = new DB();
@@ -718,6 +694,46 @@ $app->get('/friends/:friendID', function($friendID) use ($app) {
 				echoResponse(201, $response);
 			}
 		}
+	} else {
+		$response['status'] = "error";
+		$response['code'] = 501;
+		echoResponse(201, $response);
+	}
+});
+
+//GET Notifications
+$app->get('/friends/notifications', function() use ($app) {
+
+	//REST-Service Response
+	$response = array();
+	$db = new DB();
+	$session = $db->getSession();
+
+	//check if user is logged in
+	if($session['userID']!='') {
+		$userID = $session['userID'];
+
+		$count_friendreq = $db->preparedStmt("SELECT COUNT(*) FROM friends WHERE friendID = ? AND status = 'requested'");
+		$count_friendreq->bind_param('i',$userID);
+		$count_friendreq->execute();
+		$count_friendreq->bind_result($db_request_count);
+		$count_friendreq->fetch();
+		$count_friendreq->close();
+
+		$count_rec = $db->preparedStmt("SELECT COUNT(*) FROM recommendations WHERE toID = ?");
+		$count_rec->bind_param('i',$userID);
+		$count_rec->execute();
+		$count_rec->bind_result($db_rec_count);
+		$count_rec->fetch();
+		$count_rec->close();
+
+		$response['status'] = "success";
+		$response['friend_requests'] = $db_request_count;
+		$response['recommendations'] = $db_rec_count;
+		$response['code'] = 234;
+		echoResponse(201, $response);
+
+
 	} else {
 		$response['status'] = "error";
 		$response['code'] = 501;

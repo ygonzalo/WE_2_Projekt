@@ -3,6 +3,7 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies',
 	$controller('friendsCtrl', {$scope: $scope});
 
 	$scope.title = "";
+	$scope.loading = false;
 	$scope.searchMovie = function (title) {
 
 		if($location.path() == '/results'){
@@ -13,11 +14,17 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies',
 		}
 
 		$scope.loading = true;
+		$scope.not_found = false;
 		Data.get('movies/search/'+$location.search().title).then(function (results) {
 
 			if(results.status == "success") {
 				$scope.loading = false;
-				$scope.results = results;
+				$scope.results = results.matches;
+
+				if(results.matches.length == 0){
+					$scope.not_found = true;
+				}
+
 			}
 		});
 	};
@@ -44,12 +51,17 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies',
 	$scope.empty_watchlist_msg = "";
 	$scope.getWatchlist = function (userID) {
 
-		userID = typeof userID !== 'undefined' ? userID : $cookies.userID;
+		userID = userID == 'undefined' ? ('/' + userID) : '';
 
-		Data.get('movies/watchlist/'+userID).then(function (results) {
+		Data.get('movies/watchlist'+userID).then(function (results) {
 			if(results.status == "success") {
 				switch(results.code){
-					case 207: 	$scope.watchlist = results.matches;
+					case 207:
+						if($location.path() == '/watchlist') {
+							$scope.results = results.matches;
+						} else {
+							$scope.watchlist = results.matches;
+						}
 								break;
 					case 208:	$scope.empty_watchlist = true;
 								$scope.empty_watchlist_msg = "Keine Filme in Watchlist";
@@ -64,12 +76,17 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies',
 	$scope.empty_watched_msg = "";
 	$scope.getWatched = function (userID) {
 
-		userID = typeof userID !== 'undefined' ? userID : $cookies.userID;
-		
-		Data.get('movies/watched/'+userID).then(function (results) {
+		userID = userID == 'undefined' ? ('/' + userID) : '';
+
+		Data.get('movies/watched'+userID).then(function (results) {
 			if(results.status == "success") {
 				switch(results.code){
-					case 209: 	$scope.watched = results.matches;
+					case 209:
+						if($location.path() == '/watched') {
+							$scope.results = results.matches;
+						} else {
+							$scope.watched = results.matches;
+						}
 								break;
 					case 210:	$scope.empty_watched = true;
 								$scope.empty_watched_msg = "Keine Filme als 'gesehen' markiert";
@@ -82,9 +99,16 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies',
 	
 	$scope.includeFilmTemplate = function() {
 		if($rootScope.authenticated){
-				return "partials/movie_list_template.html";
+				return "partials/movie_boxes_template.html";
 			}
 			return "";
+	};
+
+	$scope.includeFilmListTemplate = function() {
+		if($rootScope.authenticated){
+			return "partials/movie_list_template.html";
+		}
+		return "";
 	};
 	
 	$scope.checkPoster = function(poster) {
@@ -194,6 +218,22 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies',
 		if(title) {
 			$scope.searchMovie(title);
 		}
+
+	};
+
+	$scope.initWatchlist = function () {
+
+		$scope.buttonColors();
+
+		$scope.getWatchlist();
+
+	};
+
+	$scope.initWatched = function () {
+
+		$scope.buttonColors();
+
+		$scope.getWatched();
 
 	};
 }]);

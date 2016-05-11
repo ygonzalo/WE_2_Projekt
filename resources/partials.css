@@ -1,6 +1,24 @@
 /* partial styles */
 
+/* partial: list */
+
+.movie_list_filter {
+	width:100%;
+	padding:0.5em;
+	border:2px solid gray;
+	border-radius:2px;
+	-moz-box-sizing: border-box;
+	box-sizing:border-box;
+	position:relative;
+}
 /* partial: results */
+.loading_spinner {
+	position:relative;
+	width:100%;
+	text-align: center;
+	color: rgb(111,111,111);
+}
+
 .poster_box {
 	position:relative;
 	width:100%;

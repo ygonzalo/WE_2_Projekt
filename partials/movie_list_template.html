@@ -1,48 +1,33 @@
-<div data-ng-controller="movieCtrl" class="poster_box">
-	<div data-ng-repeat="m in results.matches" class="poster" data-ng-model="movie">
-		<table style="width:100%; height:100%;">
-			<tr>
-				<td rowspan="2">
-					<a href="#/movie/{{m.movieID}}">
-						<img data-ng-src="{{checkPoster(m.poster)}}" class="poster_img"/>
-					</a>
-				</td>
-				<td style="vertical-align:top;" width="100%">
-					<a href="#/movie/{{m.movieID}}">
-					<div class="poster_content">
-						<div class="poster_content_header"><h2>{{m.title}}</h2></div>
-						<small><div class="poster_content_info">
-							<div data-ng-hide="m.likes==0"><i class="fa fa-heart fa-2x" aria-hidden="true" style="font-size:1em;"></i> {{m.likes}}</div>
-							<div style="text-align:right;">Erschienen: {{m.release_date}}</div>
-						</div></small>
-						<div class="poster_content_plot">
-						{{m.plot}}
-						</div>
-					</div>
-					</a>
-				</td>
-			</tr>
-			<tr>
+<div data-ng-controller="movieCtrl" class="movie_list">
+	<input type="text" name="filter_movie" placeholder="Titel filtern..." autocomplete="off" class="movie_list_filter" data-ng-model="filter_movie"/>
+	<table class="list_table">
+		<tbody>
+			<tr data-ng-repeat="m in results | filter:{'title':filter_movie}" >
 				<td>
-				<div class="movie_interaction_buttons">
-					<button data-ng-click="changeStatus('watchlist',m)">
-						<i data-ng-if="m.status!='watchlist'" class="fa fa-bookmark fa-2x" aria-hidden="true"></i>
-						<i data-ng-if="m.status=='watchlist'" data-ng-style="btnColor" class="fa fa-bookmark fa-2x" aria-hidden="true"></i>
-					</button>
-					<button data-ng-click="changeStatus('watched',m)">
-						<i data-ng-if="m.status!='watched'" class="fa fa-eye fa-2x" aria-hidden="true"></i>
-						<i data-ng-if="m.status=='watched'" data-ng-style="btnColor" class="fa fa-eye fa-2x" aria-hidden="true"></i>
-					</button>
-					<button data-ng-disabled="m.status!='watched'" data-ng-click="openRecommendDialog(m)">
-						<i class="fa fa-share fa-2x" aria-hidden="true"></i>
-					</button>
-					<button data-ng-disabled="m.status!='watched'" data-ng-click="likeMovie(m)">
-						<i data-ng-if="m.liked" data-ng-style="btnColor" class="fa fa-heart fa-2x" aria-hidden="true"></i>
-						<i data-ng-if="!m.liked" class="fa fa-heart-o fa-2x" aria-hidden="true"></i>
-					</button>
-				</div>
+					<a href="#/movie/{{m.movieID}}">{{m.title}}</a>
 				</td>
+				<td>
+					<div class="movie_interaction_buttons">
+						<button data-ng-click="changeStatus('watchlist',m)">
+							<i data-ng-if="m.status!='watchlist'" class="fa fa-bookmark fa-2x" aria-hidden="true"></i>
+							<i data-ng-if="m.status=='watchlist'" data-ng-style="btnColor" class="fa fa-bookmark fa-2x" aria-hidden="true"></i>
+						</button>
+						<button data-ng-click="changeStatus('watched',m)">
+							<i data-ng-if="m.status!='watched'" class="fa fa-eye fa-2x" aria-hidden="true"></i>
+							<i data-ng-if="m.status=='watched'" data-ng-style="btnColor" class="fa fa-eye fa-2x" aria-hidden="true"></i>
+						</button>
+						<button data-ng-disabled="m.status!='watched'" data-ng-click="openRecommendDialog(m)">
+							<i class="fa fa-share fa-2x" aria-hidden="true"></i>
+						</button>
+						<button data-ng-disabled="m.status!='watched'" data-ng-click="likeMovie(m)">
+							<i data-ng-if="m.liked" data-ng-style="btnColor" class="fa fa-heart fa-2x" aria-hidden="true"></i>
+							<i data-ng-if="!m.liked" class="fa fa-heart-o fa-2x" aria-hidden="true"></i>
+						</button>
+					</div>
+				</td>
+
 			</tr>
-		</table>
-	</div>
+		</tbody>
+	</table>
+
 </div>

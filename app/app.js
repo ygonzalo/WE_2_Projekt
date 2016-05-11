@@ -35,6 +35,18 @@ app.config(['$routeProvider',
                 controller: 'movieCtrl',
                 role: '0'
             })
+            .when('/watchlist', {
+                title: 'Watchlist',
+                templateUrl: 'partials/watchlist.html',
+                controller: 'movieCtrl',
+                role: '0'
+            })
+            .when('/watched', {
+                title: 'Watched',
+                templateUrl: 'partials/watched.html',
+                controller: 'movieCtrl',
+                role: '0'
+            })
             .when('/profile', {
                 title: 'Profil',
                 templateUrl: 'partials/profile.html',
@@ -81,7 +93,12 @@ app.config(['$routeProvider',
                     Data.get('user/color').then(function (results) {
                         $cookies.put('color', results.color);
                     });
-                        
+
+                    //Get notification counters 
+                    Data.get('friends/notifications').then(function (results) {
+                        $rootScope.friend_requests_ctr = results.friend_requests;
+                        $rootScope.recommendations_ctr = results.recommendations;
+                    });
 
                     if (nextUrl == '/signup' || nextUrl == '/login') {
                         $location.path("/home");

@@ -7,6 +7,10 @@ app.controller('authCtrl', function ($scope, $rootScope, $routeParams, $location
             user: user
         }).then(function (results) {
             if (results.status == "success") {
+				$rootScope.authenticated = true;
+				$cookies.put('userID', results.userID);
+				$cookies.put('name', results.name);
+				$cookies.put('email', results.email);
                 $location.path('/home');
             }
         });
@@ -17,6 +21,10 @@ app.controller('authCtrl', function ($scope, $rootScope, $routeParams, $location
             user: user
         }).then(function (results) {
             if (results.status == "success") {
+				$rootScope.authenticated = true;
+				$cookies.put('userID', results.userID);
+				$cookies.put('name', results.name);
+				$cookies.put('email', results.email);
                 $location.path('/home');
             }else{
                 $scope.results = results;
@@ -34,7 +42,8 @@ app.controller('authCtrl', function ($scope, $rootScope, $routeParams, $location
 			}
 
         });
-    }
+    };
+	
 	$scope.showScore= false;
 	$scope.ratePassword = function(password){
 		

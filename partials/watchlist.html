@@ -1,0 +1,5 @@
+<div data-ng-init="initWatchlist()" class="default_container">
+	<div style="width:100%; padding:0.5em;"><h1>Watchlist</h1></div>
+	<div data-ng-include="includeFilmListTemplate()"></div>
+	<div data-ng-show="empty_watchlist">{{empty_watchlist_msg}}</div>
+</div>
