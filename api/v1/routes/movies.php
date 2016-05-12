@@ -34,8 +34,7 @@ $app->get('/movies/search/:title', function($title) use ($app) {
 					$movie['movieID'] = $item['id'];
 					$movie['title'] = $item['title'];
 					$movie['plot'] = $item['overview'];
-					$date = explode('-', $item['release_date']);
-					$movie['release_date'] = $date[0];
+					$movie['release_date'] = $item['release_date'];
 					$movie['original_title'] = $item['original_title'];
 					$movie['poster'] = $poster;
 					$movie['status'] = null;
@@ -216,49 +215,53 @@ $app->post('/movies/:movieID/status', function($movieID) use ($app) {
 	//check if user is logged in
 	if($session['userID']!= '') {
 
-		if($status == "watched" || $status == "watchlist" || $status == "deleted" )
-		{
-			//is movie data in session?
-			if (!empty($session['matches'])) {
+		//get userID
+		$userID = $session['userID'];
 
-				$movie = null;
 
-				foreach ($session['matches'] as $match) {
-					if ($movieID == $match['movieID']) {
-						$movie = $match;
-					}
+		//is movie data in session?
+		if (!empty($session['matches'])) {
+
+			$movie = null;
+
+			foreach ($session['matches'] as $match) {
+				if ($movieID == $match['movieID']) {
+					$movie = $match;
+				}
+			}
+
+			if ($movie) {
+				$movie['language'] = "de";
+
+				//Add 1 watcher
+				if ($status == "watched" && !isMovieWatched($movieID,$userID)) {
+
+					$watchers = $movie['watchers'] + 1;
+					date_default_timezone_set('Europe/Berlin');
+
+					$watched_date = date("Y-m-d");
+				} else if($status == "watchlist" && isMovieWatched($movieID,$userID)) {
+
+					$watchers = $movie['watchers'] - 1;
+					$watched_date = null;
+				} else {
+
+					$watchers = $movie['watchers'];
+					$watched_date = null;
 				}
 
-				if ($movie) {
-					$movie['language'] = "de";
 
-					if ($status == "watched") {
+				$sel_status = $db->preparedStmt("SELECT status,liked FROM movielist WHERE movieID=? AND userID=?");
+				$sel_status->bind_param("ii", $movieID, $userID);
 
-						$watchers = $movie['watchers'] + 1;
-						date_default_timezone_set('Europe/Berlin');
+				$sel_watchers = $db->preparedStmt("SELECT watchers,likes FROM movie WHERE movieID=?");
+				$sel_watchers->bind_param("i", $movieID);
 
-						$watched_date = date("Y-m-d");
-					} else {
-						$watchers = $movie['watchers'];
-						$watched_date = null;
-
-					}
-
-					//get userID
-					$userID = $session['userID'];
-
-					//prepare sql statement and bind parameters
-					$movie_stmt = $db->preparedStmt("SELECT 1 FROM movie WHERE movieID = ?");
-					$movielist_stmt = $db->preparedStmt("SELECT 1 FROM movielist WHERE movieID = ? AND userID = ?");
-					$movie_stmt->bind_param('i', $movieID);
-					$movielist_stmt->bind_param('ii', $movieID, $userID);
-
-					//execute query
-					$movie_stmt->execute();
-					$movie_stmt->store_result();
+				if($status == "watched" || $status == "watchlist")
+				{
 
 					//check if movie is already in db, if not, add it to db with info
-					if ($movie_stmt->num_rows != 1) {
+					if (!isMovieInDB($movieID)) {
 
 						$insert_watched_movie = $db->preparedStmt("INSERT INTO movie(movieID, original_title, watchers) VALUES (?,?,?)");
 						$insert_watched_movie->bind_param("iss", $movieID, $movie['original_title'], $watchers);
@@ -280,10 +283,8 @@ $app->post('/movies/:movieID/status', function($movieID) use ($app) {
 
 					} else {
 
-						$movielist_stmt->execute();
-						$movielist_stmt->store_result();
 						//check if movie is in user's list. If it is, just change status, if not, add to db
-						if ($movielist_stmt->num_rows != 1) {
+						if (!isMovieInMovielist($movieID,$userID)) {
 							if ($status == "watched") {
 								$update_watched_movie = $db->preparedStmt("UPDATE movie SET watchers = ? WHERE movieID = ?");
 								$update_watched_movie->bind_param("ii", $watchers, $movieID);
@@ -291,6 +292,7 @@ $app->post('/movies/:movieID/status', function($movieID) use ($app) {
 								$update_watched_movie->execute();
 								$update_watched_movie->close();
 							}
+
 							$insert_movielist = $db->preparedStmt("INSERT INTO movielist(movieID,userID,status,watched_date) VALUES (?,?,?,?)");
 							$insert_movielist->bind_param("iiss", $movieID, $userID, $status, $watched_date);
 
@@ -319,32 +321,87 @@ $app->post('/movies/:movieID/status', function($movieID) use ($app) {
 						}
 					}
 
-					$sel_status = $db->preparedStmt("SELECT status FROM movielist WHERE movieID=? AND userID=?");
-					$sel_status->bind_param("ii", $movieID, $userID);
+
 					$sel_status->execute();
-					$sel_status->bind_result($db_status);
+					$sel_status->bind_result($db_status,$db_liked);
 					$sel_status->fetch();
+					$sel_status->close();
+
+					$sel_watchers->execute();
+					$sel_watchers->bind_result($db_watchers,$db_likes);
+					$sel_watchers->fetch();
+					$sel_watchers->close();
 
 					$response['movie_status'] = $db_status;
+					$response['watchers'] = $db_watchers;
+					$response['likes'] = $db_likes;
+					$response['liked'] = (bool)$db_liked;
 					$response['status'] = "success";
 					$response['code'] = 206;
 					echoResponse(200, $response);
 
+				} else if($status == "deleted" ) {
+
+					//Check if movie is in user's movielist
+					if (isMovieInMovielist($movieID, $userID)) {
+
+						$del_movielist = $db->preparedStmt("DELETE FROM movielist WHERE movieID = ? AND userID = ?");
+						$del_movielist->bind_param('ii', $movieID, $userID);
+						$del_movielist->execute();
+						$del_movielist->close();
+
+						$watchers = $movie['watchers'];
+						$likes = $movie['likes'];
+
+						//Remove 1 watcher if movie was watched
+						if (isMovieWatched($movieID, $userID)) {
+
+							$watchers = $movie['watchers'] - 1;
+
+							//Remove 1 like if movie was liked
+							if (isMovieLiked($movieID, $userID)) {
+
+								$likes = $movie['likes'] - 1;
+							}
+						}
+
+						$update_movie = $db->preparedStmt("UPDATE movie SET watchers=?, likes=? WHERE movieID=?");
+						$update_movie->bind_param('iii',$watchers,$likes,$movieID);
+						$update_movie->execute();
+						$update_movie->close();
+					}
+
+
+					$sel_status->execute();
+					$sel_status->bind_result($db_status,$db_liked);
+					$sel_status->fetch();
 					$sel_status->close();
+
+					$sel_watchers->execute();
+					$sel_watchers->bind_result($db_watchers,$db_likes);
+					$sel_watchers->fetch();
+					$sel_watchers->close();
+
+					$response['movie_status'] = $db_status;
+					$response['watchers'] = $db_watchers;
+					$response['likes'] = $db_likes;
+					$response['liked'] = (bool)$db_liked;
+					$response['status'] = "success";
+					$response['code'] = 206;
+					echoResponse(200, $response);
 				} else {
 					$response['status'] = "error";
-					$response['code'] = 506;
+					$response['code'] = 508;
 					echoResponse(201, $response);
 				}
-
-			}else{
+			} else{
 				$response['status'] = "error";
-				$response['code'] = 507;
+				$response['code'] = 506;
 				echoResponse(201, $response);
 			}
 		} else {
 			$response['status'] = "error";
-			$response['code'] = 508;
+			$response['code'] = 507;
 			echoResponse(201, $response);
 		}
 

@@ -1,11 +1,74 @@
 <?php
 
+function isMovieInDB($movieID){
+	$db = new DB();
+
+	//check if user has watched the movie
+	$stmt_movie = $db->preparedStmt("SELECT 1 FROM movie WHERE movieID = ?");
+	$stmt_movie->bind_param('i',$movieID);
+	$stmt_movie->execute();
+	$stmt_movie->store_result();
+
+	if($stmt_movie->num_rows>0){
+		$stmt_movie->free_result();
+		$stmt_movie->close();
+		return true;
+	} else {
+		$stmt_movie->free_result();
+		$stmt_movie->close();
+		return false;
+	}
+}
+
 function isMovieWatched($movieID,$userID) {
 
 	$db = new DB();
 
 	//check if user has watched the movie
 	$stmt_movielist = $db->preparedStmt("SELECT 1 FROM movielist WHERE userID = ? AND movieID = ? AND status = 'watched'");
+	$stmt_movielist->bind_param('ii',$userID,$movieID);
+
+	$stmt_movielist->execute();
+	$stmt_movielist->store_result();
+
+	if($stmt_movielist->num_rows>0){
+		$stmt_movielist->free_result();
+		$stmt_movielist->close();
+		return true;
+	} else {
+		$stmt_movielist->free_result();
+		$stmt_movielist->close();
+		return false;
+	}
+}
+
+function isMovieLiked($movieID,$userID) {
+	$db = new DB();
+
+	//check if user has watched the movie
+	$stmt_movielist = $db->preparedStmt("SELECT liked FROM movielist WHERE userID = ? AND movieID = ? AND status = 'watched'");
+	$stmt_movielist->bind_param('ii',$userID,$movieID);
+
+	$stmt_movielist->execute();
+	$stmt_movielist->bind_result($db_liked);
+	$stmt_movielist->store_result();
+
+	if($stmt_movielist->num_rows>0){
+		$stmt_movielist->free_result();
+		$stmt_movielist->close();
+		return $db_liked;
+	} else {
+		$stmt_movielist->free_result();
+		$stmt_movielist->close();
+		return $db_liked;
+	}
+}
+
+function isMovieInMovielist($movieID,$userID) {
+	$db = new DB();
+
+	//check if user has watched the movie
+	$stmt_movielist = $db->preparedStmt("SELECT 1 FROM movielist WHERE userID = ? AND movieID = ?");
 	$stmt_movielist->bind_param('ii',$userID,$movieID);
 
 	$stmt_movielist->execute();
@@ -60,31 +123,6 @@ function requestSent($userID, $friendID){
 	} else {
 		$stmt_friends->free_result();
 		$stmt_friends->close();
-		return false;
-	}
-}
-
-function movieIsRated($userID,$movieID) {
-
-	$db = new DB();
-	
-	//check if user already gave a rating
-	$stmt_movielist = $db->preparedStmt("SELECT user_rating FROM movielist WHERE userID = ? AND movieID = ?");
-	$stmt_movielist->bind_param('ii',$userID,$movieID);
-
-	$stmt_movielist->execute();
-	$stmt_movielist->store_result();
-	$stmt_movielist->bind_result($db_user_rating);
-
-	$stmt_movielist->fetch();
-
-	if($db_user_rating != null) {
-		$stmt_movielist->free_result();
-		$stmt_movielist->close();
-		return true;
-	} else {
-		$stmt_movielist->free_result();
-		$stmt_movielist->close();
 		return false;
 	}
 }

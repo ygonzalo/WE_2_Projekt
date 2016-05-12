@@ -34,15 +34,15 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies',
 		if(status==movie.status){
 			status = 'deleted';
 		}
-
+		
 		Data.post('movies/'+ movie.movieID +'/status', {
 			status: status
 		}).then(function (results){
 			if(results.status == "success") {
 				movie.status = results.movie_status;
-			} else {
-				console.log(results.code);
-
+				movie.likes = results.likes;
+				movie.watchers = results.watchers;
+				movie.liked = results.liked;
 			}
 		});
 	};
@@ -120,7 +120,7 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies',
 	};
 
 	$scope.openMovie = function(movie){
-		
+
 	};
 
 	$scope.rec_movie = {};
