@@ -118,7 +118,7 @@ input:focus{
 .wrap_box {
 	-webkit-flex:1 1 auto;
 	flex:1 1 auto;
-	min-width:400px;
+	min-width:30%;
 	padding:2em;
 	min-height:10em;
 	position:relative;
@@ -129,6 +129,7 @@ input:focus{
 .wrap_box_content {
 	position:relative;
 	width:100%;
+	min-width:360px;
 	margin:auto;
 	max-height:100%;
 	overflow:auto;
@@ -156,10 +157,72 @@ input:focus{
 	line-height:1em;
 }
 
+.default_list_box {
+	max-height:17em;
+	overflow-y:auto;
+}
+
+.default_list_item {
+	position:relative;
+	padding:0.5em;
+}
+
+.default_list_item:hover  {
+	background-color:rgb(244,244,244);
+	cursor:default;
+}
+
+.default_list_item button {
+	border:none;
+	outline:none;
+	background-color:rgba(0,0,0,0);
+	float:right;
+	cursor:pointer;
+}
+.default_list_item button:hover{
+	text-decoration:underline;
+}
+
+
 /* error message */
 .error-message {
 	color: rgb(153, 0, 0);
 	background-color: rgb(255, 204, 204);
 	padding: 0.8em;
 	margin: 0.5em 0 0.5em 0;
+}
+
+/* popup */
+.popup {
+	padding:1em;
+}
+
+.popup input[type=text]{
+	width:100%;
+	padding:0.5em;
+	margin:0.5em 0;
+	border:2px solid rgb(61,61,61);
+}
+
+.popup input[type=radio]{
+	margin:1em;
+	z-index:100;
+	position:absolute;
+	padding:0;
+}
+
+.popup label{
+	display:inline-block;
+	width:100%;
+}
+
+.popup button {
+	padding:0.5em;
+	border:none;
+	background-color:transparent;
+	font-size:1em;
+}
+.popup button:hover:enabled {
+	text-decoration:underline;
+	cursor:pointer;
 }

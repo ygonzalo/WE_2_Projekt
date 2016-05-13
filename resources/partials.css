@@ -247,38 +247,6 @@
 	background-color:rgb(222,222,222);
 }
 
-.recommendation{
-
-}
-
-#recommendation_from{
-	position: relative;
-	font-size: 0.75em;
-}
-
-
-
-.default_list_item {
-	position:relative;
-	padding:0.5em;
-}
-
-.default_list_item:hover  {
-	background-color:rgb(244,244,244);
-	cursor:default;
-}
-
-.default_list_item button {
-	border:none;
-	outline:none;
-	background-color:rgba(0,0,0,0);
-	float:right;
-	cursor:pointer;
-}
-.default_list_item button:hover{
-	text-decoration:underline;
-}
-
 .profile_img {
 	position:relative;
 	width:100%;
@@ -326,4 +294,27 @@
 	width:10em;
 	height:12em;
 	
+}
+
+.recommendation_from{
+	position: relative;
+	font-size: 0.8em;
+}
+
+.recommendation_movie{
+	display:inline-block;
+	overflow:hidden;
+}
+
+.recommendation_movie:hover {
+	text-decoration:underline;
+	cursor:pointer;
+}
+
+.unread_recs {
+	float:left;
+	font-size:1em;
+	margin:0.8em;
+	width:1em;
+	color:rgb(61,61,61);
 }

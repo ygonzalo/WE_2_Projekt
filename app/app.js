@@ -105,7 +105,7 @@ app.config(['$routeProvider',
                     }
 
                 } else {
-                    if (nextUrl == '/signup' || nextUrl == '/login') {
+                    if (nextUrl == '/signup' || nextUrl == '/login' || nextUrl == '/imprint') {
 
                     } else {
                         $location.path("/login");

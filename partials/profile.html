@@ -82,6 +82,28 @@
 	<div class="wrap_box">
 		<div class="wrap_box_content">
 			<div class="wrap_box_header">
+				<h2>Empfehlungen</h2>
+			</div>
+			<div data-ng-show="empty_recommendations">{{empty_rec_msg}}</div>
+			<div class="default_list_box">
+				<div data-ng-repeat="rec in recommendations" class="default_list_item">
+					<div>
+						<div class="unread_recs">
+							<i data-ng-if="!rec.read" class="fa fa-circle" aria-hidden="true" title="neue Empfehlung!"></i>
+							<i data-ng-if="rec.read" class="fa fa-circle-o" aria-hidden="true" title="gelesen"></i>
+						</div>
+						<span class="recommendation_from">Von: {{rec.name}}</span>
+						<button name="delete_rec" data-ng-click="deleteRecommendation(rec)"><i class="fa fa-times" aria-hidden="true"></i></button>
+						<br>
+						<div class="recommendation_movie" data-ng-click="readRecommendation(rec)">{{rec.title}}</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="wrap_box">
+		<div class="wrap_box_content">
+			<div class="wrap_box_header">
 				<h2>Offene Freundschaftsanfragen</h2>
 			</div>
 			<div data-ng-show="empty_requests">{{empty_requests_msg}}</div>
@@ -90,25 +112,6 @@
 					{{request.name}}
 					<button name="deny_request" data-ng-click="denyFriendRequest(request.userID)">Ablehnen</button>
 					<button name="accept_request" data-ng-click="acceptFriendRequest(request.userID)">Annehmen</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="wrap_box">
-		<div class="wrap_box_content">
-			<div class="wrap_box_header">
-				<h2>Empfehlungen</h2>
-			</div>
-			<div data-ng-show="empty_recommendations">{{empty_rec_msg}}</div>
-			<div class="default_list_box">
-				<div data-ng-repeat="rec in recommendations" class="default_list_item">
-					<div class="{{recommendation_class}}">
-						<span id="recommendation_from">Von: {{rec.name}}</span><br>
-						<i data-ng-if="!rec.read" class="fa fa-circle" aria-hidden="true"></i>
-						{{rec.title}}
-						<button name="delete_rec" data-ng-click="deleteRecommendation(rec)">Löschen</button>
-						<button name="delete_rec" data-ng-click="readRecommendation(rec)">Details</button>
-					</div>
 				</div>
 			</div>
 		</div>

@@ -1,13 +1,19 @@
-<h2 class="dialog-header">Film empfehlen</h2>
-<div class="dialog-content">
-	<div class="error-message" data-ng-show="rec_error">{{error}}</div>
-<form data-ng-submit="recommendMovie(rec_friendID,rec_movie.movieID)">
-	Name: <input type="text" data-ng-model="rec_name" />
-	<div data-ng-repeat="friend in (filteredFriends = (friends | filter:{'name': rec_name}))">
-		<div data-ng-hide="rec_name == null || rec_name == ''" >
-		<input type="radio" name="rec_friend" data-ng-model="$parent.rec_friendID" data-ng-value="friend.userID" /> {{friend.name}}
+<div class="popup">
+	<h2 class="dialog-header">Film empfehlen</h2><br />
+	<div class="dialog-content">
+		<div class="error-message" data-ng-show="rec_error">{{error}}</div>
+	<form data-ng-submit="recommendMovie(rec_friendID,rec_movie.movieID)">
+		Empfehlung senden an: <input type="text" data-ng-model="rec_name" placeholder="Suche nach Freunden..." autocomplete="off"/>
+		<div data-ng-repeat="friend in (filteredFriends = (friends | filter:{'name': rec_name}))" style="overflow:auto; max-height:10em;">
+			<div data-ng-hide="rec_name == null || rec_name == ''">
+			<input type="radio" name="rec_friend" data-ng-model="$parent.rec_friendID" data-ng-value="friend.userID" id="{{friend.name}}"/>  
+			<label for="{{friend.name}}"><div class="default_list_item"><span style="margin-left:2em;">{{friend.name}}</span></div></label>
+			</div>
 		</div>
+		<hr>
+		<div align="right">
+			<button data-ng-disabled="rec_name == null || rec_name == ''">Empfehlung senden</button>
+		</div>
+	</form>
 	</div>
-	<button>Empfehlung senden</button>
-</form>
 </div>
