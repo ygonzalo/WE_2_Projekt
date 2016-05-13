@@ -102,13 +102,31 @@ app.controller('profileCtrl', ['$scope', '$rootScope','$routeParams', '$cookies'
 				switch(results.code){
 					case 222: 	$scope.recommendations = results.recommendations;
 						break;
-					case 223:	$scope.empty_recommendations = true;
+					case 223:	$scope.recommendations = {};
+								$scope.empty_recommendations = true;
 								$scope.empty_rec_msg = "Keine neue Empfehlungen";
 								break;
 					default:	break;
 				}
 			}else{
 				
+			}
+		})
+	};
+
+	$scope.deleteRecommendation = function(rec){
+		Data.delete('friends/recommendations/'+rec.recID).then(function (results) {
+			if(results.status == "success") {
+				$scope.getRecommendations();
+			}
+		})
+	};
+
+	$scope.readRecommendation = function(rec){
+		Data.put('friends/recommendations/'+rec.recID).then(function (results) {
+			if(results.status == "success") {
+				$scope.recommendations_class = 
+				$location.path('/movie/'+rec.movieID);
 			}
 		})
 	};

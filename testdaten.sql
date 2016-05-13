@@ -23,13 +23,13 @@ VALUES (293660, 'de', 'Basierend auf Marvels unkonventionellstem Anti-Helden, er
 
 -- user TESTDATA
 INSERT INTO `user`(`userID`,`name`,`email`,`password`,`points`,`image`)
-VALUES (1,'test', 't@t.de', '$2y$10$LV8cO6nmKku0bEVJ6IALQuMx.fFkAq2.Wvz15VwlbPx9usDg7ofWS', 1 , '1-1-1-1-1');
+VALUES (1,'test', 't@t.de', '$2y$10$ioxcHx3zXpfwhSjgXqaOeuFptkotQpAZQsfplUxXAZY4xwP3QkPW2', 1 , '1-1-1-1-1');
 INSERT INTO `user`(`userID`,`name`,`email`,`password`,`points`,`image`)
-VALUES (2,'test2', 'test2@t.de', '$2y$10$LV8cO6nmKku0bEVJ6IALQuMx.fFkAq2.Wvz15VwlbPx9usDg7ofWS', 2 ,'2-2-2-2-2');
+VALUES (2,'test2', 'test2@t.de', '$2y$10$VonATyMKWNG64S8rPa7VuO3mLFv2ne3tKq1QYb0ypMV9yjc8IeW7S', 2 ,'2-2-2-2-2');
 INSERT INTO `user`(`userID`,`name`,`email`,`password`,`points`,`image`)
 VALUES (3,'test3', 'test3@t.de', '$2y$10$LV8cO6nmKku0bEVJ6IALQuMx.fFkAq2.Wvz15VwlbPx9usDg7ofWS', 3 ,'3-3-3-3-3');
 INSERT INTO `user`(`userID`,`name`,`email`,`password`,`points`,`image`)
-VALUES (4,'test4', 'test4@t.de', '$2y$10$LV8cO6nmKku0bEVJ6IALQuMx.fFkAq2.Wvz15VwlbPx9usDg7ofWS', 4 ,'4-4-4-4-4');
+VALUES (4,'test4', 'test4@t.de', '$2y$10$8SSMGVX4bS5/Ojdsy/XOq.xBx7Ajycc2AgkO/QhK6NIJAn9W7pMwK', 4 ,'4-4-4-4-4');
 
 -- movielist TESTDATA
 INSERT INTO `movielist`(`movieID`,`userID`,`liked`,`status`,`watched_date`)

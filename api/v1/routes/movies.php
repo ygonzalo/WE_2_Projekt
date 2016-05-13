@@ -321,7 +321,6 @@ $app->post('/movies/:movieID/status', function($movieID) use ($app) {
 						}
 					}
 
-
 					$sel_status->execute();
 					$sel_status->bind_result($db_status,$db_liked);
 					$sel_status->fetch();
@@ -336,6 +335,8 @@ $app->post('/movies/:movieID/status', function($movieID) use ($app) {
 					$response['watchers'] = $db_watchers;
 					$response['likes'] = $db_likes;
 					$response['liked'] = (bool)$db_liked;
+					$response['movie'] = $movie;
+
 					$response['status'] = "success";
 					$response['code'] = 206;
 					echoResponse(200, $response);

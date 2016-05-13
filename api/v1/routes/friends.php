@@ -509,12 +509,12 @@ $app->get('/friends/recommendations', function() use ($app) {
 	//check if user is logged in
 	if($session['userID']!='') {
 		$userID = $session['userID'];
-		$stmt_rec = $db->preparedStmt("SELECT r.fromID,u.name,r.movieID FROM recommendations AS r JOIN user AS u ON r.fromID = u.userID WHERE r.toID = ?");
+		$stmt_rec = $db->preparedStmt("SELECT r.recID,r.fromID,u.name,r.movieID,r.read FROM recommendations AS r JOIN user AS u ON r.fromID = u.userID WHERE r.toID = ?");
 		$stmt_rec->bind_param('i',$userID);
 		$stmt_rec->execute();
 
 		$stmt_rec->store_result();
-		$stmt_rec->bind_result($db_fromID,$db_name,$db_movieID);
+		$stmt_rec->bind_result($db_recID,$db_fromID,$db_name,$db_movieID,$db_read);
 
 		$response['recommendations'] = array();
 
@@ -525,6 +525,8 @@ $app->get('/friends/recommendations', function() use ($app) {
 				$reco = array();
 				$reco['from'] = $db_fromID;
 				$reco['name'] = $db_name;
+				$reco['recID'] = $db_recID;
+				$reco['read'] = (bool)$db_read;
 
 				$movie_stmt = $db->preparedStmt("SELECT m.movieID, mi.title
 FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID= ?");
@@ -560,6 +562,66 @@ FROM movie AS m JOIN movieinfo As mi ON mi.movieID = m.movieID WHERE m.movieID= 
 		$stmt_rec->free_result();
 		$stmt_rec->close();
 
+	} else {
+		$response['status'] = "error";
+		$response['code'] = 501;
+		echoResponse(201, $response);
+	}
+});
+
+//DELETE recommendation
+$app->delete('/friends/recommendations/:recID', function($recID) use ($app) {
+	//REST-Service Response
+	$response = array();
+	$db = new DB();
+	$session = $db->getSession();
+
+	//check if user is logged in
+	if($session['userID']!='') {
+
+		$del_recommendation = $db->preparedStmt("DELETE FROM recommendations WHERE recID = ?");
+		$del_recommendation->bind_param('i',$recID);
+		if($del_recommendation->execute()){
+			$del_recommendation->close();
+			$response['status'] = "success";
+			$response['code'] = 235;
+			echoResponse(201, $response);
+		} else {
+			$del_recommendation->close();
+			$response['status'] = "error";
+			$response['code'] = 524;
+			echoResponse(201, $response);
+		}
+	} else {
+		$response['status'] = "error";
+		$response['code'] = 501;
+		echoResponse(201, $response);
+	}
+});
+
+//PUT recommendation read
+$app->put('/friends/recommendations/:recID', function($recID) use ($app) {
+	//REST-Service Response
+	$response = array();
+	$db = new DB();
+	$session = $db->getSession();
+
+	//check if user is logged in
+	if($session['userID']!='') {
+
+		$update_recommendation = $db->preparedStmt("UPDATE recommendations AS r SET r.read = 1 WHERE recID = ?");
+		$update_recommendation->bind_param('i',$recID);
+		if($update_recommendation->execute()){
+			$update_recommendation->close();
+			$response['status'] = "success";
+			$response['code'] = 236;
+			echoResponse(201, $response);
+		} else {
+			$update_recommendation->close();
+			$response['status'] = "error";
+			$response['code'] = 525;
+			echoResponse(201, $response);
+		}
 	} else {
 		$response['status'] = "error";
 		$response['code'] = 501;
@@ -720,7 +782,7 @@ $app->get('/friends/notifications', function() use ($app) {
 		$count_friendreq->fetch();
 		$count_friendreq->close();
 
-		$count_rec = $db->preparedStmt("SELECT COUNT(*) FROM recommendations WHERE toID = ?");
+		$count_rec = $db->preparedStmt("SELECT COUNT(*) FROM recommendations AS r WHERE r.toID = ? AND r.read = 0");
 		$count_rec->bind_param('i',$userID);
 		$count_rec->execute();
 		$count_rec->bind_result($db_rec_count);

@@ -48,33 +48,33 @@
 				<br />
 				-->
 				<div data-ng-init="color" >
-				<table>
-					<tr>
-						<td width="1">
-							Farbschema:
-						</td>
-						<td>
-							<input type="radio" data-ng-model="color" data-ng-change='changeColor(color)' value="apple" id="color_apple"/>
+					<table>
+						<tr>
+							<td width="1">
+								Farbschema:
+							</td>
+							<td>
+								<input type="radio" data-ng-model="color" data-ng-change='changeColor(color)' value="apple" id="color_apple"/>
 								<label class="profile_color_radio" for="color_apple"></label>
-						</td>
-						<td>
-							<input type="radio" data-ng-model="color" data-ng-change='changeColor(color)' value="banana" id="color_banana"/>
+							</td>
+							<td>
+								<input type="radio" data-ng-model="color" data-ng-change='changeColor(color)' value="banana" id="color_banana"/>
 								<label class="profile_color_radio" for="color_banana"></label>
-						</td>
-						<td>
-							<input type="radio" data-ng-model="color" data-ng-change='changeColor(color)' value="raspberry" id="color_raspberry"/>
+							</td>
+							<td>
+								<input type="radio" data-ng-model="color" data-ng-change='changeColor(color)' value="raspberry" id="color_raspberry"/>
 								<label class="profile_color_radio" for="color_raspberry"></label>
-						</td>
-						<td>
-							<input type="radio" data-ng-model="color" data-ng-change='changeColor(color)' value="plum" id="color_plum"/>
+							</td>
+							<td>
+								<input type="radio" data-ng-model="color" data-ng-change='changeColor(color)' value="plum" id="color_plum"/>
 								<label class="profile_color_radio" for="color_plum"></label>
-						</td>
-						<td>
-							<input type="radio" data-ng-model="color" data-ng-change='changeColor(color)' value="default" id="color_default"/>
+							</td>
+							<td>
+								<input type="radio" data-ng-model="color" data-ng-change='changeColor(color)' value="default" id="color_default"/>
 								<label class="profile_color_radio" for="color_default"></label>
-						</td>
-					</tr>
-				</table>
+							</td>
+						</tr>
+					</table>
 				</div>
 			</div>
 		</div>
@@ -88,8 +88,8 @@
 			<div class="default_list_box">
 				<div data-ng-repeat="request in pending_requests" class="default_list_item">
 					{{request.name}}
-					<button name="accept_request" data-ng-click="acceptFriendRequest(request.userID)">Annehmen</button>
 					<button name="deny_request" data-ng-click="denyFriendRequest(request.userID)">Ablehnen</button>
+					<button name="accept_request" data-ng-click="acceptFriendRequest(request.userID)">Annehmen</button>
 				</div>
 			</div>
 		</div>
@@ -102,7 +102,13 @@
 			<div data-ng-show="empty_recommendations">{{empty_rec_msg}}</div>
 			<div class="default_list_box">
 				<div data-ng-repeat="rec in recommendations" class="default_list_item">
-					{{rec.name}} {{rec.title}}
+					<div class="{{recommendation_class}}">
+						<span id="recommendation_from">Von: {{rec.name}}</span><br>
+						<i data-ng-if="!rec.read" class="fa fa-circle" aria-hidden="true"></i>
+						{{rec.title}}
+						<button name="delete_rec" data-ng-click="deleteRecommendation(rec)">Löschen</button>
+						<button name="delete_rec" data-ng-click="readRecommendation(rec)">Details</button>
+					</div>
 				</div>
 			</div>
 		</div>

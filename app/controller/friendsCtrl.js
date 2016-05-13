@@ -34,6 +34,7 @@ app.controller('friendsCtrl', ['$scope', '$rootScope', '$routeParams', '$locatio
 		}).then(function (results) {
 				if (results.status == "success") {
 					$scope.getRequests();
+					$rootScope.friend_requests_ctr--;
 				}
 			});
 		};
@@ -44,6 +45,7 @@ app.controller('friendsCtrl', ['$scope', '$rootScope', '$routeParams', '$locatio
 			}).then(function (results) {
 				if (results.status == "success") {
 					$scope.getRequests();
+					$rootScope.friend_requests_ctr--;
 				}
 			});
 		};

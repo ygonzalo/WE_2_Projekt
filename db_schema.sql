@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `movielist` (
   `movieID` INT UNSIGNED NOT NULL,
   `userID` INT UNSIGNED NOT NULL,
   `liked` BOOLEAN DEFAULT FALSE,
-  `status` ENUM('watched','watchlist', 'deleted') NOT NULL,
+  `status` ENUM('watched','watchlist') NOT NULL,
   `watched_date` DATE DEFAULT NULL,
   PRIMARY KEY (`movieID`,`userID`),
   CONSTRAINT fk_movieID_ml
@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS `movielist` (
 
 CREATE TABLE IF NOT EXISTS `movieinfo` (
   `movieID` INT UNSIGNED NOT NULL,
-  `language` VARCHAR(8) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `language` VARCHAR(8) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT 'de' NOT NULL,
   `plot` VARCHAR(4096) CHARACTER SET utf8 COLLATE utf8_unicode_ci,
   `title` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `release_date` DATE,
@@ -87,6 +87,7 @@ CREATE TABLE IF NOT EXISTS `recommendations` (
   `recID` INT UNSIGNED AUTO_INCREMENT,
   `fromID` INT UNSIGNED NOT NULL,
   `toID` INT UNSIGNED NOT NULL,
+  `read` BOOLEAN DEFAULT FALSE,
   `movieID` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`recID`),
   CONSTRAINT `fk_fromID`
