@@ -1,5 +1,11 @@
 <div data-ng-init="initWatchlist()" class="default_container">
-	<div style="width:100%; padding:0.5em;"><h1>Watchlist</h1></div>
-	<div data-ng-include="includeFilmListTemplate()"></div>
-	<div data-ng-show="empty_watchlist">{{empty_watchlist_msg}}</div>
+
+	<div class="wrap_box">
+		<div class="wrap_box_content" style="max-width:1024px;">
+			<div class="wrap_box_header"><h2>Watchlist</h2></div>
+			<div data-ng-include="includeFilmListTemplate()"></div>
+			<div data-ng-show="empty_watchlist">{{empty_watchlist_msg}}</div>
+		</div>
+	</div>
+
 </div>

@@ -39,9 +39,17 @@ $app->get('/friends/search/:query', function($query) use ($app) {
 					array_push($response['users'], $user);
 				}
 			}
-			$response['status'] = "success";
-			$response['code'] = 211;
-			echoResponse(200, $response);
+			if(count($response['users'])>0)
+			{
+				$response['status'] = "success";
+				$response['code'] = 211;
+				echoResponse(200, $response);
+			}
+			else {
+				$response['status'] = "success";
+				$response['code'] = 212;
+				echoResponse(200, $response);
+			}
 		} else {
 			$response['status'] = "success";
 			$response['code'] = 212;

@@ -11,6 +11,11 @@
 	box-sizing:border-box;
 	position:relative;
 }
+
+.list_table {
+	width:100%;
+	
+}
 /* partial: results */
 .loading_spinner {
 	position:relative;

@@ -25,6 +25,17 @@
 	.poster {
 		margin:0.5em 0em 0.5em 0em ;
 	}
+	
+	@viewport {
+		width:440px;
+	}
+	@-ms-viewport { 
+		width: 440px; 
+	}
+	@-o-viewport { 
+		width: 440px; 
+	}
+
 
 /* iphone.... */
 @media screen and (orientation:portrait) and (max-device-width:360px) {

@@ -1,5 +1,12 @@
+
 <div data-ng-init="initWatched()" class="default_container">
-	<div style="width:100%; padding:0.5em;"><h1>Gesehene Filme</h1></div>
-	<div data-ng-include="includeFilmListTemplate()"></div>
-	<div data-ng-show="empty_watched">{{empty_watched_msg}}</div>
+
+	<div class="wrap_box">
+		<div class="wrap_box_content" style="max-width:1024px;">
+			<div class="wrap_box_header"><h2>Gesehene Filme</h2></div>
+			<div data-ng-include="includeFilmListTemplate()"></div>
+			<div data-ng-show="empty_watched">{{empty_watched_msg}}</div>
+		</div>
+	</div>
+
 </div>

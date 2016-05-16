@@ -7,7 +7,7 @@
 					<a href="#/movie/{{m.movieID}}">{{m.title}}</a>
 				</td>
 				<td>
-					<div class="movie_interaction_buttons">
+					<div class="movie_interaction_buttons" style="text-align:right">
 						<button data-ng-click="changeStatus('watchlist',m)">
 							<i data-ng-if="m.status!='watchlist'" class="fa fa-bookmark fa-2x" aria-hidden="true"></i>
 							<i data-ng-if="m.status=='watchlist'" data-ng-style="btnColor" class="fa fa-bookmark fa-2x" aria-hidden="true"></i>

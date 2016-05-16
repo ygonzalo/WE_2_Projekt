@@ -1,13 +1,13 @@
 <div data-ng-controller="movieCtrl" class="poster_box">
 	<div data-ng-repeat="m in results" class="poster" data-ng-model="movie">
-		<table style="width:100%; height:100%;">
+		<table style="height:100%;">
 			<tr>
 				<td rowspan="2">
 					<a href="#/movie/{{m.movieID}}">
 						<img data-ng-src="{{checkPoster(m.poster)}}" class="poster_img"/>
 					</a>
 				</td>
-				<td style="vertical-align:top;" width="100%">
+				<td style="vertical-align:top;">
 					<a href="#/movie/{{m.movieID}}">
 					<div class="poster_content">
 						<div class="poster_content_header"><h2>{{m.title}}</h2></div>
