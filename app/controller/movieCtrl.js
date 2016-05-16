@@ -51,10 +51,11 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies',
 	$scope.empty_watchlist_msg = "";
 	$scope.getWatchlist = function (userID) {
 
-		userID = userID == 'undefined' ? ('/' + userID) : '';
+		userID = typeof userID == 'undefined' ? '' : ('/' + userID);
 
 		Data.get('movies/watchlist'+userID).then(function (results) {
 			if(results.status == "success") {
+
 				switch(results.code){
 					case 207:
 						if($location.path() == '/watchlist') {
@@ -76,7 +77,7 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies',
 	$scope.empty_watched_msg = "";
 	$scope.getWatched = function (userID) {
 
-		userID = userID == 'undefined' ? ('/' + userID) : '';
+		userID = typeof userID == 'undefined' ? '' : ('/' + userID);
 
 		Data.get('movies/watched'+userID).then(function (results) {
 			if(results.status == "success") {

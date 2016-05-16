@@ -82,7 +82,7 @@ $app->post('/user/signUp', function() use ($app) {
 		$color5= rand(1,4);
 		$image_string= $color1."-".$color2."-".$color3."-".$color4."-".$color5;
 		
-		$hashed_password = password_hash($password, PASSWORD_DEFAULT);
+		$hashed_password = password_hash($password, PASSWORD_BCRYPT);
 		$ins_stmt = $db->preparedStmt("INSERT INTO user(name,email,password,image) VALUES (?,?,?,?)");
 		$ins_stmt->bind_param('ssss',$name,$email,$hashed_password,$image_string);
 		$insert_status = $ins_stmt->execute();
@@ -148,7 +148,7 @@ $app->put('/user/password', function() use ($app) {
 
 		if(password_verify($old_pwd,$db_password)){
 
-			$hashedPassword = password_hash($new_pwd,PASSWORD_DEFAULT);
+			$hashedPassword = password_hash($new_pwd,PASSWORD_BCRYPT);
 
 			$upd_pwd = $db->preparedStmt("UPDATE user SET password = ? WHERE userID = ?");
 			$upd_pwd->bind_param('si', $hashedPassword,$userID);
