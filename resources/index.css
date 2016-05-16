@@ -60,6 +60,10 @@ input:focus{
 	
 }
 
+.form_element{
+	margin:0.5em;
+}
+
 .box h2 {
 	font-size:1.5em;
 	text-align:center;
@@ -69,7 +73,7 @@ input:focus{
 }
 
 .box input, .box button {
-	margin:0.5em;
+	margin:0;
 	padding:0.5em;
 	width:18em;
 	border:none;
@@ -183,46 +187,11 @@ input:focus{
 	text-decoration:underline;
 }
 
-
 /* error message */
 .error-message {
 	color: rgb(153, 0, 0);
 	background-color: rgb(255, 204, 204);
 	padding: 0.8em;
 	margin: 0.5em 0 0.5em 0;
-}
-
-/* popup */
-.popup {
-	padding:1em;
-}
-
-.popup input[type=text]{
-	width:100%;
-	padding:0.5em;
-	margin:0.5em 0;
-	border:2px solid rgb(61,61,61);
-}
-
-.popup input[type=radio]{
-	margin:1em;
-	z-index:100;
-	position:absolute;
-	padding:0;
-}
-
-.popup label{
-	display:inline-block;
-	width:100%;
-}
-
-.popup button {
-	padding:0.5em;
-	border:none;
-	background-color:transparent;
-	font-size:1em;
-}
-.popup button:hover:enabled {
-	text-decoration:underline;
-	cursor:pointer;
+	border-radius: 2px;
 }

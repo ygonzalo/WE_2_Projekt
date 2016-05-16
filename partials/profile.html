@@ -22,15 +22,35 @@
 						<td><input class="profile_input" data-ng-model="profile_email" data-ng-change="compareEmail(profile_email)"/></td>
 						<td><button class="profile_input" data-ng-disabled="!email_changed" data-ng-click="changeEmail(profile_email)">ändern</button></td>
 					</tr>
+					<tr data-ng-if="change_email_failed">
+						<td></td>
+						<td><span class="profile_err">{{change_email_err}}</span></td>
+						<td></td>
+					</tr>
 					<tr>
 						<td>Passwort (aktuell):</td>
 						<td><input type="password" name="old_pw" class="profile_input" placeholder="********" data-ng-model="old_pwd"/></td>
 						<td></td>
 					</tr>
+					<tr data-ng-if="pwd_change_err">
+						<td></td>
+						<td><span class="profile_err">{{pwd_change_err_msg}}</span></td>
+						<td></td>
+					</tr>
 					<tr>
 						<td>Passwort (neu):</td>
-						<td><input type="password" class="profile_input" placeholder="********" data-ng-model="new_pwd"/></td>
-						<td><button class="profile_input" data-ng-click="changePassword(old_pwd,new_pwd)">ändern</button></td>
+						<td><input type="password" class="profile_input" placeholder="********" data-ng-change="ratePassword(new_pwd)" data-ng-model="new_pwd"/></td>
+						<td><button class="profile_input" data-ng-disabled="new_pwd=='' || old_pwd==''" data-ng-click="changePassword(old_pwd,new_pwd)">ändern</button></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>
+							<div class="pwd_score_container" data-ng-show="showScore">
+								<div class="score_div_wrapper"><div id="scoreDiv"></div></div>
+								<div id="scoreValue"></div>
+							</div>
+						</td>
+						<td></td>
 					</tr>
 				</table>
 			</div>
@@ -82,7 +102,7 @@
 	<div class="wrap_box">
 		<div class="wrap_box_content">
 			<div class="wrap_box_header">
-				<h2>Empfehlungen</h2>
+				<h2>Filmempfehlungen</h2>
 			</div>
 			<div data-ng-show="empty_recommendations">{{empty_rec_msg}}</div>
 			<div class="default_list_box">

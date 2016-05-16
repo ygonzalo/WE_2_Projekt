@@ -1,13 +1,13 @@
 <div class="box" id="box_login">
 	<div>
 		<h2>Login</h2>
+		<div data-ng-if="login_failed" class="login error-message">
+			{{login_err}}
+		</div>
 		<form name="loginForm" role="form">
-		  <input type="email" placeholder="Email" name="email" data-ng-model="login.email" required focus/>
-			<br />
-		  <input type="password" class="form-control" placeholder="Password" data-ng-model="login.password" required/>
-			<br />
-		  <button type="submit" class="btn btn-default" data-ng-click="doLogin(login)" data-ng-disabled="loginForm.$invalid">Login</button>
-			<br />
+			<div class="form_element"><input type="email" placeholder="Email" name="email" data-ng-model="login.email" required focus/></div>
+			<div class="form_element"><input type="password" class="form-control" placeholder="Password" data-ng-model="login.password" required/></div>
+			<div class="form_element"><button type="submit" class="btn btn-default" data-ng-click="doLogin(login)" data-ng-disabled="loginForm.$invalid">Anmelden</button></div>
 			Noch kein Account? <a href="#/signup">Registrieren!</a>
 		</form>
 	</div>

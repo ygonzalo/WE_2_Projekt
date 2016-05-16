@@ -1,23 +1,18 @@
 <div class="box" id="box_signup">
 	<div>
 		<h2>SignUp</h2>
+		<div data-ng-if="signup_failed" class="login error-message">
+			{{signup_err}}
+		</div>
 		<form name="signupForm" >
-			<input type="email" placeholder="Email" name="email" data-ng-model="signup.email" required focus/>
-			<br />
-			<input type="password" placeholder="Password" id="password" name="password" data-ng-model="signup.password" required focus data-ng-change="ratePassword(signup.password)"/>
-			<br />
-			<table class="scoreDivContainer" data-ng-show="showScore">
-				<tr>
-					<td><div id="scoreDiv"></div></td>
-					
-					<td style="width:50%"><div id="scoreValue"></div></td>
-				</tr>
-			</table>
-			
-			<input type="text" placeholder="Name" name="name" data-ng-model="signup.name" required focus/>
-			<br />
-			<button type="submit" data-ng-click="signUp(signup)" data-ng-disabled="signupForm.$invalid">Registrieren</button>
-			<br />
+			<div class="form_element"><input type="email" placeholder="Email" name="email" data-ng-model="signup.email" required focus/></div>
+			<div class="form_element"><input type="password" placeholder="Password" id="password" name="password" data-ng-model="signup.password" required focus data-ng-change="ratePassword(signup.password)"/></div>
+			<div class="pwd_score_container" data-ng-show="showScore">
+				<div class="score_div_wrapper"><div id="scoreDiv"></div></div>
+				<div id="scoreValue"></div>
+			</div>
+			<div class="form_element"><input type="text" placeholder="Name" name="name" data-ng-model="signup.name" required focus/></div>
+			<div class="form_element"><button type="submit" data-ng-click="signUp(signup)" data-ng-disabled="signupForm.$invalid">Registrieren</button></div>
 			Schon registriert? <a href="#/login">Login</a>!
 		</form>
 	</div>

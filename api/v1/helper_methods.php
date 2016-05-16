@@ -149,6 +149,27 @@ function userExists($userID) {
 	}
 }
 
+function emailAlreadyInUse($email){
+
+	$db = new DB();
+	
+	$user_stmt = $db->preparedStmt("SELECT 1 FROM user where email=?");
+	$user_stmt->bind_param('s',$email);
+	$user_stmt->execute();
+	$user_stmt->store_result();
+	$user_stmt->fetch();
+	
+	if($user_stmt->num_rows==0){
+		$user_stmt->free_result();
+		$user_stmt->close();
+		return false;
+	} else {
+		$user_stmt->free_result();
+		$user_stmt->close();
+		return true;
+	}
+}
+
 function getUsername($userID) {
 	$db = new DB();
 

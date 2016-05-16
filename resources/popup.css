@@ -1,0 +1,47 @@
+.popup {
+	padding:1em;
+}
+
+.popup-header {
+	font-weight:lighter;
+	color:rgb(61,61,61);
+	font-size:1.4em;
+	line-height:1em;
+
+	margin: 0 0 -0.5em 0;
+}
+
+.popup-content {
+	margin: 0;
+}
+
+.popup input[type=text]{
+	width:100%;
+	padding:0.5em;
+	margin:0.5em 0;
+	border:2px solid rgb(61,61,61);
+	border-radius: 2px;
+}
+
+.popup input[type=radio]{
+	margin:1em;
+	z-index:100;
+	position:absolute;
+	padding:0;
+}
+
+.popup label{
+	display:inline-block;
+	width:100%;
+}
+
+.popup button {
+	padding:0.5em;
+	border:none;
+	background-color:transparent;
+	font-size:1em;
+}
+.popup button:hover:enabled {
+	text-decoration:underline;
+	cursor:pointer;
+}

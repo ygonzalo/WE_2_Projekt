@@ -1,4 +1,4 @@
-app.controller('profileCtrl', ['$scope', '$rootScope','$routeParams', '$cookies','$location', 'Data', '$controller', function ($scope, $rootScope, $routeParams,$cookies, $location, Data, $controller) {
+app.controller('profileCtrl', ['$scope', '$rootScope','$routeParams', '$cookies','$location', 'Data', 'PwdScore', '$controller', function ($scope, $rootScope, $routeParams,$cookies, $location, Data, PwdScore, $controller) {
 
 	$controller('movieCtrl', {$scope: $scope});
 
@@ -9,7 +9,8 @@ app.controller('profileCtrl', ['$scope', '$rootScope','$routeParams', '$cookies'
 	$scope.color = $cookies.get('color');
 
 	$scope.compareName = function(name) {
-		if(name==$cookies.name){
+
+		if(name==$cookies.get('name')){
 			return $scope.name_changed = false;
 		} else {
 			return $scope.name_changed = true;
@@ -17,14 +18,17 @@ app.controller('profileCtrl', ['$scope', '$rootScope','$routeParams', '$cookies'
 	};
 
 	$scope.compareEmail = function(email) {
-		if(email==$cookies.email){
+		$scope.change_email_failed = false;
+
+		if(email==$cookies.get('email')){
 			return $scope.email_changed = false;
 		} else {
 			return $scope.email_changed = true;
 		}
 	};
 
-	$scope.old_pwd_wrong = false;
+	$scope.pwd_change_err = false;
+	$scope.pwd_change_err_msg = "";
 	$scope.old_pwd = "";
 	$scope.new_pwd = "";
 	$scope.changePassword = function(old_pwd,new_pwd) {
@@ -33,14 +37,31 @@ app.controller('profileCtrl', ['$scope', '$rootScope','$routeParams', '$cookies'
 			new_pwd : new_pwd
 		}).then(function (results) {
 			if (results.status == "success") {
+				$scope.pwd_change_err = false;
 				$scope.old_pwd = "";
 				$scope.new_pwd = "";
 			} else {
 				if(results.code == 518){
-					$scope.old_pwd_wrong = true;
+					$scope.pwd_change_err = true;
+					$scope.pwd_change_err_msg = "Aktuelles passwort falsch";
 				}
 			}
 		});
+	};
+
+	$scope.showScore= false;
+	$scope.ratePassword = function(password){
+
+		if(password!= undefined && password != null && password != ''){
+
+			$scope.showScore= true;
+
+			PwdScore.ratePassword(password);
+
+		}else{
+			$scope.showScore= false;
+
+		}
 	};
 
 	$scope.changeName = function(name) {
@@ -55,6 +76,8 @@ app.controller('profileCtrl', ['$scope', '$rootScope','$routeParams', '$cookies'
 
 	};
 
+	$scope.change_email_failed = false;
+	$scope.change_email_err = "";
 	$scope.changeEmail = function(email) {
 		Data.put('user/email', {
 			email : email
@@ -62,6 +85,9 @@ app.controller('profileCtrl', ['$scope', '$rootScope','$routeParams', '$cookies'
 			if (results.status == "success") {
 				$cookies.put('email',results.email);
 				$scope.email_changed = false;
+			} else {
+				$scope.change_email_failed = true;
+				$scope.change_email_err = "E-Mail-Adresse wird bereits verwendet";
 			}
 		});
 

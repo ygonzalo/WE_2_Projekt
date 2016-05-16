@@ -176,9 +176,9 @@ app.controller('movieCtrl', ['$scope', '$rootScope', '$routeParams', '$cookies',
 			}else{
 				$scope.rec_error = true;
 				switch(results.code){
-					case 522: 	$scope.error="Freund hat den Film bereits gesehen";
+					case 522: 	$scope.error="Freund hat diesen Film bereits gesehen";
 								break;
-					case 523:	$scope.error="Film schon empfohlen";
+					case 523:	$scope.error="Film bereits empfohlen";
 								break;
 					case 517:  	$scope.error="Nur gesehene Filme können empfohlen werden";
 								break;

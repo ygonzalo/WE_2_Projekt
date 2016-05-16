@@ -1,7 +1,9 @@
-app.controller('authCtrl', function ($scope, $rootScope, $routeParams, $location, $http, $cookies, Data) {
+app.controller('authCtrl', function ($scope, $rootScope, $routeParams, $location, $http, $cookies, Data, PwdScore) {
     //initially set those objects to null to avoid undefined error
     $scope.login = {};
     $scope.signup = {};
+	$scope.login_err = "";
+	$scope.login_failed = false;
     $scope.doLogin = function (user) {
         Data.post('user/login', {
             user: user
@@ -12,10 +14,23 @@ app.controller('authCtrl', function ($scope, $rootScope, $routeParams, $location
 				$cookies.put('name', results.name);
 				$cookies.put('email', results.email);
                 $location.path('/home');
-            }
+            } else {
+				$scope.login_failed = true;
+				switch(results.code){
+					case 503:
+						$scope.login_err = "Benutzer nicht registriert";
+						break;
+					case 502:
+						$scope.login_err = "Passwort falsch";
+						break;
+				}
+			}
         });
     };
+
     $scope.signup = {email:'',password:'',name:''};
+	$scope.signup_err = "";
+	$scope.signup_failed = false;
     $scope.signUp = function (user) {
         Data.post('user/signUp', {
             user: user
@@ -27,10 +42,19 @@ app.controller('authCtrl', function ($scope, $rootScope, $routeParams, $location
 				$cookies.put('email', results.email);
                 $location.path('/home');
             }else{
-                $scope.results = results;
+				$scope.signup_failed = true;
+				switch(results.code){
+					case 504:
+						$scope.signup_err = "Benutzer konnte nicht erzeugt werden";
+						break;
+					case 505:
+						$scope.signup_err = "Benutzer mit dieser Email existiert bereits";
+						break;
+				}
             }
         });
     };
+
     $scope.logout = function () {
         Data.get('user/logout').then(function (results) {
 			if(results.status == "success"){
@@ -46,45 +70,16 @@ app.controller('authCtrl', function ($scope, $rootScope, $routeParams, $location
 	
 	$scope.showScore= false;
 	$scope.ratePassword = function(password){
-		
+
 		if(password!= undefined && password != null){
-			var result = zxcvbn(password);
+
 			$scope.showScore= true;
-			sdiv = document.getElementById("scoreDiv");
-			span= document.getElementById("scoreValue");
-			var score=result.score;
-			
-			switch(score){
-				
-				case 0: sdiv.style.width = '20%';
-						sdiv.style.backgroundColor = 'rgb(255, 51, 51)';
-						span.innerHTML="Schlecht";
-					break;
-				case 1: sdiv.style.width = '40%';
-						sdiv.style.backgroundColor = 'rgb(255, 153, 102)';
-						span.innerHTML="Mäßig";
-					break;
-				case 2: sdiv.style.width = '60%';
-						sdiv.style.backgroundColor = 'rgb(255, 221, 153)';
-						span.innerHTML="Okay";
-					break;
-				case 3: sdiv.style.width = '80%';
-						sdiv.style.backgroundColor = 'rgb(255, 255, 0)';
-						span.innerHTML="Gut";
-					break;
-				case 4: sdiv.style.width = '100%';
-						sdiv.style.backgroundColor = 'rgb(153, 255, 51)';
-						span.innerHTML="Sehr gut";
-					break;
-				default: sdiv.style.width = '20%';
-						 sdiv.style.backgroundColor = 'rgb(255, 51, 51)';
-						 span.innerHTML="Schlecht";
-					
-			}
-			
+
+			PwdScore.ratePassword(password);
+
 		}else{
 			$scope.showScore= false;
-				
+
 		}
-	}
+	};
 });

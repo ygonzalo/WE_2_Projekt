@@ -60,19 +60,11 @@ $app->post('/user/signUp', function() use ($app) {
 	$response = array();
 	$db = new DB();
 
-
-	
-	
 	$name = $req->user->name;
 	$email = $req->user->email;
 	$password = $req->user->password;
-	$user_stmt = $db->preparedStmt("SELECT 1 FROM user where email=?");
-	$user_stmt->bind_param('s',$email);
-	$user_stmt->execute();
-	$user_stmt->store_result();
-	$user_stmt->fetch();
 
-	if($user_stmt->num_rows==0) {
+	if(!emailAlreadyInUse($email)) {
 		
 		//Profilbild
 		$color1= rand(1,4);
@@ -110,8 +102,6 @@ $app->post('/user/signUp', function() use ($app) {
 		$response['code'] = 505;
 		echoResponse(201, $response);
 	}
-	$user_stmt->free_result();
-	$user_stmt->close();
 });
 
 //GET Logout
@@ -186,28 +176,33 @@ $app->put('/user/email', function() use ($app) {
 	if($session['userID']!='') {
 		$email = $req->email;
 
-		$changeEmail = $db->preparedStmt("UPDATE user SET email = ? WHERE userID = ?");
-		$changeEmail->bind_param('si', $email,$session['userID']);
-		$changeEmail->execute();
-		$changeEmail->close();
+		//Check if there is
+		if(!emailAlreadyInUse($email)){
+			$changeEmail = $db->preparedStmt("UPDATE user SET email = ? WHERE userID = ?");
+			$changeEmail->bind_param('si', $email,$session['userID']);
+			$changeEmail->execute();
+			$changeEmail->close();
 
-		$sel_email = $db->preparedStmt("SELECT email FROM user WHERE userID = ?");
-		$sel_email->bind_param('i',$session['userID']);
-		$sel_email->execute();
-		$sel_email->bind_result($db_email);
-		$sel_email->fetch();
+			$sel_email = $db->preparedStmt("SELECT email FROM user WHERE userID = ?");
+			$sel_email->bind_param('i',$session['userID']);
+			$sel_email->execute();
+			$sel_email->bind_result($db_email);
+			$sel_email->fetch();
 
-		$response['email'] = $db_email;
+			$response['email'] = $db_email;
 
-		$sel_email->close();
+			//Change email in current session
+			$db->changeSessionEmail($db_email);
 
-		$db->changeSessionEmail($db_email);
+			$response['status'] = "success";
+			$response['code'] = 227;
+			echoResponse(200, $response);
 
-		$response['status'] = "success";
-		$response['code'] = 227;
-		echoResponse(200, $response);
-
-
+		} else {
+			$response['status'] = "error";
+			$response['code'] = 505;
+			echoResponse(201, $response);
+		}
 	} else {
 		$response['status'] = "error";
 		$response['code'] = 501;

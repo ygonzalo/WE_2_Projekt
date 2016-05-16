@@ -13,7 +13,7 @@
 	<link rel="stylesheet" href="resources/footer.css">
     <link rel="stylesheet" href="resources/partials.css">
     <link rel="stylesheet" href="resources/overrides.css">
-    <link rel="stylesheet" href="resources/modals.css">
+    <link rel="stylesheet" href="resources/popup.css">
     <link rel="stylesheet" href="resources/ngDialog-theme-plain.css">
     <link rel="stylesheet" href="resources/ngDialog.css">
     <link rel="stylesheet" href="resources/font-awesome-4.6.1/css/font-awesome.min.css">
@@ -38,6 +38,7 @@
   <script src="js/zxcvbn.js"></script>
   <script src="app/app.js"></script>
   <script src="app/data.js"></script>
+  <script src="app/pwdScore.js"></script>
   <script src="app/controller/authCtrl.js"></script>
   <script src="app/controller/movieCtrl.js"></script>
   <script src="app/controller/friendsCtrl.js"></script>
