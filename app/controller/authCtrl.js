@@ -18,10 +18,10 @@ app.controller('authCtrl', function ($scope, $rootScope, $routeParams, $location
 				$scope.login_failed = true;
 				switch(results.code){
 					case 503:
-						$scope.login_err = "Benutzer nicht registriert";
+						$scope.login_err = "Benutzer oder Passwort falsch";
 						break;
 					case 502:
-						$scope.login_err = "Passwort falsch";
+						$scope.login_err = "Benutzer oder Passwort falsch";
 						break;
 				}
 			}
@@ -48,7 +48,7 @@ app.controller('authCtrl', function ($scope, $rootScope, $routeParams, $location
 						$scope.signup_err = "Benutzer konnte nicht erzeugt werden";
 						break;
 					case 505:
-						$scope.signup_err = "Benutzer mit dieser Email existiert bereits";
+						$scope.signup_err = "Email bereits verwendet";
 						break;
 				}
             }
